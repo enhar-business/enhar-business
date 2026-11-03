@@ -1,25 +1,21 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101010">
   <title>ENHAR BUSINESS | تسجيل الدخول</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     :root {
       --gold: #d8b45e;
       --gold-light: #f2d88e;
       --black: #101010;
       --white: #ffffff;
-      --muted: #999999;
+      --paper: #f8f8f6;
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
@@ -28,17 +24,18 @@
       color: var(--white);
     }
 
+    button, input { font: inherit; }
+
     .login-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       min-height: 100vh;
     }
-
-    /* الجهة اليسرى: هوية إنهار */
 
     .brand-side {
       background:
         radial-gradient(circle at 20% 20%, #302817, transparent 50%),
+        radial-gradient(circle at 80% 85%, #211a0c, transparent 45%),
         linear-gradient(145deg, #19160e, #080808);
       display: flex;
       align-items: center;
@@ -47,50 +44,66 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      isolation: isolate;
+    }
+
+    .brand-side::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: .10;
+      background-image:
+        linear-gradient(30deg, transparent 48%, #d8b45e 49%, transparent 50%),
+        linear-gradient(150deg, transparent 48%, #d8b45e 49%, transparent 50%);
+      background-size: 54px 54px;
     }
 
     .brand-content {
-      max-width: 530px;
+      max-width: 560px;
+      width: 100%;
       position: relative;
       z-index: 1;
     }
 
     .brand-logo {
-      width: 260px;
-      max-width: 85%;
-      height: auto;
+      display: block;
+      width: 250px;
+      height: 250px;
+      max-width: 75%;
       object-fit: contain;
-      margin-bottom: 35px;
+      margin: 0 auto 25px;
+      border-radius: 18px;
       filter: drop-shadow(0 8px 20px #000);
     }
 
     .brand-side h1 {
       color: var(--gold-light);
-      font-size: 36px;
-      margin-bottom: 18px;
+      font-size: clamp(27px, 3vw, 38px);
+      margin-bottom: 15px;
       line-height: 1.5;
-    }
-
-    .brand-side h2 {
-      color: #ffffff;
-      font-size: 23px;
-      font-weight: normal;
-      margin-bottom: 20px;
-      line-height: 1.8;
-    }
-
-    .brand-side p {
-      color: #c9c0ad;
-      font-size: 17px;
-      line-height: 2.1;
     }
 
     .gold-line {
       width: 90px;
       height: 3px;
       background: var(--gold);
-      margin: 28px auto;
+      margin: 24px auto;
       border-radius: 10px;
+    }
+
+    .brand-side h2 {
+      color: #fff;
+      font-size: 23px;
+      font-weight: normal;
+      margin-bottom: 18px;
+      line-height: 1.8;
+    }
+
+    .brand-side p {
+      color: #c9c0ad;
+      font-size: 16px;
+      line-height: 2.1;
     }
 
     .features {
@@ -98,7 +111,7 @@
       justify-content: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 32px;
+      margin-top: 28px;
     }
 
     .feature {
@@ -109,10 +122,8 @@
       font-size: 13px;
     }
 
-    /* الجهة اليمنى: تسجيل الدخول */
-
     .form-side {
-      background: #f8f8f6;
+      background: var(--paper);
       color: #171717;
       display: flex;
       align-items: center;
@@ -122,16 +133,10 @@
 
     .form-container {
       width: 100%;
-      max-width: 440px;
+      max-width: 465px;
     }
 
-    .small-logo {
-      display: none;
-    }
-
-    .form-heading {
-      margin-bottom: 35px;
-    }
+    .form-heading { margin-bottom: 34px; }
 
     .form-heading h2 {
       font-size: 29px;
@@ -145,9 +150,7 @@
       line-height: 1.9;
     }
 
-    .form-group {
-      margin-bottom: 23px;
-    }
+    .form-group { margin-bottom: 22px; }
 
     .form-group label {
       display: block;
@@ -158,15 +161,16 @@
 
     .form-group input {
       width: 100%;
-      height: 54px;
+      height: 56px;
       border: 1px solid #dedede;
-      border-radius: 9px;
+      border-radius: 10px;
       padding: 0 16px;
       font-size: 15px;
       font-family: inherit;
-      background: white;
+      background: #fff;
+      color: #171717;
       outline: none;
-      transition: 0.2s;
+      transition: .2s;
     }
 
     .form-group input:focus {
@@ -174,13 +178,11 @@
       box-shadow: 0 0 0 3px #d8b45e22;
     }
 
-    .password-wrap {
-      position: relative;
-    }
+    .form-group input::placeholder { color: #aaa; }
 
-    .password-wrap input {
-      padding-left: 65px;
-    }
+    .password-wrap { position: relative; }
+
+    .password-wrap input { padding-left: 75px; }
 
     .show-password {
       position: absolute;
@@ -189,16 +191,17 @@
       transform: translateY(-50%);
       border: none;
       background: transparent;
-      color: #777;
+      color: #8a6c2c;
       cursor: pointer;
       font-size: 13px;
+      padding: 8px;
     }
 
     .remember-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 5px 0 28px;
+      margin: 5px 0 25px;
       font-size: 13px;
       color: #555;
       gap: 10px;
@@ -211,27 +214,27 @@
       cursor: pointer;
     }
 
+    .remember-row input { accent-color: #b18b3c; }
+
     a {
       color: #9b792e;
       text-decoration: none;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
+    a:hover { text-decoration: underline; }
 
     .login-button {
       width: 100%;
-      height: 55px;
+      min-height: 57px;
       background: linear-gradient(110deg, #a9873c, #f0d68e);
       border: none;
-      border-radius: 9px;
+      border-radius: 10px;
       font-family: inherit;
       font-size: 17px;
       font-weight: bold;
       color: #17130a;
       cursor: pointer;
-      transition: 0.25s;
+      transition: .2s;
     }
 
     .login-button:hover {
@@ -241,177 +244,173 @@
 
     .register-text {
       text-align: center;
-      margin-top: 28px;
+      margin-top: 26px;
       color: #777;
       font-size: 14px;
+      line-height: 2;
     }
 
-    .register-text a {
+    .register-text a { font-weight: bold; }
+
+    .language {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 28px;
+      font-size: 13px;
+    }
+
+    .language button {
+      border: 0;
+      background: transparent;
+      color: #9b792e;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .language button.active {
       font-weight: bold;
+      text-decoration: underline;
+      text-underline-offset: 5px;
     }
 
     .form-footer {
       text-align: center;
-      margin-top: 55px;
+      margin-top: 42px;
       color: #999;
       font-size: 12px;
-      line-height: 2;
+      line-height: 2.1;
     }
 
-    .language {
-      text-align: center;
-      margin-top: 30px;
+    .notice {
+      display: none;
+      margin-top: 16px;
+      padding: 13px 15px;
+      border: 1px solid #e8d6a6;
+      border-radius: 9px;
+      background: #fff8e8;
+      color: #73551b;
       font-size: 13px;
-    }
-
-    .language span {
-      margin: 0 12px;
-      color: #bbb;
+      line-height: 1.8;
     }
 
     @media (max-width: 850px) {
-      .login-layout {
-        grid-template-columns: 1fr;
-      }
+      .login-layout { grid-template-columns: 1fr; }
 
       .brand-side {
-        min-height: 350px;
-        padding: 35px 20px;
+        min-height: auto;
+        padding: 38px 22px 34px;
       }
 
       .brand-logo {
-        width: 175px;
-        margin-bottom: 15px;
+        width: 155px;
+        height: 155px;
+        margin-bottom: 12px;
       }
 
-      .brand-side h1 {
-        font-size: 26px;
-      }
-
-      .brand-side h2 {
-        font-size: 18px;
-      }
-
-      .brand-side p {
-        font-size: 14px;
-      }
-
-      .features {
-        margin-top: 20px;
-      }
-
-      .form-side {
-        padding: 45px 22px;
-      }
-
-      .form-footer {
-        margin-top: 35px;
-      }
+      .brand-side h1 { font-size: 27px; }
+      .brand-side h2 { font-size: 19px; margin-bottom: 10px; }
+      .brand-side p { font-size: 14px; }
+      .gold-line { margin: 15px auto; }
+      .features { margin-top: 18px; gap: 8px; }
+      .feature { padding: 8px 12px; font-size: 12px; }
+      .form-side { padding: 42px 22px; }
+      .form-footer { margin-top: 32px; }
     }
 
     @media (max-width: 420px) {
-      .brand-side {
-        min-height: 310px;
-      }
+      .brand-side { padding: 30px 17px; }
 
       .brand-logo {
-        width: 145px;
+        width: 125px;
+        height: 125px;
       }
 
-      .form-heading h2 {
-        font-size: 25px;
-      }
+      .brand-side h1 { font-size: 23px; }
+      .brand-side h2 { font-size: 17px; }
+      .form-side { padding: 34px 18px; }
+      .form-heading h2 { font-size: 25px; }
+      .remember-row { font-size: 12px; }
     }
   </style>
 </head>
 
 <body>
-
   <main class="login-layout">
 
-    <!-- الهوية التسويقية -->
-    <section class="brand-side">
-
+    <section class="brand-side" aria-label="هوية إنهار">
       <div class="brand-content">
 
+        <!-- يجب أن يكون ملف الشعار بجانب index.html -->
         <img
-          src="./enhar-logo.png"
+          src="./enhar-logo-800x800.png"
           alt="شعار ENHAR BUSINESS"
           class="brand-logo"
+          onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';"
         >
 
-        <h1>إنهار للأعمال والمحاسبة</h1>
+        <div id="logoFallback" style="display:none;color:#f2d88e;font-size:25px;font-weight:bold;margin:25px 0;">
+          ENHAR BUSINESS
+        </div>
+
+        <h1 id="brandTitle">إنهار للأعمال والمحاسبة</h1>
 
         <div class="gold-line"></div>
 
-        <h2>
-          أعمالك تستحق إدارة أكثر ذكاءً
-        </h2>
+        <h2 id="brandTagline">أعمالك تستحق إدارة أكثر ذكاءً</h2>
 
-        <p>
-          كل أعمالك في مكان واحد...
-          من المبيعات والمشتريات إلى المخزون
-          والحسابات والتقارير.
-          <br>
-          تحكم أكبر، قرارات أوضح، ونمو بثقة.
+        <p id="brandDescription">
+          كل أعمالك في مكان واحد...<br>
+          من المبيعات والمشتريات إلى المخزون والحسابات والتقارير.<br>
+          تحكّم أكبر، قرارات أوضح، ونمو بثقة.
         </p>
 
         <div class="features">
-          <span class="feature">إدارة المبيعات</span>
-          <span class="feature">المحاسبة</span>
-          <span class="feature">المخزون</span>
-          <span class="feature">إدارة الفروع</span>
+          <span class="feature" id="feature1">إدارة المبيعات</span>
+          <span class="feature" id="feature2">المحاسبة</span>
+          <span class="feature" id="feature3">المخزون</span>
+          <span class="feature" id="feature4">إدارة الفروع</span>
         </div>
 
       </div>
-
     </section>
 
-    <!-- نموذج تسجيل الدخول -->
     <section class="form-side">
-
       <div class="form-container">
 
-        <div class="form-heading">
-
-          <h2>مرحباً بعودتك 👋</h2>
-
-          <p>
-            سجّل الدخول إلى حساب شركتك
-            وابدأ بإدارة أعمالك بكل سهولة.
+        <header class="form-heading">
+          <h2 id="welcomeTitle">مرحباً بعودتك 👋</h2>
+          <p id="welcomeText">
+            سجّل الدخول إلى حساب شركتك وابدأ بإدارة أعمالك بكل سهولة.
           </p>
-
-        </div>
+        </header>
 
         <form id="loginForm">
 
           <div class="form-group">
-
-            <label for="loginId">
+            <label for="loginId" id="identityLabel">
               رقم الجوال أو البريد الإلكتروني
             </label>
 
             <input
               type="text"
               id="loginId"
+              name="loginId"
               placeholder="أدخل رقم الجوال أو البريد الإلكتروني"
               autocomplete="username"
               required
             >
-
           </div>
 
           <div class="form-group">
-
-            <label for="password">
-              كلمة المرور
-            </label>
+            <label for="password" id="passwordLabel">كلمة المرور</label>
 
             <div class="password-wrap">
-
               <input
                 type="password"
                 id="password"
+                name="password"
                 placeholder="أدخل كلمة المرور"
                 autocomplete="current-password"
                 required
@@ -420,95 +419,203 @@
               <button
                 type="button"
                 class="show-password"
-                onclick="togglePassword()"
-              >
-                إظهار
-              </button>
-
+                id="showPasswordButton"
+              >إظهار</button>
             </div>
-
           </div>
 
           <div class="remember-row">
-
             <label>
               <input type="checkbox" id="remember">
-              تذكرني
+              <span id="rememberText">تذكرني</span>
             </label>
 
-            <a href="#" onclick="showMessage('ستتوفر خدمة استعادة كلمة المرور بعد ربط النظام.'); return false;">
-              نسيت كلمة المرور؟
-            </a>
-
+            <a href="#" id="forgotLink">نسيت كلمة المرور؟</a>
           </div>
 
-          <button type="submit" class="login-button">
+          <button type="submit" class="login-button" id="loginButton">
             تسجيل الدخول
           </button>
+
+          <div class="notice" id="notice" role="status" aria-live="polite"></div>
 
         </form>
 
         <div class="register-text">
-          ليس لديك حساب؟
-          <a href="#" onclick="showMessage('سيتم توفير طلب إنشاء حساب شركة قريباً.'); return false;">
-            اطلب إنشاء حساب شركتك
-          </a>
+          <span id="registerText">ليس لديك حساب؟</span>
+          <a
+            href="mailto:info@enharbusiness.com?subject=طلب%20إنشاء%20حساب%20شركة"
+            id="registerLink"
+          >اطلب إنشاء حساب شركتك</a>
         </div>
 
-        <div class="language">
-          <a href="#" onclick="showMessage('سيتم تفعيل اللغة الإنجليزية في المرحلة القادمة.'); return false;">English</a>
+        <nav class="language" aria-label="اختيار اللغة">
+          <button type="button" id="arabicButton" class="active">العربية</button>
           <span>|</span>
-          <a href="#">العربية</a>
-        </div>
+          <button type="button" id="englishButton">English</button>
+        </nav>
 
-        <div class="form-footer">
-          ENHAR BUSINESS
-          <br>
-          منصة الأعمال والمحاسبة
-          <br>
-          جميع الحقوق محفوظة © 2026
-        </div>
+        <footer class="form-footer">
+          ENHAR BUSINESS<br>
+          <span id="footerDescription">منصة الأعمال والمحاسبة</span><br>
+          <span id="copyright">جميع الحقوق محفوظة © 2026</span>
+        </footer>
 
       </div>
-
     </section>
 
   </main>
 
   <script>
+    const text = {
+      ar: {
+        dir: "rtl",
+        brandTitle: "إنهار للأعمال والمحاسبة",
+        tagline: "أعمالك تستحق إدارة أكثر ذكاءً",
+        description: "كل أعمالك في مكان واحد...<br>من المبيعات والمشتريات إلى المخزون والحسابات والتقارير.<br>تحكّم أكبر، قرارات أوضح، ونمو بثقة.",
+        features: ["إدارة المبيعات", "المحاسبة", "المخزون", "إدارة الفروع"],
+        welcome: "مرحباً بعودتك 👋",
+        welcomeText: "سجّل الدخول إلى حساب شركتك وابدأ بإدارة أعمالك بكل سهولة.",
+        identityLabel: "رقم الجوال أو البريد الإلكتروني",
+        identityPlaceholder: "أدخل رقم الجوال أو البريد الإلكتروني",
+        passwordLabel: "كلمة المرور",
+        passwordPlaceholder: "أدخل كلمة المرور",
+        show: "إظهار",
+        hide: "إخفاء",
+        remember: "تذكرني",
+        forgot: "نسيت كلمة المرور؟",
+        login: "تسجيل الدخول",
+        register: "ليس لديك حساب؟",
+        registerLink: "اطلب إنشاء حساب شركتك",
+        footer: "منصة الأعمال والمحاسبة",
+        copyright: "جميع الحقوق محفوظة © 2026",
+        loginNotice: "هذه واجهة تسجيل الدخول فقط. لم يتم ربطها بعد بخادم الحسابات وقاعدة البيانات، لذلك لن يتم تسجيل الدخول فعلياً حتى تكتمل مرحلة الربط.",
+        forgotNotice: "سيتم تفعيل استعادة كلمة المرور بعد ربط خدمة الحسابات.",
+        registerNotice: "لطلب حساب شركة، استخدم رابط التواصل أو تواصل مع إدارة ENHAR BUSINESS."
+      },
 
-    function togglePassword() {
-      const password = document.getElementById("password");
-      const button = document.querySelector(".show-password");
-
-      if (password.type === "password") {
-        password.type = "text";
-        button.textContent = "إخفاء";
-      } else {
-        password.type = "password";
-        button.textContent = "إظهار";
+      en: {
+        dir: "ltr",
+        brandTitle: "ENHAR BUSINESS",
+        tagline: "Your business deserves smarter management",
+        description: "Everything in one place...<br>From sales and purchasing to inventory, accounting and reports.<br>More control, clearer decisions and confident growth.",
+        features: ["Sales Management", "Accounting", "Inventory", "Branches"],
+        welcome: "Welcome back 👋",
+        welcomeText: "Sign in to your company account and manage your business with ease.",
+        identityLabel: "Mobile number or email address",
+        identityPlaceholder: "Enter your mobile number or email address",
+        passwordLabel: "Password",
+        passwordPlaceholder: "Enter your password",
+        show: "Show",
+        hide: "Hide",
+        remember: "Remember me",
+        forgot: "Forgot password?",
+        login: "Sign in",
+        register: "Don't have an account?",
+        registerLink: "Request a company account",
+        footer: "Business & Accounting Platform",
+        copyright: "All rights reserved © 2026",
+        loginNotice: "This is the login interface only. It is not connected to an authentication server or database yet, so real sign-in will work after that integration is completed.",
+        forgotNotice: "Password recovery will be enabled after the authentication service is connected.",
+        registerNotice: "To request a company account, contact ENHAR BUSINESS."
       }
+    };
+
+    let currentLanguage = "ar";
+
+    function setLanguage(language) {
+      currentLanguage = language;
+      const t = text[language];
+
+      document.documentElement.lang = language;
+      document.documentElement.dir = t.dir;
+
+      document.getElementById("brandTitle").textContent = t.brandTitle;
+      document.getElementById("brandTagline").textContent = t.tagline;
+      document.getElementById("brandDescription").innerHTML = t.description;
+
+      ["feature1", "feature2", "feature3", "feature4"].forEach((id, i) => {
+        document.getElementById(id).textContent = t.features[i];
+      });
+
+      document.getElementById("welcomeTitle").textContent = t.welcome;
+      document.getElementById("welcomeText").textContent = t.welcomeText;
+      document.getElementById("identityLabel").textContent = t.identityLabel;
+      document.getElementById("loginId").placeholder = t.identityPlaceholder;
+      document.getElementById("passwordLabel").textContent = t.passwordLabel;
+      document.getElementById("password").placeholder = t.passwordPlaceholder;
+
+      document.getElementById("showPasswordButton").textContent =
+        document.getElementById("password").type === "password" ? t.show : t.hide;
+
+      document.getElementById("rememberText").textContent = t.remember;
+      document.getElementById("forgotLink").textContent = t.forgot;
+      document.getElementById("loginButton").textContent = t.login;
+      document.getElementById("registerText").textContent = t.register;
+      document.getElementById("registerLink").textContent = t.registerLink;
+      document.getElementById("footerDescription").textContent = t.footer;
+      document.getElementById("copyright").textContent = t.copyright;
+
+      document.getElementById("arabicButton").classList.toggle("active", language === "ar");
+      document.getElementById("englishButton").classList.toggle("active", language === "en");
+
+      document.getElementById("notice").style.display = "none";
     }
 
-    function showMessage(message) {
-      alert(message);
+    function showNotice(message) {
+      const notice = document.getElementById("notice");
+      notice.textContent = message;
+      notice.style.display = "block";
     }
 
-    document.getElementById("loginForm").addEventListener("submit", function(event) {
+    document.getElementById("arabicButton").addEventListener("click", () => {
+      setLanguage("ar");
+    });
+
+    document.getElementById("englishButton").addEventListener("click", () => {
+      setLanguage("en");
+    });
+
+    document.getElementById("showPasswordButton").addEventListener("click", () => {
+      const password = document.getElementById("password");
+
+      password.type = password.type === "password" ? "text" : "password";
+
+      const t = text[currentLanguage];
+
+      document.getElementById("showPasswordButton").textContent =
+        password.type === "password" ? t.show : t.hide;
+    });
+
+    document.getElementById("forgotLink").addEventListener("click", (event) => {
+      event.preventDefault();
+      showNotice(text[currentLanguage].forgotNotice);
+    });
+
+    document.getElementById("registerLink").addEventListener("click", (event) => {
+      const href = event.currentTarget.getAttribute("href");
+
+      if (href === "#") {
+        event.preventDefault();
+        showNotice(text[currentLanguage].registerNotice);
+      }
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", (event) => {
       event.preventDefault();
 
       const loginId = document.getElementById("loginId").value.trim();
       const password = document.getElementById("password").value;
 
       if (!loginId || !password) {
-        alert("يرجى إدخال بيانات تسجيل الدخول.");
+        showNotice(currentLanguage === "ar"
+          ? "يرجى إدخال رقم الجوال أو البريد الإلكتروني وكلمة المرور."
+          : "Please enter your mobile number or email address and password.");
         return;
       }
 
-      alert("تم تجهيز واجهة تسجيل الدخول. يلزم ربطها بخادم وقاعدة بيانات للتحقق من حسابك.");
+      showNotice(text[currentLanguage].loginNotice);
     });
-
   </script>
-
 </body>
 </html>
