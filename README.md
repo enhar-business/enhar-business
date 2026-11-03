@@ -1,16 +1,43 @@
-## Hi there 👋
+# ENHAR BUSINESS
 
-<!--
-**enhar-business/enhar-business** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+**منصة متكاملة لإدارة موارد المؤسسات (ERP)**
 
-Here are some ideas to get you started:
+ENHAR BUSINESS is a cloud-based ERP platform designed to help businesses manage their operations efficiently.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## 🌐 Languages
+- Arabic (Default)
+- English
+- Full RTL and LTR support
+
+## 🏢 Core Modules
+- Sales & POS
+- Purchasing
+- Inventory Management
+- Accounting & Finance
+- Human Resources
+- Branches & Warehouses
+- Reports & Analytics
+
+## ⚙️ System Features
+- Multi-Company Support
+- Multi-Branch Management
+- Role-Based Access Control
+- Audit Logs
+- Automated Accounting Entries
+- Cloud-Based Architecture
+
+## 🇸🇦 Saudi Arabia Support
+- Saudi Riyal (SAR)
+- ZATCA E-Invoicing Readiness
+- Arabic Business Environment
+
+## 🎯 Project Vision
+
+To build a secure, scalable, and intelligent ERP system
+that simplifies business management.
+
+---
+
+**Project:** ENHAR BUSINESS  
+**Status:** Initial Development  
+**Version:** 1.0
