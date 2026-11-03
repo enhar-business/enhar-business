@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENHAR BUSINESS | لوحة التحكم</title>
+<style>
+:root{
+  --gold:#d8b45e;--light:#f2d88e;--bg:#101010;
+  --panel:#191919;--line:#302a1c;--text:#f5f1e8;
+  --muted:#aaa18f;--green:#42b883;--red:#e46b6b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Tahoma,Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+ width:255px;background:#141414;border-left:1px solid var(--line);
+ padding:22px 15px;position:fixed;right:0;top:0;bottom:0;
+ overflow-y:auto;z-index:5;transition:.25s
+}
+.logo{display:flex;align-items:center;gap:12px;padding:8px 10px 25px;
+ border-bottom:1px solid var(--line);margin-bottom:20px}
+.logo img{width:48px;height:48px;object-fit:contain;border-radius:8px}
+.logo strong{display:block;color:var(--light);font-size:17px}
+.logo small{color:var(--muted);font-size:11px}
+.menu-title{color:#8c8065;font-size:11px;padding:15px 12px 8px}
+.menu button{
+ display:flex;align-items:center;gap:12px;width:100%;padding:12px;
+ margin:4px 0;border:0;border-radius:8px;background:transparent;
+ color:#d7d0c1;text-align:right;font-size:13px;transition:.2s
+}
+.menu button:hover,.menu button.active{
+ background:#302817;color:var(--light)
+}
+.menu .ico{width:22px;text-align:center;font-size:17px}
+.sidebar-bottom{border-top:1px solid var(--line);margin-top:25px;padding-top:15px}
+.main{margin-right:255px;width:calc(100% - 255px);min-height:100vh}
+.topbar{
+ height:75px;border-bottom:1px solid var(--line);display:flex;
+ align-items:center;justify-content:space-between;padding:0 28px;
+ background:#141414;position:sticky;top:0;z-index:3
+}
+.top-left,.top-right{display:flex;align-items:center;gap:15px}
+.icon-btn{background:#24211a;border:1px solid var(--line);
+ color:var(--light);padding:9px 12px;border-radius:8px}
+.user{display:flex;align-items:center;gap:10px}
+.avatar{width:37px;height:37px;border-radius:50%;background:#4b3c1e;
+ display:grid;place-items:center;color:var(--light);font-weight:bold}
+.user small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.content{padding:28px;max-width:1500px;margin:auto}
+.page-heading{display:flex;justify-content:space-between;align-items:center;
+ gap:15px;margin-bottom:25px}
+.page-heading h1{font-size:25px;margin:0 0 9px;color:var(--light)}
+.page-heading p{color:var(--muted);font-size:13px;margin:0}
+.primary{
+ background:linear-gradient(110deg,#a9873c,#f0d68e);color:#17130a;
+ border:0;border-radius:8px;padding:12px 18px;font-weight:bold
+}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:16px;margin-bottom:22px}
+.stat,.panel{
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:12px;padding:20px
+}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{width:43px;height:43px;display:grid;place-items:center;
+ border-radius:10px;background:#302817;color:var(--light);font-size:21px}
+.stat-label{color:var(--muted);font-size:13px}
+.stat-value{font-size:25px;font-weight:bold;margin:17px 0 9px}
+.stat-note{font-size:11px;color:var(--green)}
+.stat-note.neutral{color:var(--muted)}
+.grid-two{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.panel{margin-bottom:18px}
+.panel-heading{display:flex;justify-content:space-between;
+ align-items:center;margin-bottom:20px}
+.panel-heading h2{font-size:16px;color:var(--light);margin:0}
+.panel-heading span{color:var(--muted);font-size:11px}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.quick{
+ background:#211e17;border:1px solid var(--line);border-radius:10px;
+ color:var(--text);padding:18px 8px;text-align:center;transition:.2s
+}
+.quick:hover{border-color:var(--gold);transform:translateY(-2px)}
+.quick b{display:block;font-size:23px;margin-bottom:9px}
+.quick span{font-size:12px;color:var(--muted)}
+.activity{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #29251d}
+.activity:last-child{border:0}
+.activity-icon{width:35px;height:35px;border-radius:8px;
+ background:#302817;display:grid;place-items:center;color:var(--light)}
+.activity strong{font-size:12px}
+.activity small{display:block;color:var(--muted);font-size:11px;margin-top:6px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{text-align:right;padding:14px 10px;border-bottom:1px solid #302a1c;
+ font-size:12px}
+th{color:var(--muted);font-weight:normal}
+td{color:#e8e1d2}
+.status{padding:5px 9px;border-radius:20px;font-size:10px}
+.done{background:#18372a;color:#6ed6a0}
+.pending{background:#3b301b;color:#e9c36f}
+.page{display:none}
+.page.active{display:block}
+.empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:8px}
+.field input,.field select{
+ width:100%;padding:12px;background:#101010;color:white;
+ border:1px solid var(--line);border-radius:8px;outline:none
+}
+.field input:focus,.field select:focus{border-color:var(--gold)}
+.form-actions{margin-top:18px;display:flex;gap:10px}
+.secondary{background:#28251f;color:var(--light);border:1px solid var(--line);
+ padding:11px 17px;border-radius:8px}
+.notice{color:var(--gold);font-size:12px;margin-top:15px}
+.mobile-menu{display:none}
+.footer{text-align:center;color:#766d5b;font-size:11px;padding:25px}
+@media(max-width:1050px){
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .grid-two{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+ .sidebar{transform:translateX(100%);width:260px}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin-right:0;width:100%}
+ .topbar{padding:0 14px}
+ .content{padding:18px 13px}
+ .mobile-menu{display:inline-block}
+ .stats{gap:9px}
+ .stat{padding:13px}
+ .stat-value{font-size:20px}
+ .quick-grid{grid-template-columns:repeat(2,1fr)}
+ .page-heading{align-items:flex-start;flex-direction:column}
+ .form-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <img src="./enhar-logo-800x800.png"
+      onerror="this.src='./enhar-logo.png'" alt="ENHAR">
+    <div><strong>ENHAR BUSINESS</strong><small>منصة الأعمال والمحاسبة</small></div>
+  </div>
+
+  <nav class="menu">
+    <div class="menu-title">الرئيسية</div>
+    <button class="active" data-page="dashboard"><span class="ico">⌂</span>لوحة التحكم</button>
+
+    <div class="menu-title">إدارة الأعمال</div>
+    <button data-page="sales"><span class="ico">🧾</span>المبيعات والفواتير</button>
+    <button data-page="purchases"><span class="ico">🛒</span>المشتريات</button>
+    <button data-page="products"><span class="ico">📦</span>المنتجات والخدمات</button>
+    <button data-page="inventory"><span class="ico">🏬</span>المخزون والمستودعات</button>
+    <button data-page="customers"><span class="ico">👥</span>العملاء</button>
+    <button data-page="suppliers"><span class="ico">🚚</span>الموردون</button>
+
+    <div class="menu-title">الإدارة المالية</div>
+    <button data-page="accounting"><span class="ico">💰</span>المحاسبة</button>
+    <button data-page="reports"><span class="ico">📊</span>التقارير</button>
+
+    <div class="menu-title">إدارة النظام</div>
+    <button data-page="employees"><span class="ico">🧑‍💼</span>الموظفون والصلاحيات</button>
+    <button data-page="branches"><span class="ico">🏢</span>الفروع</button>
+    <button data-page="settings"><span class="ico">⚙</span>الإعدادات</button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button class="secondary" style="width:100%" onclick="alert('سيتم تفعيل تسجيل الخروج بعد ربط نظام الحسابات')">↩ تسجيل الخروج</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="top-left">
+    <button class="icon-btn mobile-menu" onclick="toggleMenu()">☰</button>
+    <div><strong id="topTitle">لوحة التحكم</strong></div>
+  </div>
+  <div class="top-right">
+    <button class="icon-btn" onclick="alert('التنبيهات ستظهر بعد ربط النظام')">♧</button>
+    <div class="user">
+      <div class="avatar">E</div>
+      <div><strong>مدير النظام</strong><small>ENHAR BUSINESS</small></div>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+
+<section class="page active" id="dashboard">
+  <div class="page-heading">
+    <div><h1>مرحباً بك في إنهار 👋</h1>
+    <p>نظرة عامة على أداء منشأتك وأعمالك اليومية.</p></div>
+    <button class="primary" onclick="showPage('sales')">＋ فاتورة جديدة</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-top"><span class="stat-label">إجمالي المبيعات</span><span class="stat-icon">↗</span></div>
+      <div class="stat-value">0.00 ر.س</div><div class="stat-note neutral">بانتظار ربط البيانات</div>
+    </div>
+    <div class="stat">
+      <div class="stat-top"><span class="stat-label">إجمالي المشتريات</span><span class="stat-icon">🛒</span></div>
+      <div class="stat-value">0.00 ر.س</div><div class="stat-note neutral">بانتظار ربط البيانات</div>
+    </div>
+    <div class="stat">
+      <div class="stat-top"><span class="stat-label">المنتجات</span><span class="stat-icon">📦</span></div>
+      <div class="stat-value">0</div><div class="stat-note neutral">لا توجد منتجات مسجلة بعد</div>
+    </div>
+    <div class="stat">
+      <div class="stat-top"><span class="stat-label">العملاء</span><span class="stat-icon">👥</span></div>
+      <div class="stat-value">0</div><div class="stat-note neutral">لا يوجد عملاء مسجلون بعد</div>
+    </div>
+  </div>
+
+  <div class="grid-two">
+    <div>
+      <div class="panel">
+        <div class="panel-heading"><h2>الوصول السريع</h2><span>اختصارات العمليات</span></div>
+        <div class="quick-grid">
+          <button class="quick" onclick="showPage('sales')"><b>🧾</b><span>فاتورة مبيعات</span></button>
+          <button class="quick" onclick="showPage('purchases')"><b>🛒</b><span>فاتورة مشتريات</span></button>
+          <button class="quick" onclick="showPage('products')"><b>📦</b><span>إضافة منتج</span></button>
+          <button class="quick" onclick="showPage('customers')"><b>👥</b><span>إضافة عميل</span></button>
+          <button class="quick" onclick="showPage('suppliers')"><b>🚚</b><span>إضافة مورد</span></button>
+          <button class="quick" onclick="showPage('reports')"><b>📊</b><span>عرض التقارير</span></button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading"><h2>آخر الفواتير</h2><span>أحدث العمليات</span></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>التاريخ</th><th>الحالة</th></tr></thead>
+          <tbody id="invoiceRows"><tr><td colspan="4" class="empty">لا توجد فواتير حتى الآن</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="panel-heading"><h2>ملخص النظام</h2><span>حالة الواجهة</span></div>
+        <div class="activity"><div class="activity-icon">✓</div><div><strong>واجهة لوحة التحكم جاهزة للعرض</strong><small>تم تجهيز التصميم الأولي</small></div></div>
+        <div class="activity"><div class="activity-icon">⚙</div><div><strong>قاعدة البيانات</strong><small>لم يتم ربطها بعد</small></div></div>
+        <div class="activity"><div class="activity-icon">🔐</div><div><strong>تسجيل الدخول</strong><small>يحتاج إلى نظام حسابات آمن</small></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading"><h2>تنبيهات المخزون</h2></div>
+        <div class="empty">ستظهر تنبيهات نقص المخزون بعد تسجيل المنتجات وربط قاعدة البيانات.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="sales">
+  <div class="page-heading"><div><h1>المبيعات والفواتير</h1><p>إعداد فواتير البيع وإدارة عمليات العملاء.</p></div></div>
+  <div class="panel">
+    <div class="panel-heading"><h2>إنشاء فاتورة مبيعات تجريبية</h2></div>
+    <div class="form-grid">
+      <div class="field"><label>رقم الفاتورة</label><input id="saleNumber" value="INV-0001"></div>
+      <div class="field"><label>اسم العميل</label><input id="saleCustomer" placeholder="اسم العميل"></div>
+      <div class="field"><label>تاريخ الفاتورة</label><input id="saleDate" type="date"></div>
+      <div class="field"><label>المبلغ (ريال سعودي)</label><input id="saleAmount" type="number" min="0" step=".01" placeholder="0.00"></div>
+    </div>
+    <div class="form-actions"><button class="primary" onclick="saveSale()">حفظ تجريبي</button><button class="secondary" onclick="clearSale()">مسح</button></div>
+    <p class="notice" id="saleMessage">تنبيه: الحفظ هنا مؤقت داخل الصفحة وليس في قاعدة بيانات.</p>
+  </div>
+  <div class="panel"><div class="panel-heading"><h2>الفواتير المسجلة في هذه الجلسة</h2></div>
+  <div class="table-wrap"><table><thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>التاريخ</th><th>المبلغ</th></tr></thead><tbody id="salesRows"><tr><td colspan="4" class="empty">لا توجد فواتير</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="purchases">
+  <div class="page-heading"><div><h1>المشتريات</h1><p>إدارة فواتير الموردين والمشتريات.</p></div></div>
+  <div class="panel"><h2>إدارة المشتريات</h2><div class="empty">سيتم بناء شاشة فواتير الشراء وربطها بالموردين والمخزون في المرحلة القادمة.</div></div>
+</section>
+
+<section class="page" id="products">
+  <div class="page-heading"><div><h1>المنتجات والخدمات</h1><p>إدارة الأصناف والخدمات والأسعار.</p></div></div>
+  <div class="panel">
+    <div class="panel-heading"><h2>إضافة منتج تجريبي</h2></div>
+    <div class="form-grid">
+      <div class="field"><label>اسم المنتج</label><input id="productName" placeholder="اسم المنتج"></div>
+      <div class="field"><label>رمز المنتج</label><input id="productCode" placeholder="SKU-001"></div>
+      <div class="field"><label>سعر البيع</label><input id="productPrice" type="number" min="0" placeholder="0.00"></div>
+      <div class="field"><label>نوع الصنف</label><select id="productType"><option>منتج عادي</option><option>خدمة</option><option>منتج بتشغيلة وصلاحية</option><option>منتج برقم تسلسلي</option></select></div>
+    </div>
+    <div class="form-actions"><button class="primary" onclick="saveProduct()">إضافة تجريبية</button></div>
+    <p class="notice" id="productMessage">البيانات مؤقتة داخل الصفحة.</p>
+  </div>
+  <div class="panel"><div class="panel-heading"><h2>قائمة المنتجات</h2></div><div class="table-wrap"><table><thead><tr><th>الرمز</th><th>المنتج</th><th>النوع</th><th>السعر</th></tr></thead><tbody id="productRows"><tr><td colspan="4" class="empty">لا توجد منتجات</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="inventory">
+  <div class="page-heading"><div><h1>المخزون والمستودعات</h1><p>متابعة الكميات وحركة الأصناف والجرد.</p></div></div>
+  <div class="panel"><h2>إدارة المخزون</h2><div class="empty">سيتم تجهيز أرصدة المخزون والمستودعات وحركات الإدخال والإخراج والجرد.</div></div>
+</section>
+
+<section class="page" id="customers">
+  <div class="page-heading"><div><h1>العملاء</h1><p>إدارة بيانات العملاء ووسائل التواصل.</p></div></div>
+  <div class="panel"><h2>ملف العملاء</h2><div class="empty">سيتم إضافة سجل العملاء وربطه بفواتير المبيعات.</div></div>
+</section>
+
+<section class="page" id="suppliers">
+  <div class="page-heading"><div><h1>الموردون</h1><p>إدارة الموردين والمشتريات والمستحقات.</p></div></div>
+  <div class="panel"><h2>ملف الموردين</h2><div class="empty">سيتم إضافة سجل الموردين وربطه بفواتير الشراء.</div></div>
+</section>
+
+<section class="page" id="accounting">
+  <div class="page-heading"><div><h1>المحاسبة</h1><p>الحسابات والقيود والأرصدة المالية.</p></div></div>
+  <div class="panel"><h2>النظام المحاسبي</h2><div class="empty">سيتم بناء دليل الحسابات والقيود اليومية والترحيل والتسويات.</div></div>
+</section>
+
+<section class="page" id="reports">
+  <div class="page-heading"><div><h1>التقارير</h1><p>قراءة أداء المنشأة ومؤشراتها.</p></div></div>
+  <div class="panel"><h2>مركز التقارير</h2><div class="empty">ستتوفر تقارير المبيعات والمشتريات والمخزون والأرباح والضرائب بعد ربط البيانات.</div></div>
+</section>
+
+<section class="page" id="employees">
+  <div class="page-heading"><div><h1>الموظفون والصلاحيات</h1><p>إدارة المستخدمين وأدوارهم داخل النظام.</p></div></div>
+  <div class="panel"><h2>إدارة المستخدمين</h2><div class="empty">سيتم إعداد الموظفين والأدوار والصلاحيات وسجل التدقيق.</div></div>
+</section>
+
+<section class="page" id="branches">
+  <div class="page-heading"><div><h1>الفروع</h1><p>إدارة فروع المنشأة ومستودعاتها.</p></div></div>
+  <div class="panel"><h2>إدارة الفروع</h2><div class="empty">سيتم تجهيز تعدد الفروع والمستودعات وربط كل فرع بصلاحياته.</div></div>
+</section>
+
+<section class="page" id="settings">
+  <div class="page-heading"><div><h1>الإعدادات</h1><p>إعدادات المنشأة واللغة والعملة.</p></div></div>
+  <div class="panel">
+    <div class="form-grid">
+      <div class="field"><label>اسم المنشأة</label><input value="ENHAR BUSINESS"></div>
+      <div class="field"><label>العملة الافتراضية</label><select><option>ريال سعودي (SAR)</option></select></div>
+      <div class="field"><label>اللغة</label><select><option>العربية</option><option>English</option></select></div>
+      <div class="field"><label>المنطقة الزمنية</label><select><option>الرياض (Asia/Riyadh)</option></select></div>
+    </div>
+    <p class="notice">هذه إعدادات عرض أولية وليست محفوظة في قاعدة بيانات.</p>
+  </div>
+</section>
+
+<div class="footer">ENHAR BUSINESS © 2026 — منصة الأعمال والمحاسبة</div>
+</div>
+</main>
+</div>
+
+<script>
+const titles={
+ dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",
+ products:"المنتجات والخدمات",inventory:"المخزون والمستودعات",
+ customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",
+ reports:"التقارير",employees:"الموظفون والصلاحيات",
+ branches:"الفروع",settings:"الإعدادات"
+};
+
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));
+ const page=document.getElementById(id);
+ if(!page)return;
+ page.classList.add("active");
+ const btn=document.querySelector('[data-page="'+id+'"]');
+ if(btn)btn.classList.add("active");
+ document.getElementById("topTitle").textContent=titles[id]||"ENHAR BUSINESS";
+ document.getElementById("sidebar").classList.remove("open");
+ window.scrollTo(0,0);
+}
+document.querySelectorAll(".menu button[data-page]").forEach(button=>{
+ button.addEventListener("click",()=>showPage(button.dataset.page));
+});
+function toggleMenu(){document.getElementById("sidebar").classList.toggle("open")}
+
+const sales=[];
+const products=[];
+const money=value=>Number(value||0).toLocaleString("ar-SA",{minimumFractionDigits:2,maximumFractionDigits:2})+" ر.س";
+function saveSale(){
+ const number=document.getElementById("saleNumber").value.trim();
+ const customer=document.getElementById("saleCustomer").value.trim();
+ const date=document.getElementById("saleDate").value;
+ const amount=Number(document.getElementById("saleAmount").value);
+ if(!number||!customer||!date||!Number.isFinite(amount)||amount<=0){
+  document.getElementById("saleMessage").textContent="يرجى إدخال رقم الفاتورة والعميل والتاريخ ومبلغ صحيح أكبر من صفر.";
+  return;
+ }
+ sales.push({number,customer,date,amount});
+ renderSales();
+ document.getElementById("saleMessage").textContent="تمت إضافة الفاتورة تجريبياً في هذه الجلسة فقط.";
+ document.getElementById("saleNumber").value="INV-"+String(sales.length+1).padStart(4,"0");
+ document.getElementById("saleCustomer").value="";
+ document.getElementById("saleAmount").value="";
+}
+function renderSales(){
+ const rows=sales.map(s=>`<tr><td>${escapeHTML(s.number)}</td><td>${escapeHTML(s.customer)}</td><td>${escapeHTML(s.date)}</td><td>${money(s.amount)}</td></tr>`).join("");
+ document.getElementById("salesRows").innerHTML=rows||'<tr><td colspan="4" class="empty">لا توجد فواتير</td></tr>';
+ document.getElementById("invoiceRows").innerHTML=rows||'<tr><td colspan="4" class="empty">لا توجد فواتير حتى الآن</td></tr>';
+}
+function clearSale(){
+ ["saleCustomer","saleDate","saleAmount"].forEach(id=>document.getElementById(id).value="");
+}
+function saveProduct(){
+ const name=document.getElementById("productName").value.trim();
+ const code=document.getElementById("productCode").value.trim();
+ const price=Number(document.getElementById("productPrice").value);
+ const type=document.getElementById("productType").value;
+ if(!name||!code||!Number.isFinite(price)||price<0){
+  document.getElementById("productMessage").textContent="يرجى إدخال اسم المنتج والرمز والسعر.";
+  return;
+ }
+ products.push({name,code,price,type});
+ document.getElementById("productRows").innerHTML=products.map(p=>
+ `<tr><td>${escapeHTML(p.code)}</td><td>${escapeHTML(p.name)}</td><td>${escapeHTML(p.type)}</td><td>${money(p.price)}</td></tr>`
+ ).join("");
+ document.getElementById("productMessage").textContent="تمت إضافة المنتج تجريبياً في هذه الجلسة فقط.";
+ ["productName","productCode","productPrice"].forEach(id=>document.getElementById(id).value="");
+}
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[c]);
+}
+document.getElementById("saleDate").value=new Date().toISOString().slice(0,10);
+</script>
+</body>
+</html>
