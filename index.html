@@ -4,191 +4,322 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080808">
-  <title>ENHAR BUSINESS | منصة الأعمال والمحاسبة</title>
+  <title>ENHAR BUSINESS | تسجيل الدخول</title>
 
   <style>
-    :root {
-      --black: #080808;
-      --panel: #151515;
-      --gold: #d7b45f;
-      --gold-light: #f3dda0;
-      --text: #f7f1e4;
-      --muted: #a9a092;
-    }
-
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --gold: #d8b45e;
+      --gold-light: #f2d88e;
+      --black: #101010;
+      --white: #ffffff;
+      --muted: #999999;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      padding: 30px 16px;
-      background:
-        radial-gradient(ellipse at top, #302510 0%, transparent 48%),
-        var(--black);
-      color: var(--text);
       font-family: Tahoma, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: var(--black);
+      color: var(--white);
     }
 
-    .container {
-      width: 100%;
-      max-width: 470px;
+    .login-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* الجهة اليسرى: هوية إنهار */
+
+    .brand-side {
+      background:
+        radial-gradient(circle at 20% 20%, #302817, transparent 50%),
+        linear-gradient(145deg, #19160e, #080808);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 55px;
       text-align: center;
-    }
-
-    .main-brand {
-      margin-bottom: 25px;
-    }
-
-    .main-brand img {
-      width: 230px;
-      max-width: 85%;
-      height: auto;
-      display: block;
-      margin: auto;
-    }
-
-    .main-brand p {
-      color: var(--gold-light);
-      font-size: 17px;
-      margin-top: 12px;
-    }
-
-    .login-card {
-      background: linear-gradient(145deg, #191919, #101010);
-      border: 1px solid #a98a47;
-      border-radius: 15px;
-      padding: 30px 27px;
-      box-shadow: 0 0 35px #c5a04b18;
-    }
-
-    .company-box {
-      background: #0c0c0c;
-      border: 1px solid #806a3c;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 27px;
-    }
-
-    .company-logo {
-      width: 75px;
-      height: 75px;
-      border: 1px dashed #9b8045;
-      border-radius: 10px;
-      margin: 0 auto 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--gold);
-      font-size: 25px;
+      position: relative;
       overflow: hidden;
     }
 
-    .company-logo img {
-      width: 100%;
-      height: 100%;
+    .brand-content {
+      max-width: 530px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-logo {
+      width: 260px;
+      max-width: 85%;
+      height: auto;
       object-fit: contain;
+      margin-bottom: 35px;
+      filter: drop-shadow(0 8px 20px #000);
     }
 
-    .company-box h2 {
+    .brand-side h1 {
       color: var(--gold-light);
-      font-size: 20px;
-      margin: 8px 0;
+      font-size: 36px;
+      margin-bottom: 18px;
+      line-height: 1.5;
     }
 
-    .company-box p {
-      color: var(--muted);
+    .brand-side h2 {
+      color: #ffffff;
+      font-size: 23px;
+      font-weight: normal;
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+
+    .brand-side p {
+      color: #c9c0ad;
+      font-size: 17px;
+      line-height: 2.1;
+    }
+
+    .gold-line {
+      width: 90px;
+      height: 3px;
+      background: var(--gold);
+      margin: 28px auto;
+      border-radius: 10px;
+    }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .feature {
+      border: 1px solid #806b3c;
+      color: var(--gold-light);
+      padding: 10px 16px;
+      border-radius: 30px;
       font-size: 13px;
-      margin: 0;
     }
 
-    .field {
-      text-align: right;
-      margin-bottom: 19px;
+    /* الجهة اليمنى: تسجيل الدخول */
+
+    .form-side {
+      background: #f8f8f6;
+      color: #171717;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 45px 30px;
     }
 
-    .field label {
-      display: block;
-      margin-bottom: 9px;
-      font-size: 14px;
-      color: var(--gold-light);
-    }
-
-    .field input {
+    .form-container {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #776238;
-      border-radius: 8px;
-      background: #202020;
-      color: white;
-      font-size: 15px;
-      outline: none;
+      max-width: 440px;
     }
 
-    .field input:focus {
-      border-color: var(--gold-light);
-      box-shadow: 0 0 0 2px #d7b45f20;
+    .small-logo {
+      display: none;
+    }
+
+    .form-heading {
+      margin-bottom: 35px;
+    }
+
+    .form-heading h2 {
+      font-size: 29px;
+      margin-bottom: 13px;
+      color: #171717;
+    }
+
+    .form-heading p {
+      color: #777;
+      font-size: 15px;
+      line-height: 1.9;
+    }
+
+    .form-group {
+      margin-bottom: 23px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .form-group input {
+      width: 100%;
+      height: 54px;
+      border: 1px solid #dedede;
+      border-radius: 9px;
+      padding: 0 16px;
+      font-size: 15px;
+      font-family: inherit;
+      background: white;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px #d8b45e22;
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-left: 65px;
+    }
+
+    .show-password {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: #777;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 5px 0 28px;
+      font-size: 13px;
+      color: #555;
+      gap: 10px;
+    }
+
+    .remember-row label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+    }
+
+    a {
+      color: #9b792e;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     .login-button {
       width: 100%;
+      height: 55px;
+      background: linear-gradient(110deg, #a9873c, #f0d68e);
       border: none;
-      border-radius: 8px;
-      padding: 15px;
-      margin-top: 7px;
-      background: linear-gradient(110deg, #a98538, #f0d58c);
-      color: #17120a;
+      border-radius: 9px;
+      font-family: inherit;
       font-size: 17px;
       font-weight: bold;
+      color: #17130a;
       cursor: pointer;
+      transition: 0.25s;
     }
 
     .login-button:hover {
-      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px #b9974933;
     }
 
-    .forgot {
-      display: inline-block;
-      color: var(--gold-light);
-      margin-top: 20px;
-      font-size: 13px;
-      text-decoration: none;
-    }
-
-    .languages {
-      margin-top: 22px;
-      color: var(--muted);
+    .register-text {
+      text-align: center;
+      margin-top: 28px;
+      color: #777;
       font-size: 14px;
     }
 
-    .languages button {
-      border: none;
-      background: none;
-      color: var(--gold-light);
-      cursor: pointer;
-      font-size: 14px;
-      padding: 5px 10px;
+    .register-text a {
+      font-weight: bold;
     }
 
-    footer {
-      color: #8e8269;
-      margin-top: 25px;
+    .form-footer {
+      text-align: center;
+      margin-top: 55px;
+      color: #999;
       font-size: 12px;
       line-height: 2;
     }
 
-    @media (max-width: 480px) {
-      .login-card {
-        padding: 22px 18px;
+    .language {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 13px;
+    }
+
+    .language span {
+      margin: 0 12px;
+      color: #bbb;
+    }
+
+    @media (max-width: 850px) {
+      .login-layout {
+        grid-template-columns: 1fr;
       }
 
-      .main-brand img {
-        width: 195px;
+      .brand-side {
+        min-height: 350px;
+        padding: 35px 20px;
+      }
+
+      .brand-logo {
+        width: 175px;
+        margin-bottom: 15px;
+      }
+
+      .brand-side h1 {
+        font-size: 26px;
+      }
+
+      .brand-side h2 {
+        font-size: 18px;
+      }
+
+      .brand-side p {
+        font-size: 14px;
+      }
+
+      .features {
+        margin-top: 20px;
+      }
+
+      .form-side {
+        padding: 45px 22px;
+      }
+
+      .form-footer {
+        margin-top: 35px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .brand-side {
+        min-height: 310px;
+      }
+
+      .brand-logo {
+        width: 145px;
+      }
+
+      .form-heading h2 {
+        font-size: 25px;
       }
     }
   </style>
@@ -196,137 +327,187 @@
 
 <body>
 
-  <main class="container">
+  <main class="login-layout">
 
-    <header class="main-brand">
-      <img src="./enhar-logo.png" alt="ENHAR BUSINESS" style="width:230px; max-width:85%; height:auto; display:block; margin:auto;">img src="enhar-logo.png" alt="ENHAR BUSINESS">
-      <p>منصة الأعمال والمحاسبة</p>
-    </header>
+    <!-- الهوية التسويقية -->
+    <section class="brand-side">
 
-    <section class="login-card">
+      <div class="brand-content">
 
-      <div class="company-box">
+        <img
+          src="./enhar-logo.png"
+          alt="شعار ENHAR BUSINESS"
+          class="brand-logo"
+        >
 
-        <div class="company-logo" id="companyLogo">
-          <span>+</span>
-        </div>
+        <h1>إنهار للأعمال والمحاسبة</h1>
 
-        <h2 id="companyName">اسم الشركة</h2>
+        <div class="gold-line"></div>
 
-        <p id="companyWelcome">
-          مرحباً بك في بوابة شركتك
+        <h2>
+          أعمالك تستحق إدارة أكثر ذكاءً
+        </h2>
+
+        <p>
+          كل أعمالك في مكان واحد...
+          من المبيعات والمشتريات إلى المخزون
+          والحسابات والتقارير.
+          <br>
+          تحكم أكبر، قرارات أوضح، ونمو بثقة.
         </p>
 
-      </div>
-
-      <form id="loginForm">
-
-        <div class="field">
-          <label for="email">البريد الإلكتروني</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="أدخل البريد الإلكتروني"
-            required
-            autocomplete="username"
-          >
+        <div class="features">
+          <span class="feature">إدارة المبيعات</span>
+          <span class="feature">المحاسبة</span>
+          <span class="feature">المخزون</span>
+          <span class="feature">إدارة الفروع</span>
         </div>
 
-        <div class="field">
-          <label for="password">كلمة المرور</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="أدخل كلمة المرور"
-            required
-            autocomplete="current-password"
-          >
-        </div>
-
-        <button class="login-button" type="submit">
-          تسجيل الدخول
-        </button>
-
-      </form>
-
-      <a href="#" class="forgot" id="forgotPassword">
-        نسيت كلمة المرور؟
-      </a>
-
-      <div class="languages">
-        <button type="button" id="arabic">العربية</button>
-        |
-        <button type="button" id="english">English</button>
       </div>
 
     </section>
 
-    <footer>
-      ENHAR BUSINESS<br>
-      منصة الأعمال والمحاسبة<br>
-      جميع الحقوق محفوظة © 2026
-    </footer>
+    <!-- نموذج تسجيل الدخول -->
+    <section class="form-side">
+
+      <div class="form-container">
+
+        <div class="form-heading">
+
+          <h2>مرحباً بعودتك 👋</h2>
+
+          <p>
+            سجّل الدخول إلى حساب شركتك
+            وابدأ بإدارة أعمالك بكل سهولة.
+          </p>
+
+        </div>
+
+        <form id="loginForm">
+
+          <div class="form-group">
+
+            <label for="loginId">
+              رقم الجوال أو البريد الإلكتروني
+            </label>
+
+            <input
+              type="text"
+              id="loginId"
+              placeholder="أدخل رقم الجوال أو البريد الإلكتروني"
+              autocomplete="username"
+              required
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="password">
+              كلمة المرور
+            </label>
+
+            <div class="password-wrap">
+
+              <input
+                type="password"
+                id="password"
+                placeholder="أدخل كلمة المرور"
+                autocomplete="current-password"
+                required
+              >
+
+              <button
+                type="button"
+                class="show-password"
+                onclick="togglePassword()"
+              >
+                إظهار
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="remember-row">
+
+            <label>
+              <input type="checkbox" id="remember">
+              تذكرني
+            </label>
+
+            <a href="#" onclick="showMessage('ستتوفر خدمة استعادة كلمة المرور بعد ربط النظام.'); return false;">
+              نسيت كلمة المرور؟
+            </a>
+
+          </div>
+
+          <button type="submit" class="login-button">
+            تسجيل الدخول
+          </button>
+
+        </form>
+
+        <div class="register-text">
+          ليس لديك حساب؟
+          <a href="#" onclick="showMessage('سيتم توفير طلب إنشاء حساب شركة قريباً.'); return false;">
+            اطلب إنشاء حساب شركتك
+          </a>
+        </div>
+
+        <div class="language">
+          <a href="#" onclick="showMessage('سيتم تفعيل اللغة الإنجليزية في المرحلة القادمة.'); return false;">English</a>
+          <span>|</span>
+          <a href="#">العربية</a>
+        </div>
+
+        <div class="form-footer">
+          ENHAR BUSINESS
+          <br>
+          منصة الأعمال والمحاسبة
+          <br>
+          جميع الحقوق محفوظة © 2026
+        </div>
+
+      </div>
+
+    </section>
 
   </main>
 
   <script>
-    /*
-      بيانات تجريبية للعرض فقط.
-      لاحقاً سنربط الشركة برابطها وبياناتها من قاعدة البيانات.
-    */
 
-    const params = new URLSearchParams(window.location.search);
+    function togglePassword() {
+      const password = document.getElementById("password");
+      const button = document.querySelector(".show-password");
 
-    const company = {
-      name: params.get("company") || "اسم الشركة",
-      logo: params.get("logo") || ""
-    };
-
-    document.getElementById("companyName").textContent =
-      company.name;
-
-    if (company.logo) {
-      const logo = document.createElement("img");
-      logo.src = company.logo;
-      logo.alt = "شعار الشركة";
-
-      document.getElementById("companyLogo").replaceChildren(logo);
+      if (password.type === "password") {
+        password.type = "text";
+        button.textContent = "إخفاء";
+      } else {
+        password.type = "password";
+        button.textContent = "إظهار";
+      }
     }
 
-    document.getElementById("loginForm").addEventListener(
-      "submit",
-      function(event) {
-        event.preventDefault();
+    function showMessage(message) {
+      alert(message);
+    }
 
-        alert(
-          "هذه واجهة تجريبية فقط. تسجيل الدخول الحقيقي سيتم تفعيله بعد ربط النظام بقاعدة البيانات."
-        );
-      }
-    );
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
 
-    document.getElementById("forgotPassword").addEventListener(
-      "click",
-      function(event) {
-        event.preventDefault();
-        alert("سيتم تفعيل استعادة كلمة المرور لاحقاً.");
-      }
-    );
+      const loginId = document.getElementById("loginId").value.trim();
+      const password = document.getElementById("password").value;
 
-    document.getElementById("english").addEventListener(
-      "click",
-      function() {
-        alert("سيتم استكمال الترجمة الإنجليزية في المرحلة القادمة.");
+      if (!loginId || !password) {
+        alert("يرجى إدخال بيانات تسجيل الدخول.");
+        return;
       }
-    );
 
-    document.getElementById("arabic").addEventListener(
-      "click",
-      function() {
-        document.documentElement.lang = "ar";
-        document.documentElement.dir = "rtl";
-        location.reload();
-      }
-    );
+      alert("تم تجهيز واجهة تسجيل الدخول. يلزم ربطها بخادم وقاعدة بيانات للتحقق من حسابك.");
+    });
+
   </script>
 
 </body>
