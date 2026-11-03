@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENHAR BUSINESS | تسجيل الدخول</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080808;
+      color: #f5e5bd;
+      font-family: Tahoma, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .page { width: 100%; max-width: 440px; text-align: center; }
+    .brand { color: #d8b45e; margin-bottom: 24px; }
+    .brand h1 { font-size: 38px; letter-spacing: 8px; margin: 0; }
+    .brand p { margin: 8px 0; font-size: 19px; }
+    .brand small { color: #c5a45b; letter-spacing: 4px; }
+    .card {
+      background: #141414;
+      border: 1px solid #b99549;
+      border-radius: 13px;
+      padding: 28px;
+      box-shadow: 0 0 28px #b9954920;
+    }
+    .company {
+      border: 1px solid #8d713a;
+      border-radius: 9px;
+      padding: 17px;
+      margin-bottom: 24px;
+      background: #0c0c0c;
+    }
+    .company h2 { color: #e2c276; font-size: 20px; margin: 0 0 7px; }
+    .company p { color: #aaa; margin: 0; font-size: 13px; }
+    label { display: block; text-align: right; margin: 16px 0 8px; }
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #806735;
+      border-radius: 7px;
+      background: #202020;
+      color: white;
+      font-size: 15px;
+      outline: none;
+    }
+    input:focus { border-color: #e2c276; }
+    button {
+      width: 100%;
+      margin-top: 23px;
+      padding: 14px;
+      border: 0;
+      border-radius: 7px;
+      background: linear-gradient(120deg,#a78336,#f0d58d);
+      color: #17120a;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .links { margin-top: 20px; color: #d8b45e; }
+    .links a { color: #e5ca87; margin: 0 8px; }
+    footer { margin-top: 25px; color: #888; font-size: 12px; }
+    @media(max-width:480px) {
+      .card { padding: 20px; }
+      .brand h1 { font-size: 31px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="brand">
+      <h1>ENHAR</h1>
+      <small>BUSINESS</small>
+      <p>منصة الأعمال والمحاسبة</p>
+    </header>
+
+    <section class="card">
+      <div class="company">
+        <h2 id="companyName">اسم الشركة</h2>
+        <p>مرحباً بك في منصة ENHAR BUSINESS</p>
+      </div>
+
+      <form id="loginForm">
+        <label for="email">البريد الإلكتروني</label>
+        <input id="email" type="email"
+          placeholder="أدخل البريد الإلكتروني" required>
+
+        <label for="password">كلمة المرور</label>
+        <input id="password" type="password"
+          placeholder="أدخل كلمة المرور" required>
+
+        <button type="submit">تسجيل الدخول</button>
+      </form>
+
+      <div class="links">
+        <a href="#" id="forgot">نسيت كلمة المرور؟</a>
+        <p>
+          <a href="#" id="arabic">العربية</a> |
+          <a href="#" id="english">English</a>
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      ENHAR BUSINESS © 2026<br>
+      جميع الحقوق محفوظة
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("واجهة تجريبية فقط. سيتم ربط تسجيل الدخول الآمن لاحقاً.");
+    });
+
+    document.getElementById("forgot").onclick = function(e) {
+      e.preventDefault();
+      alert("سيتم تفعيل استعادة كلمة المرور لاحقاً.");
+    };
+
+    document.getElementById("english").onclick = function(e) {
+      e.preventDefault();
+      document.documentElement.lang = "en";
+      document.documentElement.dir = "ltr";
+      alert("سيتم استكمال الترجمة الإنجليزية في المرحلة التالية.");
+    };
+
+    document.getElementById("arabic").onclick = function(e) {
+      e.preventDefault();
+      document.documentElement.lang = "ar";
+      document.documentElement.dir = "rtl";
+      location.reload();
+    };
+  </script>
+</body>
+</html>
