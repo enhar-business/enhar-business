@@ -5,3 +5,6 @@ verify_jwt = true
 
 [functions.moyasar-invoice-callback]
 verify_jwt = false
+
+[functions.admin-create-subscriber]
+verify_jwt = true
