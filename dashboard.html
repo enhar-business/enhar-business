@@ -252,7 +252,8 @@ td{color:#e8e1d2}
 <div class="page-heading"><div><h1>إدارة شاشات وصناديق البيع</h1><p>متابعة الصناديق والجلسات والأرصدة والفروقات.</p></div></div>
 <div class="panel"><div class="toolbar"><div class="field"><label>الفرع</label><select id="cashBranch"><option value="">كل الفروع</option></select></div><div class="field"><label>حالة الصندوق</label><select id="cashStatus"><option value="">الكل</option><option value="OPEN">مفتوح</option><option value="CLOSED">مغلق</option></select></div><div class="field"><label>من تاريخ</label><input id="cashFrom" type="date"></div><div class="field"><label>إلى تاريخ</label><input id="cashTo" type="date"></div><button class="primary" id="filterCash">تصفية</button></div>
 <div class="module-grid"><div class="module-card"><b>إجمالي الجلسات المفتوحة</b><strong id="cashOpenCount">—</strong></div><div class="module-card"><b>جلسات مغلقة</b><strong id="cashClosedCount">—</strong></div><div class="module-card"><b>جلسات متوازنة</b><strong id="cashBalancedCount">—</strong></div></div>
-<div class="form-actions"><button class="primary" id="newCashSession">فتح جلسة صندوق جديدة</button></div></div>
+<div class="panel" style="margin-top:16px"><h2>إضافة صندوق بيع</h2><div class="form-grid"><div class="field"><label>الفرع</label><select id="newCashBranch"></select></div><div class="field"><label>رمز الصندوق</label><input id="newCashCode" placeholder="CASH-01"></div><div class="field"><label>اسم الصندوق</label><input id="newCashName" placeholder="صندوق البيع الرئيسي"></div></div><div class="form-actions"><button class="primary" id="createCashbox">حفظ الصندوق</button></div><p id="cashCreateMessage" class="notice"></p></div>
+<div class="panel" style="margin-top:16px"><h2>فتح جلسة صندوق</h2><div class="form-grid"><div class="field"><label>الصندوق</label><select id="openCashbox"><option value="">اختر الصندوق</option></select></div><div class="field"><label>الرصيد الافتتاحي (ريال)</label><input id="openCashAmount" type="number" min="0" step=".01" value="0"></div><div class="field"><label>ملاحظات</label><input id="openCashNotes" placeholder="ملاحظات اختيارية"></div></div><div class="form-actions"><button class="primary" id="openCashSession">فتح الجلسة</button></div><p id="cashOpenMessage" class="notice"></p></div></div>
 <div class="panel"><div class="panel-heading"><h2>الصناديق والجلسات</h2></div><div class="table-wrap"><table><thead><tr><th>الصندوق</th><th>الفرع</th><th>المستخدم</th><th>بداية الجلسة</th><th>الإغلاق</th><th>الحالة</th><th>الرصيد المتوقع</th><th>الفعلي</th><th>الفرق</th><th>التقرير</th></tr></thead><tbody id="cashRows"><tr><td colspan="10" class="empty">جارٍ التحميل</td></tr></tbody></table></div></div>
 <div class="panel"><h2>إعدادات صناديق البيع</h2><div class="form-grid"><div class="field"><label>السماح بفتح صندوق</label><select id="cashAllowOpen"><option value="true">مسموح</option><option value="false">ممنوع</option></select></div><div class="field"><label>السماح بإغلاق الصندوق</label><select id="cashAllowClose"><option value="true">مسموح</option><option value="false">ممنوع</option></select></div><div class="field"><label>اشتراط مطابقة الرصيد عند الإغلاق</label><select id="cashRequireBalance"><option value="false">تنبيه فقط</option><option value="true">يتطلب موافقة</option></select></div></div><div class="form-actions"><button class="primary" id="saveCashSettings">حفظ إعدادات الصناديق</button></div><p id="cashMessage" class="notice"></p></div>
 </section>
@@ -386,7 +387,7 @@ async function protectDashboard(){
  const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
  if(!members?.length){const name=prompt("اكتب اسم المنشأة لإنشاء الشركة والفرع والمستودع الرئيسي:");if(!name||name.trim().length<2){setDashStatus("يلزم إنشاء شركة أولاً.");return;}const {data,error:ce}=await supabaseClient.rpc("enhar_create_company_for_current_user",{p_name_ar:name.trim(),p_name_en:null});if(ce)throw ce;activeCompanyId=data.company_id;}
  else activeCompanyId=members[0].company_id;
- await loadBranches();await loadDashboard();await loadCatalogOptions();await loadCashSessions();await loadRealInvoices();await loadPosFilters();await loadCatalogSubpages();
+ await loadBranches();document.getElementById("cashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("invoiceBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("newCashBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("posBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");await loadDashboard();await loadCatalogOptions();await loadCashboxOptions();await loadCashSessions();await loadRealInvoices();await loadPosFilters();await loadCatalogSubpages();
  }catch(e){setDashStatus("تعذر تحميل بيانات الشركة: "+(e.message||"خطأ"));}
 }
 async function loadBranches(){const {data,error}=await supabaseClient.from("enhar_branches").select("id,name_ar").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar");if(error)throw error;dashboardBranches=data||[];document.getElementById("dashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");}
@@ -461,15 +462,43 @@ async function saveCatalogProduct(){
 }
 
 // Sales workspace data access
+async function loadCashboxOptions(){
+ const {data,error}=await supabaseClient.from("enhar_cashboxes").select("id,code,name_ar,branch_id,is_active").eq("company_id",activeCompanyId).order("name_ar");
+ if(error)throw error;window.cashboxRows=data||[];
+ document.getElementById("openCashbox").innerHTML='<option value="">اختر الصندوق</option>'+window.cashboxRows.filter(x=>x.is_active).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+' ('+escapeHTML(x.code)+')</option>').join("");
+}
+async function createCashbox(){
+ const branch=document.getElementById("newCashBranch").value,code=document.getElementById("newCashCode").value.trim(),name=document.getElementById("newCashName").value.trim();
+ if(!branch||!code||!name){document.getElementById("cashCreateMessage").textContent="اختر الفرع واكتب رمز واسم الصندوق.";return;}
+ const {data,error}=await supabaseClient.rpc("enhar_admin_upsert_cashbox",{p_company_id:activeCompanyId,p_branch_id:branch,p_code:code,p_name_ar:name,p_cashbox_id:null});
+ document.getElementById("cashCreateMessage").textContent=error?"تعذر إنشاء الصندوق: "+error.message:"تم إنشاء الصندوق وحفظه في قاعدة البيانات.";
+ if(!error){document.getElementById("newCashCode").value="";document.getElementById("newCashName").value="";await loadCashboxOptions();}
+}
+async function openCashSession(){
+ const cashbox=document.getElementById("openCashbox").value,amount=Number(document.getElementById("openCashAmount").value||0);
+ if(!cashbox){document.getElementById("cashOpenMessage").textContent="اختر صندوقاً أولاً.";return;}
+ const {data,error}=await supabaseClient.rpc("enhar_open_cash_session",{p_company_id:activeCompanyId,p_cashbox_id:cashbox,p_opening_amount:amount,p_notes:document.getElementById("openCashNotes").value||null});
+ document.getElementById("cashOpenMessage").textContent=error?"تعذر فتح الجلسة: "+error.message:"تم فتح الجلسة. رقمها: "+data.session_id;
+ if(!error){await loadCashSessions();await loadPosFilters();}
+}
+async function closeCashSession(id){
+ const actual=prompt("أدخل المبلغ الفعلي الموجود في الصندوق عند الإغلاق (ريال):");if(actual===null)return;
+ const amount=Number(actual);if(!Number.isFinite(amount)||amount<0){alert("أدخل مبلغاً صحيحاً.");return;}
+ const notes=prompt("ملاحظات الإغلاق (اختياري):")||null;
+ const {data,error}=await supabaseClient.rpc("enhar_close_cash_session",{p_company_id:activeCompanyId,p_session_id:id,p_actual_amount:amount,p_notes:notes});
+ if(error){alert("تعذر الإغلاق: "+error.message);return;}
+ alert("تم إغلاق الجلسة. المتوقع: "+money(data.expected_amount)+" | الفعلي: "+money(data.actual_amount)+" | الفرق: "+money(data.difference));
+ await loadCashSessions();await loadPosFilters();
+}
 async function loadCashSessions(){
  const branch=document.getElementById("cashBranch").value,status=document.getElementById("cashStatus").value,from=document.getElementById("cashFrom").value,to=document.getElementById("cashTo").value;
- let q=supabaseClient.from("enhar_cash_sessions").select("id,cashbox_id,branch_id,opened_by,opened_at,closed_at,status,opening_amount,expected_amount,actual_amount,difference").eq("company_id",activeCompanyId).order("opened_at",{ascending:false}).limit(200);
+ let q=supabaseClient.from("enhar_cash_sessions").select("id,cashbox_id,branch_id,opened_by,opened_at,closed_at,status,opening_amount,expected_amount,actual_amount,difference,enhar_cashboxes(name_ar,code)").eq("company_id",activeCompanyId).order("opened_at",{ascending:false}).limit(200);
  if(branch)q=q.eq("branch_id",branch);if(status)q=q.eq("status",status);if(from)q=q.gte("opened_at",from+"T00:00:00+03:00");if(to)q=q.lte("opened_at",to+"T23:59:59+03:00");
  const {data,error}=await q;if(error)throw error;const rows=data||[];
  document.getElementById("cashOpenCount").textContent=rows.filter(x=>x.status==="OPEN").length;
  document.getElementById("cashClosedCount").textContent=rows.filter(x=>x.status==="CLOSED").length;
  document.getElementById("cashBalancedCount").textContent=rows.filter(x=>x.status==="CLOSED"&&Number(x.difference||0)===0).length;
- document.getElementById("cashRows").innerHTML=rows.length?rows.map(x=>'<tr><td>'+escapeHTML(x.cashbox_id)+'</td><td>'+escapeHTML((dashboardBranches.find(b=>b.id===x.branch_id)||{}).name_ar||"—")+'</td><td>'+escapeHTML(x.opened_by)+'</td><td>'+new Date(x.opened_at).toLocaleString("ar-SA")+'</td><td>'+ (x.closed_at?new Date(x.closed_at).toLocaleString("ar-SA"):"—")+'</td><td class="'+(x.status==="OPEN"?"badge-open":"badge-closed")+'">'+(x.status==="OPEN"?"مفتوح":"مغلق")+'</td><td>'+money(x.expected_amount)+'</td><td>'+money(x.actual_amount)+'</td><td class="'+(Number(x.difference||0)===0?"badge-open":"badge-diff")+'">'+money(x.difference)+'</td><td><button class="secondary" onclick="cashSessionReport(\''+x.id+'\')">التقرير</button></td></tr>').join(""):'<tr><td colspan="10" class="empty">لا توجد جلسات مسجلة بعد.</td></tr>';
+ document.getElementById("cashRows").innerHTML=rows.length?rows.map(x=>'<tr><td>'+escapeHTML(x.enhar_cashboxes?.name_ar||x.cashbox_id)+'</td><td>'+escapeHTML((dashboardBranches.find(b=>b.id===x.branch_id)||{}).name_ar||"—")+'</td><td>'+escapeHTML(x.opened_by)+'</td><td>'+new Date(x.opened_at).toLocaleString("ar-SA")+'</td><td>'+ (x.closed_at?new Date(x.closed_at).toLocaleString("ar-SA"):"—")+'</td><td class="'+(x.status==="OPEN"?"badge-open":"badge-closed")+'">'+(x.status==="OPEN"?"مفتوح":"مغلق")+'</td><td>'+money(x.expected_amount)+'</td><td>'+money(x.actual_amount)+'</td><td class="'+(Number(x.difference||0)===0?"badge-open":"badge-diff")+'">'+money(x.difference)+'</td><td><button class="secondary" onclick="cashSessionReport(\''+x.id+'\')">التقرير</button></td></tr>').join(""):'<tr><td colspan="10" class="empty">لا توجد جلسات مسجلة بعد.</td></tr>';
 }
 async function cashSessionReport(id){
  const {data,error}=await supabaseClient.from("enhar_cash_movements").select("movement_type,amount,payment_method,created_at,notes").eq("company_id",activeCompanyId).eq("session_id",id).order("created_at");
@@ -517,7 +546,7 @@ document.getElementById("filterInvoices")?.addEventListener("click",()=>loadReal
 document.getElementById("saveCashSettings")?.addEventListener("click",saveCashSettings);
 document.getElementById("loadPosItems")?.addEventListener("click",()=>{loadPosFilters().then(renderPosItems).catch(e=>document.getElementById("posMessage").textContent=e.message);});
 ["posItemType","posCategory","posSaleType","posSearch"].forEach(id=>document.getElementById(id)?.addEventListener("change",()=>{if(id==="posItemType")loadPosFilters().then(renderPosItems);else renderPosItems();}));
-document.getElementById("newCashSession")?.addEventListener("click",()=>alert("فتح الجلسة غير مفعل حتى اعتماد إعداد الصندوق والمستخدم والصلاحيات."));
+document.getElementById("createCashbox")?.addEventListener("click",()=>createCashbox().catch(e=>document.getElementById("cashCreateMessage").textContent=e.message));document.getElementById("openCashSession")?.addEventListener("click",()=>openCashSession().catch(e=>document.getElementById("cashOpenMessage").textContent=e.message));
 document.getElementById("savePrintSettings")?.addEventListener("click",()=>{const row={company_id:activeCompanyId,paper_size:document.getElementById("printSize").value,company_name:document.getElementById("printCompanyName").value,vat_number:document.getElementById("printVat").value,commercial_registration:document.getElementById("printCr").value,address:document.getElementById("printAddress").value,footer_text:document.getElementById("printFooter").value};supabaseClient.from("enhar_invoice_settings").upsert(row,{onConflict:"company_id"}).then(({error})=>document.getElementById("printMessage").textContent=error?error.message:"تم حفظ الإعدادات.");});
 document.getElementById("savePromo")?.addEventListener("click",()=>{const row={company_id:activeCompanyId,name:document.getElementById("promoName").value,type:document.getElementById("promoType").value,value:Number(document.getElementById("promoValue").value||0),starts_on:document.getElementById("promoStart").value||null,ends_on:document.getElementById("promoEnd").value||null,branch_id:document.getElementById("promoBranch").value||null};supabaseClient.from("enhar_promotions").insert(row).then(({error})=>document.getElementById("promoMessage").textContent=error?error.message:"تم حفظ العرض.");});
 document.getElementById("catalogType")?.addEventListener("change",loadCatalogOptions);
