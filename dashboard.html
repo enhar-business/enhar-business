@@ -136,7 +136,25 @@ td{color:#e8e1d2}
  .page-heading{align-items:flex-start;flex-direction:column}
  .form-grid{grid-template-columns:1fr}
 }
-.dashboard-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:18px;padding:16px;background:#191919;border:1px solid var(--line);border-radius:12px}.dashboard-filters .field{min-width:150px;flex:1}.dashboard-filters .field label{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.dashboard-filters input,.dashboard-filters select{width:100%;padding:11px;background:#101010;color:#fff;border:1px solid var(--line);border-radius:8px}.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}.dash-card-link{cursor:pointer}.dash-card-link:hover{border-color:var(--gold)}.cash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cash-card{background:#211e17;border:1px solid var(--line);border-radius:10px;padding:15px;cursor:pointer}.cash-card strong{display:block;margin-bottom:9px;color:var(--light)}.cash-card small{color:var(--muted);line-height:1.8}.dash-actions{display:flex;flex-wrap:wrap;gap:8px}.dash-actions button{background:#28251f;color:var(--light);border:1px solid var(--line);border-radius:8px;padding:9px 12px}.filter-note{font-size:11px;color:var(--muted);margin-top:8px}@media(max-width:900px){.dash-grid{grid-template-columns:1fr}}@media(max-width:600px){.cash-grid{grid-template-columns:1fr}}</style>
+.dashboard-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:18px;padding:16px;background:#191919;border:1px solid var(--line);border-radius:12px}.dashboard-filters .field{min-width:150px;flex:1}.dashboard-filters .field label{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.dashboard-filters input,.dashboard-filters select{width:100%;padding:11px;background:#101010;color:#fff;border:1px solid var(--line);border-radius:8px}.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}.dash-card-link{cursor:pointer}.dash-card-link:hover{border-color:var(--gold)}.cash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cash-card{background:#211e17;border:1px solid var(--line);border-radius:10px;padding:15px;cursor:pointer}.cash-card strong{display:block;margin-bottom:9px;color:var(--light)}.cash-card small{color:var(--muted);line-height:1.8}.dash-actions{display:flex;flex-wrap:wrap;gap:8px}.dash-actions button{background:#28251f;color:var(--light);border:1px solid var(--line);border-radius:8px;padding:9px 12px}.filter-note{font-size:11px;color:var(--muted);margin-top:8px}@media(max-width:900px){.dash-grid{grid-template-columns:1fr}}@media(max-width:600px){.cash-grid{grid-template-columns:1fr}} 
+/* Nested ERP navigation */
+.menu-group{margin:4px 0}
+.menu-group>.group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px;border:0;border-radius:8px;background:transparent;color:#d7d0c1;text-align:right;font-size:13px}
+.menu-group>.group-toggle:hover,.menu-group>.group-toggle[aria-expanded="true"]{background:#302817;color:var(--light)}
+.menu-submenu{display:none;padding:4px 10px 8px 0;border-right:1px solid #514329;margin:4px 8px 8px 0}
+.menu-group.open .menu-submenu{display:block}
+.menu-submenu button{font-size:12px;padding:9px 10px;margin:2px 0;color:#bdb4a2}
+.menu-submenu button.active{background:#302817;color:var(--light)}
+.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.module-card{background:#211e17;border:1px solid var(--line);border-radius:10px;padding:18px;text-align:right;color:var(--text)}
+.module-card b{display:block;color:var(--light);margin-bottom:8px}
+.module-card small{color:var(--muted)}
+.toolbar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:16px}
+.toolbar .field{min-width:160px;flex:1}
+.badge-open{color:#6ed6a0}.badge-closed{color:#e9c36f}.badge-diff{color:#e46b6b}
+@media(max-width:850px){.module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.module-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -153,10 +171,26 @@ td{color:#e8e1d2}
     <button class="active" data-page="dashboard"><span class="ico">⌂</span>لوحة التحكم</button>
 
     <div class="menu-title">إدارة الأعمال</div>
-    <button data-page="sales"><span class="ico">🧾</span>المبيعات والفواتير</button>
+    <div class="menu-group">
+      <button class="group-toggle" type="button" aria-expanded="true">🧾 المبيعات والفواتير <span>⌄</span></button>
+      <div class="menu-submenu">
+        <button data-page="pos"><span class="ico">🛍️</span>شاشة البيع</button>
+        <button data-page="cashboxes"><span class="ico">💵</span>إدارة شاشات وصناديق البيع</button>
+        <button data-page="sales"><span class="ico">🧾</span>فواتير البيع</button>
+        <button data-page="invoice-settings"><span class="ico">🖨️</span>إعدادات الفواتير والطباعة</button>
+        <button data-page="promotions"><span class="ico">🏷️</span>التسويق والعروض</button>
+      </div>
+    </div>
     <button data-page="purchases"><span class="ico">🛒</span>المشتريات</button>
-    <button data-page="products"><span class="ico">📦</span>المنتجات والخدمات</button>
-    <button data-page="categories"><span class="ico">🗂️</span>فئات المنتجات والخدمات</button>
+    <div class="menu-group">
+      <button class="group-toggle" type="button" aria-expanded="true">📦 المنتجات والخدمات <span>⌄</span></button>
+      <div class="menu-submenu">
+        <button data-page="products"><span class="ico">📦</span>قائمة المنتجات</button>
+        <button data-page="services"><span class="ico">💆</span>قائمة الخدمات</button>
+        <button data-page="categories"><span class="ico">🗂️</span>فئات المنتجات والخدمات</button>
+        <button data-page="bundles"><span class="ico">🧩</span>المنتجات المركبة</button>
+      </div>
+    </div>
     <button data-page="inventory"><span class="ico">🏬</span>المخزون والمستودعات</button>
     <button data-page="customers"><span class="ico">👥</span>العملاء</button>
     <button data-page="suppliers"><span class="ico">🚚</span>الموردون</button>
@@ -214,24 +248,19 @@ td{color:#e8e1d2}
 </div></div></section>
 <section class="page" id="analytics"><div class="page-heading"><div><h1>تحليلات المبيعات</h1><p>الفترة، المنتج والخدمة، الفئات، الفروع، والبائعون.</p></div><button class="secondary" onclick="showPage('dashboard')">عودة</button></div><div class="panel"><div class="dashboard-filters"><div class="field"><label>نوع التحليل</label><select id="analyticsDimension"><option value="period">حسب الفترة</option><option value="products">المنتج والخدمة</option><option value="categories">الفئات</option><option value="branches">الفروع</option><option value="sellers">البائعون</option></select></div><div class="field"><label>من تاريخ</label><input type="date" id="analyticsFrom"></div><div class="field"><label>إلى تاريخ</label><input type="date" id="analyticsTo"></div><button class="primary" onclick="loadAnalytics()">تحديث التحليل</button></div><div class="empty" id="analyticsResult">اختر نوع التحليل والفترة.</div></div></section>
 <section class="page" id="bookings"><div class="page-heading"><div><h1>الحجوزات</h1><p>نظرة على المواعيد والحجوزات.</p></div></div><div class="panel"><div class="empty">وحدة الحجوزات لم تُنشأ في قاعدة البيانات بعد.</div></div></section>
-<section class="page" id="cashboxes"><div class="page-heading"><div><h1>صناديق البيع</h1><p>الصناديق المفتوحة والمغلقة حسب الفرع والمستخدم.</p></div></div><div class="panel"><div class="empty">نحتاج إنشاء جدول جلسات الصناديق وحركات القبض والصرف لعرض بيانات حقيقية.</div></div></section>
+<section class="page" id="cashboxes">
+<div class="page-heading"><div><h1>إدارة شاشات وصناديق البيع</h1><p>متابعة الصناديق والجلسات والأرصدة والفروقات.</p></div></div>
+<div class="panel"><div class="toolbar"><div class="field"><label>الفرع</label><select id="cashBranch"><option value="">كل الفروع</option></select></div><div class="field"><label>حالة الصندوق</label><select id="cashStatus"><option value="">الكل</option><option value="OPEN">مفتوح</option><option value="CLOSED">مغلق</option></select></div><div class="field"><label>من تاريخ</label><input id="cashFrom" type="date"></div><div class="field"><label>إلى تاريخ</label><input id="cashTo" type="date"></div><button class="primary" id="filterCash">تصفية</button></div>
+<div class="module-grid"><div class="module-card"><b>إجمالي الجلسات المفتوحة</b><strong id="cashOpenCount">—</strong></div><div class="module-card"><b>جلسات مغلقة</b><strong id="cashClosedCount">—</strong></div><div class="module-card"><b>جلسات متوازنة</b><strong id="cashBalancedCount">—</strong></div></div>
+<div class="form-actions"><button class="primary" id="newCashSession">فتح جلسة صندوق جديدة</button></div></div>
+<div class="panel"><div class="panel-heading"><h2>الصناديق والجلسات</h2></div><div class="table-wrap"><table><thead><tr><th>الصندوق</th><th>الفرع</th><th>المستخدم</th><th>بداية الجلسة</th><th>الإغلاق</th><th>الحالة</th><th>الرصيد المتوقع</th><th>الفعلي</th><th>الفرق</th><th>التقرير</th></tr></thead><tbody id="cashRows"><tr><td colspan="10" class="empty">جارٍ التحميل</td></tr></tbody></table></div></div>
+<div class="panel"><h2>إعدادات صناديق البيع</h2><div class="form-grid"><div class="field"><label>السماح بفتح صندوق</label><select id="cashAllowOpen"><option value="true">مسموح</option><option value="false">ممنوع</option></select></div><div class="field"><label>السماح بإغلاق الصندوق</label><select id="cashAllowClose"><option value="true">مسموح</option><option value="false">ممنوع</option></select></div><div class="field"><label>اشتراط مطابقة الرصيد عند الإغلاق</label><select id="cashRequireBalance"><option value="false">تنبيه فقط</option><option value="true">يتطلب موافقة</option></select></div></div><div class="form-actions"><button class="primary" id="saveCashSettings">حفظ إعدادات الصناديق</button></div><p id="cashMessage" class="notice"></p></div>
+</section>
 
 <section class="page" id="sales">
-  <div class="page-heading"><div><h1>المبيعات والفواتير</h1><p>إعداد فواتير البيع وإدارة عمليات العملاء.</p></div></div>
-  <div class="panel">
-    <div class="panel-heading"><h2>إنشاء فاتورة مبيعات تجريبية</h2></div>
-    <div class="form-grid">
-      <div class="field"><label>رقم الفاتورة</label><input id="saleNumber" value="INV-0001"></div>
-      <div class="field"><label>اسم العميل</label><input id="saleCustomer" placeholder="اسم العميل"></div>
-      <div class="field"><label>تاريخ الفاتورة</label><input id="saleDate" type="date"></div>
-      <div class="field"><label>المبلغ (ريال سعودي)</label><input id="saleAmount" type="number" min="0" step=".01" placeholder="0.00"></div>
-    </div>
-    <div class="form-actions"><button class="primary" onclick="saveSale()">حفظ تجريبي</button><button class="secondary" onclick="clearSale()">مسح</button></div>
-    <p class="notice" id="saleMessage">تنبيه: الحفظ هنا مؤقت داخل الصفحة وليس في قاعدة بيانات.</p>
-  </div>
-  <div class="panel"><div class="panel-heading"><h2>الفواتير المسجلة في هذه الجلسة</h2></div>
-  <div class="table-wrap"><table><thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>التاريخ</th><th>المبلغ</th></tr></thead><tbody id="salesRows"><tr><td colspan="4" class="empty">لا توجد فواتير</td></tr></tbody></table></div></div>
-</section>
+<div class="page-heading"><div><h1>فواتير البيع</h1><p>عرض الفواتير المحفوظة في قاعدة البيانات.</p></div><button class="secondary" onclick="showPage('pos')">فتح شاشة البيع</button></div>
+<div class="panel"><div class="toolbar"><div class="field"><label>من تاريخ</label><input type="date" id="invoiceFrom"></div><div class="field"><label>إلى تاريخ</label><input type="date" id="invoiceTo"></div><div class="field"><label>الفرع</label><select id="invoiceBranch"><option value="">كل الفروع</option></select></div><button class="primary" id="filterInvoices">تطبيق التصفية</button></div>
+<div class="table-wrap"><table><thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>الفرع</th><th>الحالة</th><th>الإجمالي</th></tr></thead><tbody id="realInvoicesRows"><tr><td colspan="5" class="empty">جارٍ التحميل</td></tr></tbody></table></div></div></section>
 
 <section class="page" id="purchases">
   <div class="page-heading"><div><h1>المشتريات</h1><p>إدارة فواتير الموردين والمشتريات.</p></div></div>
@@ -333,7 +362,11 @@ td{color:#e8e1d2}
 
 <div class="footer">ENHAR BUSINESS © 2026 — منصة الأعمال والمحاسبة</div>
 </div>
-</main>
+<section class="page" id="pos"><div class="page-heading"><div><h1>شاشة البيع</h1><p>اختر الفرع والصندوق ونوع البيع، ثم ابحث عن المنتج أو الخدمة.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>الفرع</label><select id="posBranch"></select></div><div class="field"><label>الصندوق</label><select id="posCashSession"><option value="">اختر جلسة مفتوحة</option></select></div><div class="field"><label>نوع البيع</label><select id="posSaleType"><option value="RETAIL">تجزئة</option><option value="WHOLESALE">جملة</option></select></div><div class="field"><label>نوع العناصر</label><select id="posItemType"><option value="PRODUCT">المنتجات</option><option value="SERVICE">الخدمات</option></select></div><div class="field"><label>الفئة</label><select id="posCategory"><option value="">كل الفئات</option></select></div><div class="field"><label>بحث / باركود</label><input id="posSearch" placeholder="ابحث بالاسم أو امسح الباركود"></div></div><div class="form-actions"><button class="primary" id="loadPosItems">عرض الأصناف</button></div><div class="module-grid" id="posItemCards"></div><p id="posMessage" class="notice">هذه النسخة تعرض الأصناف النشطة من قاعدة البيانات. ترحيل الفاتورة والمخزون يحتاج إجراء محاسبي آمن قبل تفعيل الدفع.</p></div></section>
+<section class="page" id="invoice-settings"><div class="page-heading"><div><h1>إعدادات الفواتير والطباعة</h1><p>حفظ تفضيلات الطباعة لكل منشأة.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>حجم الورق</label><select id="printSize"><option value="A4">A4</option><option value="THERMAL_80">حراري 80 مم</option><option value="THERMAL_58">حراري 58 مم</option></select></div><div class="field"><label>اسم المنشأة في الفاتورة</label><input id="printCompanyName"></div><div class="field"><label>الرقم الضريبي</label><input id="printVat"></div><div class="field"><label>السجل التجاري</label><input id="printCr"></div><div class="field"><label>العنوان</label><input id="printAddress"></div><div class="field"><label>نص أسفل الفاتورة</label><input id="printFooter"></div></div><div class="form-actions"><button class="primary" id="savePrintSettings">حفظ الإعدادات</button></div><p id="printMessage" class="notice"></p></div></section>
+<section class="page" id="promotions"><div class="page-heading"><div><h1>التسويق والعروض</h1><p>تعريف عروض مرتبطة بمنتجات أو خدمات وفترة صلاحية.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>اسم العرض</label><input id="promoName"></div><div class="field"><label>نوع العرض</label><select id="promoType"><option value="PERCENT">خصم نسبة مئوية</option><option value="FIXED">خصم مبلغ ثابت</option><option value="PRICE">سعر خاص</option></select></div><div class="field"><label>قيمة العرض</label><input id="promoValue" type="number" min="0" step=".01"></div><div class="field"><label>يبدأ</label><input id="promoStart" type="date"></div><div class="field"><label>ينتهي</label><input id="promoEnd" type="date"></div><div class="field"><label>الفرع</label><select id="promoBranch"><option value="">كل الفروع</option></select></div></div><div class="form-actions"><button class="primary" id="savePromo">حفظ العرض</button></div><p id="promoMessage" class="notice"></p></div><div class="panel"><h2>العروض المسجلة</h2><div id="promoRows" class="empty">جارٍ التحميل</div></div></section>
+<section class="page" id="services"><div class="page-heading"><div><h1>قائمة الخدمات</h1><p>عرض الخدمات فقط من كتالوج المنشأة.</p></div><button class="primary" onclick="showPage('products')">إضافة خدمة</button></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الرمز</th><th>الفئة</th><th>السعر</th><th>حالة الحجوزات</th></tr></thead><tbody id="serviceRows"></tbody></table></div></div></section>
+<section class="page" id="bundles"><div class="page-heading"><div><h1>المنتجات المركبة</h1><p>قائمة الأصناف التي تم تعريفها كمنتج مركب.</p></div></div><div class="panel"><div id="bundleRows" class="empty">جارٍ التحميل</div></div></section></main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -353,7 +386,7 @@ async function protectDashboard(){
  const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
  if(!members?.length){const name=prompt("اكتب اسم المنشأة لإنشاء الشركة والفرع والمستودع الرئيسي:");if(!name||name.trim().length<2){setDashStatus("يلزم إنشاء شركة أولاً.");return;}const {data,error:ce}=await supabaseClient.rpc("enhar_create_company_for_current_user",{p_name_ar:name.trim(),p_name_en:null});if(ce)throw ce;activeCompanyId=data.company_id;}
  else activeCompanyId=members[0].company_id;
- await loadBranches();await loadDashboard();await loadCatalogOptions();
+ await loadBranches();await loadDashboard();await loadCatalogOptions();await loadCashSessions();await loadRealInvoices();await loadPosFilters();await loadCatalogSubpages();
  }catch(e){setDashStatus("تعذر تحميل بيانات الشركة: "+(e.message||"خطأ"));}
 }
 async function loadBranches(){const {data,error}=await supabaseClient.from("enhar_branches").select("id,name_ar").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar");if(error)throw error;dashboardBranches=data||[];document.getElementById("dashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");}
@@ -426,8 +459,67 @@ async function saveCatalogProduct(){
  ["catalogName","catalogSku","catalogBarcode","catalogImage","catalogDescription"].forEach(id=>document.getElementById(id).value="");
  await loadCatalogItems();
 }
-function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));const p=document.getElementById(id);if(!p)return;p.classList.add("active");const btn=document.querySelector('[data-page="'+id+'"]');if(btn)btn.classList.add("active");document.getElementById("topTitle").textContent=({dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",products:"المنتجات والخدمات",categories:"فئات المنتجات والخدمات",inventory:"المخزون والمستودعات",customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",reports:"التقارير",employees:"الموظفون والصلاحيات",branches:"الفروع",settings:"الإعدادات",analytics:"تحليلات المبيعات",bookings:"الحجوزات",cashboxes:"صناديق البيع"})[id]||"ENHAR BUSINESS";document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0);}
+
+// Sales workspace data access
+async function loadCashSessions(){
+ const branch=document.getElementById("cashBranch").value,status=document.getElementById("cashStatus").value,from=document.getElementById("cashFrom").value,to=document.getElementById("cashTo").value;
+ let q=supabaseClient.from("enhar_cash_sessions").select("id,cashbox_id,branch_id,opened_by,opened_at,closed_at,status,opening_amount,expected_amount,actual_amount,difference").eq("company_id",activeCompanyId).order("opened_at",{ascending:false}).limit(200);
+ if(branch)q=q.eq("branch_id",branch);if(status)q=q.eq("status",status);if(from)q=q.gte("opened_at",from+"T00:00:00+03:00");if(to)q=q.lte("opened_at",to+"T23:59:59+03:00");
+ const {data,error}=await q;if(error)throw error;const rows=data||[];
+ document.getElementById("cashOpenCount").textContent=rows.filter(x=>x.status==="OPEN").length;
+ document.getElementById("cashClosedCount").textContent=rows.filter(x=>x.status==="CLOSED").length;
+ document.getElementById("cashBalancedCount").textContent=rows.filter(x=>x.status==="CLOSED"&&Number(x.difference||0)===0).length;
+ document.getElementById("cashRows").innerHTML=rows.length?rows.map(x=>'<tr><td>'+escapeHTML(x.cashbox_id)+'</td><td>'+escapeHTML((dashboardBranches.find(b=>b.id===x.branch_id)||{}).name_ar||"—")+'</td><td>'+escapeHTML(x.opened_by)+'</td><td>'+new Date(x.opened_at).toLocaleString("ar-SA")+'</td><td>'+ (x.closed_at?new Date(x.closed_at).toLocaleString("ar-SA"):"—")+'</td><td class="'+(x.status==="OPEN"?"badge-open":"badge-closed")+'">'+(x.status==="OPEN"?"مفتوح":"مغلق")+'</td><td>'+money(x.expected_amount)+'</td><td>'+money(x.actual_amount)+'</td><td class="'+(Number(x.difference||0)===0?"badge-open":"badge-diff")+'">'+money(x.difference)+'</td><td><button class="secondary" onclick="cashSessionReport(\''+x.id+'\')">التقرير</button></td></tr>').join(""):'<tr><td colspan="10" class="empty">لا توجد جلسات مسجلة بعد.</td></tr>';
+}
+async function cashSessionReport(id){
+ const {data,error}=await supabaseClient.from("enhar_cash_movements").select("movement_type,amount,payment_method,created_at,notes").eq("company_id",activeCompanyId).eq("session_id",id).order("created_at");
+ if(error){alert(error.message);return;}alert((data||[]).map(x=>x.movement_type+" | "+x.payment_method+" | "+money(x.amount)+" | "+(x.notes||"")).join("\n")||"لا توجد حركات مسجلة لهذه الجلسة.");
+}
+async function loadRealInvoices(){
+ let q=supabaseClient.from("enhar_sales_invoices").select("invoice_number,invoice_date,status,grand_total,branch_id").eq("company_id",activeCompanyId).order("invoice_date",{ascending:false}).limit(200);
+ const f=document.getElementById("invoiceFrom").value,t=document.getElementById("invoiceTo").value,b=document.getElementById("invoiceBranch").value;if(f)q=q.gte("invoice_date",f);if(t)q=q.lte("invoice_date",t);if(b)q=q.eq("branch_id",b);
+ const {data,error}=await q;if(error)throw error;document.getElementById("realInvoicesRows").innerHTML=(data||[]).length?data.map(x=>'<tr><td>'+escapeHTML(x.invoice_number)+'</td><td>'+escapeHTML(x.invoice_date)+'</td><td>'+escapeHTML((dashboardBranches.find(b=>b.id===x.branch_id)||{}).name_ar||"—")+'</td><td>'+escapeHTML(x.status)+'</td><td>'+money(x.grand_total)+'</td></tr>').join(""):'<tr><td colspan="5" class="empty">لا توجد فواتير محفوظة.</td></tr>';
+}
+async function loadPosFilters(){
+ const [cats,items,sessions]=await Promise.all([
+  supabaseClient.from("enhar_item_categories").select("id,name_ar,category_type").eq("company_id",activeCompanyId).eq("is_active",true),
+  supabaseClient.from("enhar_products").select("id,name_ar,sku,item_type,category_id,barcode,sale_price,wholesale_price,show_in_pos,allow_retail,allow_wholesale,image_url").eq("company_id",activeCompanyId).eq("is_active",true),
+  supabaseClient.from("enhar_cash_sessions").select("id,cashbox_id,branch_id").eq("company_id",activeCompanyId).eq("status","OPEN")
+ ]);
+ for(const x of [cats,items,sessions])if(x.error)throw x.error;
+ window.posCatalog=items.data||[];document.getElementById("posCategory").innerHTML='<option value="">كل الفئات</option>'+(cats.data||[]).filter(x=>x.category_type===document.getElementById("posItemType").value).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ document.getElementById("posCashSession").innerHTML='<option value="">اختر جلسة مفتوحة</option>'+(sessions.data||[]).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.cashbox_id)+'</option>').join("");
+ document.getElementById("posBranch").innerHTML=dashboardBranches.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+}
+function renderPosItems(){
+ const typ=document.getElementById("posItemType").value,cat=document.getElementById("posCategory").value,q=document.getElementById("posSearch").value.toLowerCase(),sale=document.getElementById("posSaleType").value;
+ const items=(window.posCatalog||[]).filter(x=>x.item_type===typ&&x.show_in_pos!==false&&(!cat||x.category_id===cat)&&(sale==="RETAIL"?x.allow_retail:x.allow_wholesale)&&[x.name_ar,x.sku,x.barcode].some(v=>(v||"").toLowerCase().includes(q)));
+ document.getElementById("posItemCards").innerHTML=items.length?items.map(x=>'<div class="module-card">'+(x.image_url?'<img src="'+escapeHTML(x.image_url)+'" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:8px">':"")+'<b>'+escapeHTML(x.name_ar)+'</b><small>'+escapeHTML(x.sku)+' · '+money(sale==="RETAIL"?x.sale_price:x.wholesale_price)+'</small></div>').join(""):'<div class="empty">لا توجد أصناف مطابقة. تأكد من الفئة وخيارات الظهور.</div>';
+}
+async function loadCatalogSubpages(){
+ const {data,error}=await supabaseClient.from("enhar_products").select("id,name_ar,sku,item_type,category_id,sale_price,show_in_booking,is_bundle").eq("company_id",activeCompanyId).eq("is_active",true);if(error)throw error;
+ const cats=await supabaseClient.from("enhar_item_categories").select("id,name_ar").eq("company_id",activeCompanyId);if(cats.error)throw cats.error;
+ const names=Object.fromEntries((cats.data||[]).map(x=>[x.id,x.name_ar]));
+ document.getElementById("serviceRows").innerHTML=(data||[]).filter(x=>x.item_type==="SERVICE").map(x=>'<tr><td>'+escapeHTML(x.name_ar)+'</td><td>'+escapeHTML(x.sku)+'</td><td>'+escapeHTML(names[x.category_id]||"—")+'</td><td>'+money(x.sale_price)+'</td><td>'+(x.show_in_booking?"يظهر":"لا يظهر")+'</td></tr>').join("")||'<tr><td colspan="5" class="empty">لا توجد خدمات.</td></tr>';
+ document.getElementById("bundleRows").innerHTML=(data||[]).filter(x=>x.is_bundle).map(x=>'<div class="activity"><b>'+escapeHTML(x.name_ar)+'</b><small>'+escapeHTML(x.sku)+'</small></div>').join("")||'<div class="empty">لا توجد منتجات مركبة معرفة.</div>';
+}
+async function saveCashSettings(){
+ const row={company_id:activeCompanyId,allow_open:document.getElementById("cashAllowOpen").value==="true",allow_close:document.getElementById("cashAllowClose").value==="true",require_balance_approval:document.getElementById("cashRequireBalance").value==="true"};
+ const {error}=await supabaseClient.from("enhar_cash_settings").upsert(row,{onConflict:"company_id"});
+ document.getElementById("cashMessage").textContent=error?"تعذر الحفظ: "+error.message:"تم حفظ إعدادات الصناديق.";
+}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));const p=document.getElementById(id);if(!p)return;p.classList.add("active");const btn=document.querySelector('[data-page="'+id+'"]');if(btn)btn.classList.add("active");document.getElementById("topTitle").textContent=({dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",products:"المنتجات والخدمات",categories:"فئات المنتجات والخدمات",services:"قائمة الخدمات",bundles:"المنتجات المركبة",pos:"شاشة البيع", "invoice-settings":"إعدادات الفواتير والطباعة",promotions:"التسويق والعروض",inventory:"المخزون والمستودعات",customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",reports:"التقارير",employees:"الموظفون والصلاحيات",branches:"الفروع",settings:"الإعدادات",analytics:"تحليلات المبيعات",bookings:"الحجوزات",cashboxes:"صناديق البيع"})[id]||"ENHAR BUSINESS";document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0);}
 document.querySelectorAll(".menu button[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+
+document.querySelectorAll(".group-toggle").forEach(b=>b.addEventListener("click",()=>{const g=b.closest(".menu-group");g.classList.toggle("open");b.setAttribute("aria-expanded",g.classList.contains("open")?"true":"false");}));
+document.getElementById("filterCash")?.addEventListener("click",()=>loadCashSessions().catch(e=>alert(e.message)));
+document.getElementById("filterInvoices")?.addEventListener("click",()=>loadRealInvoices().catch(e=>alert(e.message)));
+document.getElementById("saveCashSettings")?.addEventListener("click",saveCashSettings);
+document.getElementById("loadPosItems")?.addEventListener("click",()=>{loadPosFilters().then(renderPosItems).catch(e=>document.getElementById("posMessage").textContent=e.message);});
+["posItemType","posCategory","posSaleType","posSearch"].forEach(id=>document.getElementById(id)?.addEventListener("change",()=>{if(id==="posItemType")loadPosFilters().then(renderPosItems);else renderPosItems();}));
+document.getElementById("newCashSession")?.addEventListener("click",()=>alert("فتح الجلسة غير مفعل حتى اعتماد إعداد الصندوق والمستخدم والصلاحيات."));
+document.getElementById("savePrintSettings")?.addEventListener("click",()=>{const row={company_id:activeCompanyId,paper_size:document.getElementById("printSize").value,company_name:document.getElementById("printCompanyName").value,vat_number:document.getElementById("printVat").value,commercial_registration:document.getElementById("printCr").value,address:document.getElementById("printAddress").value,footer_text:document.getElementById("printFooter").value};supabaseClient.from("enhar_invoice_settings").upsert(row,{onConflict:"company_id"}).then(({error})=>document.getElementById("printMessage").textContent=error?error.message:"تم حفظ الإعدادات.");});
+document.getElementById("savePromo")?.addEventListener("click",()=>{const row={company_id:activeCompanyId,name:document.getElementById("promoName").value,type:document.getElementById("promoType").value,value:Number(document.getElementById("promoValue").value||0),starts_on:document.getElementById("promoStart").value||null,ends_on:document.getElementById("promoEnd").value||null,branch_id:document.getElementById("promoBranch").value||null};supabaseClient.from("enhar_promotions").insert(row).then(({error})=>document.getElementById("promoMessage").textContent=error?error.message:"تم حفظ العرض.");});
 document.getElementById("catalogType")?.addEventListener("change",loadCatalogOptions);
 document.getElementById("saveCatalogItem")?.addEventListener("click",saveCatalogProduct);
 document.getElementById("saveCategory")?.addEventListener("click",saveCatalogCategory);
