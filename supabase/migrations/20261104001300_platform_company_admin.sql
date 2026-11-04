@@ -15,6 +15,7 @@ as $function$
 declare
   v_admin uuid := auth.uid();
   v_owner uuid;
+  v_owner_name text;
   v_company uuid;
   v_branch uuid;
   v_code text;
@@ -30,7 +31,7 @@ begin
     raise exception 'A valid owner email is required';
   end if;
 
-  select u.id into v_owner
+  select u.id, u.raw_user_meta_data->>'full_name' into v_owner, v_owner_name
   from auth.users u
   where lower(u.email) = lower(trim(p_owner_email))
   limit 1;
@@ -54,7 +55,7 @@ begin
   values(v_company,v_branch,'MAIN','المستودع الرئيسي','Main Warehouse');
 
   insert into public.enhar_profiles(user_id,full_name,phone)
-  values(v_owner,nullif(auth.users.raw_user_meta_data->>'full_name',''),null)
+  values(v_owner,nullif(v_owner_name,''),null)
   on conflict(user_id) do update set full_name=coalesce(public.enhar_profiles.full_name,excluded.full_name);
 
   return jsonb_build_object('company_id',v_company,'company_code',v_code,'owner_user_id',v_owner,'trial_days',15,'trial_ends_at',v_trial_end);
