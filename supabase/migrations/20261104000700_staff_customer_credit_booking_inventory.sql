@@ -2,6 +2,13 @@
 -- Additive migration: does not drop existing business data.
 begin;
 
+-- Ensure composite keys exist even when earlier tables were created by an older migration.
+create unique index if not exists enhar_products_company_id_uidx on public.enhar_products(company_id,id);
+create unique index if not exists enhar_customers_company_id_uidx on public.enhar_customers(company_id,id);
+create unique index if not exists enhar_suppliers_company_id_uidx on public.enhar_suppliers(company_id,id);
+create unique index if not exists enhar_branches_company_id_uidx on public.enhar_branches(company_id,id);
+create unique index if not exists enhar_warehouses_company_id_uidx on public.enhar_warehouses(company_id,id);
+
 -- Staff directory and role-based permissions. A staff record may exist before an auth invitation.
 create table if not exists public.enhar_staff (
  id uuid primary key default gen_random_uuid(),
