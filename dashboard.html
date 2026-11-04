@@ -18,13 +18,13 @@ button,input{font:inherit}
 button{cursor:pointer}
 .layout{display:flex;min-height:100vh}
 .sidebar{
- width:255px;background:#141414;border-left:1px solid var(--line);
- padding:22px 15px;position:fixed;right:0;top:0;bottom:0;
+ width:255px;background:#141414;border-right:1px solid var(--line);
+ padding:18px 12px;position:fixed;left:0;right:auto;top:0;bottom:0;
  overflow-y:auto;z-index:5;transition:.25s
 }
 .logo{display:flex;align-items:center;gap:12px;padding:8px 10px 25px;
  border-bottom:1px solid var(--line);margin-bottom:20px}
-.logo img{width:48px;height:48px;object-fit:contain;border-radius:8px}
+.logo img{width:100%;height:48px;object-fit:contain;border-radius:8px}.logo{justify-content:center;padding:4px 4px 18px}.logo div{display:none}
 .logo strong{display:block;color:var(--light);font-size:17px}
 .logo small{color:var(--muted);font-size:11px}
 .menu-title{color:#8c8065;font-size:11px;padding:15px 12px 8px}
@@ -36,9 +36,9 @@ button{cursor:pointer}
 .menu button:hover,.menu button.active{
  background:#28134c;color:var(--light)
 }
-.menu .ico{width:22px;text-align:center;font-size:17px}
+.menu .ico{width:22px;min-width:22px;text-align:center;display:inline-flex;align-items:center;justify-content:center;color:#bca2ff}.menu .ico svg,.group-toggle>svg{width:18px;height:18px;stroke-width:1.8}.menu-chevron{margin-right:auto;color:#8e7ab7}
 .sidebar-bottom{border-top:1px solid var(--line);margin-top:25px;padding-top:15px}
-.main{margin-right:255px;width:calc(100% - 255px);min-height:100vh}
+.main{margin-left:255px;margin-right:0;width:calc(100% - 255px);min-height:100vh}
 .topbar{
  height:75px;border-bottom:1px solid var(--line);display:flex;
  align-items:center;justify-content:space-between;padding:0 28px;
@@ -123,9 +123,9 @@ td{color:#e8e1d2}
  .grid-two{grid-template-columns:1fr}
 }
 @media(max-width:700px){
- .sidebar{transform:translateX(100%);width:260px}
+ .sidebar{transform:translateX(-100%);width:260px}
  .sidebar.open{transform:translateX(0)}
- .main{margin-right:0;width:100%}
+ .main{margin-left:0;margin-right:0;width:100%}
  .topbar{padding:0 14px}
  .content{padding:18px 13px}
  .mobile-menu{display:inline-block}
@@ -139,7 +139,7 @@ td{color:#e8e1d2}
 .dashboard-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:18px;padding:16px;background:#191919;border:1px solid var(--line);border-radius:12px}.dashboard-filters .field{min-width:150px;flex:1}.dashboard-filters .field label{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.dashboard-filters input,.dashboard-filters select{width:100%;padding:11px;background:#101010;color:#fff;border:1px solid var(--line);border-radius:8px}.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}.dash-card-link{cursor:pointer}.dash-card-link:hover{border-color:var(--gold)}.cash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cash-card{background:#211e17;border:1px solid var(--line);border-radius:10px;padding:15px;cursor:pointer}.cash-card strong{display:block;margin-bottom:9px;color:var(--light)}.cash-card small{color:var(--muted);line-height:1.8}.dash-actions{display:flex;flex-wrap:wrap;gap:8px}.dash-actions button{background:#28251f;color:var(--light);border:1px solid var(--line);border-radius:8px;padding:9px 12px}.filter-note{font-size:11px;color:var(--muted);margin-top:8px}@media(max-width:900px){.dash-grid{grid-template-columns:1fr}}@media(max-width:600px){.cash-grid{grid-template-columns:1fr}} 
 /* Nested ERP navigation */
 .menu-group{margin:4px 0}
-.menu-group>.group-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px;border:0;border-radius:8px;background:transparent;color:#d7d0c1;text-align:right;font-size:13px}
+.menu-group>.group-toggle{display:flex;align-items:center;gap:11px;justify-content:flex-start;width:100%;padding:12px;border:0;border-radius:8px;background:transparent;color:#d7d0c1;text-align:right;font-size:13px}
 .menu-group>.group-toggle:hover,.menu-group>.group-toggle[aria-expanded="true"]{background:#28134c;color:var(--light)}
 .menu-submenu{display:none;padding:4px 10px 8px 0;border-right:1px solid #493477;margin:4px 8px 8px 0}
 .menu-group.open .menu-submenu{display:block}
@@ -238,54 +238,54 @@ html[data-theme="light"] .pos-tabs button.active{background:#7135df;color:#fff}
 <aside class="sidebar" id="sidebar">
   <div class="logo">
     <img src="./assets/anhar-brand.svg"
-       alt="ENHAR">
+       alt="ANHAR">
     <div><strong>ANHAR | أنهار</strong><small>منصة الأعمال والمحاسبة</small></div>
   </div>
 
   <nav class="menu">
     <div class="menu-title">الرئيسية</div>
-    <button class="active" data-page="dashboard"><span class="ico">⌂</span>لوحة التحكم</button>
+    <button class="active" data-page="dashboard"><span class="ico"><i data-lucide="house"></i></span>لوحة التحكم</button>
 
     <div class="menu-title" id="platformAdminMenuTitle" data-platform-admin-only>إدارة المنصة</div>
-    <button data-page="platform-companies" data-platform-admin-only><span class="ico">🏢</span>الشركات والتجارب</button>
-    <button type="button" onclick="location.href='./admin-subscribers.html'" data-platform-admin-only><span class="ico">⚙️</span>إدارة المشتركين والتجديد</button>
+    <button data-page="platform-companies" data-platform-admin-only><span class="ico"><i data-lucide="building-2"></i></span>الشركات والتجارب</button>
+    <button type="button" onclick="location.href='./admin-subscribers.html'" data-platform-admin-only><span class="ico"><i data-lucide="users"></i></span>إدارة المشتركين والتجديد</button>
 
     <div class="menu-title" id="companyBillingMenuTitle" data-company-admin-only>حساب المنشأة</div>
-    <button type="button" onclick="location.href='./billing.html'" data-company-admin-only><span class="ico">💳</span>اشتراكي والدفع</button>
+    <button type="button" onclick="location.href='./billing.html'" data-company-admin-only><span class="ico"><i data-lucide="credit-card"></i></span>اشتراكي والدفع</button>
 
     <div class="menu-title">إدارة الأعمال</div>
     <div class="menu-group open">
-      <button class="group-toggle" type="button" aria-expanded="true">🧾 المبيعات والفواتير <span>⌄</span></button>
+      <button class="group-toggle" type="button" aria-expanded="true"><i data-lucide="receipt"></i> المبيعات والفواتير <span class="menu-chevron">⌄</span></button>
       <div class="menu-submenu">
-        <button data-page="pos"><span class="ico">🛍️</span>شاشة البيع</button>
-        <button data-page="cashboxes"><span class="ico">💵</span>إدارة شاشات وصناديق البيع</button>
-        <button data-page="sales"><span class="ico">🧾</span>فواتير البيع</button>
-        <button data-page="invoice-settings"><span class="ico">🖨️</span>إعدادات الفواتير والطباعة</button>
-        <button data-page="promotions"><span class="ico">🏷️</span>التسويق والعروض</button>
+        <button data-page="pos"><span class="ico"><i data-lucide="shopping-bag"></i></span>شاشة البيع</button>
+        <button data-page="cashboxes"><span class="ico"><i data-lucide="wallet"></i></span>إدارة شاشات وصناديق البيع</button>
+        <button data-page="sales"><span class="ico"><i data-lucide="file-text"></i></span>فواتير البيع</button>
+        <button data-page="invoice-settings"><span class="ico"><i data-lucide="printer"></i></span>إعدادات الفواتير والطباعة</button>
+        <button data-page="promotions"><span class="ico"><i data-lucide="tag"></i></span>التسويق والعروض</button>
       </div>
     </div>
-    <button data-page="purchases"><span class="ico">🛒</span>المشتريات</button>
+    <button data-page="purchases"><span class="ico"><i data-lucide="shopping-cart"></i></span>المشتريات</button>
     <div class="menu-group open">
-      <button class="group-toggle" type="button" aria-expanded="true">📦 المنتجات والخدمات <span>⌄</span></button>
+      <button class="group-toggle" type="button" aria-expanded="true"><i data-lucide="layers"></i> المنتجات والخدمات <span class="menu-chevron">⌄</span></button>
       <div class="menu-submenu">
-        <button data-page="products"><span class="ico">📦</span>قائمة المنتجات</button>
-        <button data-page="services"><span class="ico">💆</span>قائمة الخدمات</button>
-        <button data-page="categories"><span class="ico">🗂️</span>فئات المنتجات والخدمات</button>
-        <button data-page="bundles"><span class="ico">🧩</span>المنتجات المركبة</button>
+        <button data-page="products"><span class="ico"><i data-lucide="package"></i></span>قائمة المنتجات</button>
+        <button data-page="services"><span class="ico"><i data-lucide="sparkles"></i></span>قائمة الخدمات</button>
+        <button data-page="categories"><span class="ico"><i data-lucide="folders"></i></span>فئات المنتجات والخدمات</button>
+        <button data-page="bundles"><span class="ico"><i data-lucide="blocks"></i></span>المنتجات المركبة</button>
       </div>
     </div>
-    <button data-page="inventory"><span class="ico">🏬</span>المخزون والمستودعات</button>
-    <button data-page="customers"><span class="ico">👥</span>العملاء</button>
-    <button data-page="suppliers"><span class="ico">🚚</span>الموردون</button>
+    <button data-page="inventory"><span class="ico"><i data-lucide="warehouse"></i></span>المخزون والمستودعات</button>
+    <button data-page="customers"><span class="ico"><i data-lucide="users-round"></i></span>العملاء</button>
+    <button data-page="suppliers"><span class="ico"><i data-lucide="truck"></i></span>الموردون</button>
 
     <div class="menu-title">الإدارة المالية</div>
-    <button data-page="accounting"><span class="ico">💰</span>المحاسبة</button>
-    <button data-page="reports"><span class="ico">📊</span>التقارير</button>
+    <button data-page="accounting"><span class="ico"><i data-lucide="calculator"></i></span>المحاسبة</button>
+    <button data-page="reports"><span class="ico"><i data-lucide="chart-no-axes-combined"></i></span>التقارير</button>
 
     <div class="menu-title">إدارة النظام</div>
-    <button data-page="employees"><span class="ico">🧑‍💼</span>الموظفون والصلاحيات</button>
-    <button data-page="branches"><span class="ico">🏢</span>الفروع</button>
-    <button data-page="settings"><span class="ico">⚙</span>الإعدادات</button>
+    <button data-page="employees"><span class="ico"><i data-lucide="user-round-cog"></i></span>الموظفون والصلاحيات</button>
+    <button data-page="branches"><span class="ico"><i data-lucide="building-2"></i></span>الفروع</button>
+    <button data-page="settings"><span class="ico"><i data-lucide="settings"></i></span>الإعدادات</button>
   </nav>
 
   <div class="sidebar-bottom">
@@ -1015,5 +1015,6 @@ document.getElementById("resetDashFilters").addEventListener("click",()=>{docume
 document.getElementById("logoutButton")?.addEventListener("click",async()=>{await supabaseClient.auth.signOut();location.replace("./index.html");});
 document.getElementById("dashFrom").value=today;document.getElementById("dashTo").value=today;protectDashboard();
 </script>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script>if(window.lucide){window.lucide.createIcons();}</script>
 </body>
 </html>
