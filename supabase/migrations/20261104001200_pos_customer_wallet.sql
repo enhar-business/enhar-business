@@ -59,8 +59,7 @@ begin
 
  insert into public.enhar_customer_wallet_transactions
  (company_id,wallet_id,customer_id,transaction_type,amount,balance_after,payment_method,reference_type,reference_id,notes,created_by)
- values(p_company_id,v_wallet_id,p_customer_id,'REDEEM',v_wallet_amount,''
-   ||(v_balance-v_wallet_amount), 'WALLET','SALES_INVOICE',v_invoice_id,'استخدام رصيد في فاتورة بيع',auth.uid())
+ values(p_company_id,v_wallet_id,p_customer_id,'REDEEM',v_wallet_amount,(v_balance-v_wallet_amount), 'WALLET','SALES_INVOICE',v_invoice_id,'استخدام رصيد في فاتورة بيع',auth.uid())
  returning id into v_tx;
 
  delete from public.enhar_sales_payments
