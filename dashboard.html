@@ -230,6 +230,85 @@ html[data-theme="light"]{--bg:#f4f0ff;--panel:#fff;--line:#ded2f5;--text:#211638
 html[data-theme="light"] .sidebar,html[data-theme="light"] .topbar{background:#fff;border-color:#ded2f5}
 html[data-theme="light"] .menu button:hover,html[data-theme="light"] .menu button.active{background:#eee5ff;color:#6428c9}
 html[data-theme="light"] .pos-tabs button.active{background:#7135df;color:#fff}
+
+/* ANHAR UI foundation v2 — unified RTL SaaS shell */
+:root{
+ --anhar-navy:#08051e;--anhar-navy-2:#100b2b;--anhar-panel:#151039;
+ --anhar-purple:#793df0;--anhar-purple-2:#a66cff;--anhar-blue:#287cff;
+ --anhar-cyan:#54c8ff;--anhar-gold:#d5b15e;--anhar-white:#f8f7ff;
+ --anhar-muted:#a99fc8;--anhar-border:#30245a;
+ --bg:var(--anhar-navy);--panel:var(--anhar-navy-2);--line:var(--anhar-border);
+ --text:var(--anhar-white);--muted:var(--anhar-muted);--gold:var(--anhar-purple);--light:#d8c2ff;
+}
+html,body{min-height:100%;background:var(--anhar-navy);color:var(--anhar-white)}
+body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:radial-gradient(ellipse at 78% -10%,#29105a 0,transparent 34%),var(--anhar-navy)}
+.sidebar{background:linear-gradient(180deg,#100a2c 0%,#09061d 100%);border-left:1px solid #35245e;box-shadow:-14px 0 40px #03020d55}
+.logo{min-height:78px;border-bottom:1px solid #302052;margin-bottom:14px}
+.logo img{height:62px;max-width:100%;object-fit:contain}
+.menu-title{color:#9176c8;font-size:10px;font-weight:700;letter-spacing:.5px;padding:17px 13px 7px}
+.menu button,.menu-group>.group-toggle{min-height:43px;border:1px solid transparent;color:#d9d3ec;border-radius:11px;margin:3px 0;padding:10px 12px;font-size:12px;transition:background .18s,border-color .18s,transform .18s}
+.menu button:hover,.menu-group>.group-toggle:hover{background:#211443;border-color:#56368a;transform:translateX(-2px)}
+.menu button.active,.menu-group>.group-toggle[aria-expanded="true"]{background:linear-gradient(100deg,#5425b5,#24205e);border-color:#7850d4;color:#fff;box-shadow:0 7px 20px #5124a733}
+.menu .ico{color:#b994ff}
+.menu button.active .ico{color:#fff}
+.menu-submenu{border-right:1px solid #593c8c;margin-right:16px;padding-right:10px}
+.menu-submenu button{font-size:11px;min-height:37px}
+.sidebar-bottom{border-color:#302052}
+.sidebar-bottom .secondary{background:#1a1038;border-color:#493477;color:#d8c2ff}
+.main{background:transparent}
+.topbar{background:#0d0825ed;border-bottom:1px solid #302052;backdrop-filter:blur(14px);box-shadow:0 5px 22px #03020d33}
+.topbar strong{color:#f8f6ff}
+.icon-btn{background:#1b123b;border:1px solid #493477;color:#d5baff;border-radius:10px}
+.avatar{background:linear-gradient(140deg,#7135df,#267eff);color:white}
+.content{max-width:1680px;padding:30px clamp(16px,2vw,34px)}
+.page-heading h1{color:#e0ceff;font-size:27px;letter-spacing:-.4px}
+.page-heading p{color:#aaa0ca}
+.primary,.pos-pay{background:linear-gradient(105deg,var(--anhar-purple),var(--anhar-blue));color:#fff;border:0;box-shadow:0 7px 18px #5c31d833}
+.primary:hover,.pos-pay:hover{filter:brightness(1.09);transform:translateY(-1px)}
+.secondary{background:#211540;color:#e2d8ff;border:1px solid #493477}
+.stat,.panel{background:linear-gradient(145deg,#171039,#100b2b);border:1px solid #30245a;border-radius:16px;box-shadow:0 10px 30px #03020d30}
+.stat{position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
+.stat:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,#7739ed,#287cff,#55caff);opacity:.9}
+.stat:hover,.panel:hover{border-color:#59408c}
+.stat-icon,.activity-icon{background:linear-gradient(145deg,#38206d,#1b2462);color:#d8c2ff;border:1px solid #6342a0}
+.stat-value{color:#fff;font-size:27px;letter-spacing:.2px}
+.stat-label,.stat-note,.panel-heading span{color:#aaa0ca}
+.panel-heading h2{color:#e0d4ff;font-size:16px}
+.quick,.cash-card,.module-card{background:#1a1239;border:1px solid #38275f;border-radius:12px;color:#f2edff}
+.quick:hover,.cash-card:hover,.module-card:hover{background:#24164b;border-color:#8b5bea}
+.quick b{color:#b994ff}
+table{border-collapse:separate;border-spacing:0}
+th{background:#1b123b;color:#b9abd9}
+th,td{border-bottom:1px solid #30245a}
+td{color:#eee9ff}
+.status.done{background:#123c3d;color:#7ce4d4}
+.status.pending{background:#3a2b59;color:#dfc5ff}
+.field input,.field select,.dashboard-filters input,.dashboard-filters select{background:#0d0825;color:#fff;border:1px solid #493477;border-radius:10px}
+.field input:focus,.field select:focus,.dashboard-filters input:focus,.dashboard-filters select:focus{border-color:#9b69ff;box-shadow:0 0 0 3px #8b45ff25}
+.dashboard-filters{background:#120c30;border:1px solid #38275f;border-radius:14px}
+.filter-note,.empty,.footer{color:#9e94bc}
+.notice{color:#c9b0ff}
+#pos.page.active{background:#0b0821;color:#f6f2ff}
+.pos-topbar,.pos-catalog,.pos-cart{background:#130d30;border-color:#38275f}
+#pos .pos-heading h1,.cart-heading h2,.cart-line b{color:#f6f2ff}
+#pos .field label{color:#b9acd9}
+#pos .field input,#pos .field select{background:#0c0822;color:#fff;border-color:#493477}
+.pos-tabs{background:#211541}.pos-tabs button{color:#cfc4e8}
+.pos-tabs button.active{background:linear-gradient(100deg,#7135df,#267eff);color:#fff}
+.pos-cat{background:#1a1239;color:#e1d8f5;border-color:#493477}
+.pos-cat.active{background:#39206b;color:#e4d4ff;border-color:#9861ff}
+.pos-search{background:#0e0926;border-color:#493477}
+.pos-search input{color:#fff!important}
+.pos-item{background:#171039;color:#f5f1ff;border-color:#38275f}
+.pos-item:hover{border-color:#9a68ff}
+.pos-item-noimage{background:#201543;color:#b8a5e5}
+.cart-line{border-color:#30245a}.cart-line-actions button{background:#211541;color:#eee;border-color:#493477}
+.cart-summary>div{color:#b9acd9}.cart-summary b,.cart-total b{color:#f7f2ff}
+.cart-total{border-color:#493477}
+@media(max-width:700px){.content{padding:17px 12px}.sidebar{box-shadow:0 0 35px #0008}.topbar{height:64px;padding:0 12px}.page-heading h1{font-size:22px}}
+/* Icons use one consistent stroke language */
+.menu .ico svg,.group-toggle svg,.stat-icon svg,.quick svg,.activity-icon svg{width:19px;height:19px;stroke-width:1.8}
+
 </style>
 </head>
 <body>
@@ -775,14 +854,14 @@ async function loadDashboard(){
  if(!activeCompanyId)return;setDashStatus("جارٍ تحديث المؤشرات من قاعدة البيانات...");
  const from=document.getElementById("dashFrom").value||"1900-01-01",to=document.getElementById("dashTo").value||"2999-12-31",branch=document.getElementById("dashBranch").value;
  try{
- let sq=supabaseClient.from("enhar_sales_invoices").select("id,invoice_number,invoice_date,grand_total,status,customer_id,branch_id").eq("company_id",activeCompanyId).gte("invoice_date",from).lte("invoice_date",to).order("invoice_date",{ascending:false}).limit(8);
+ let sq=supabaseClient.from("enhar_sales_invoices").select("id,invoice_number,invoice_date,grand_total,status,customer_id,branch_id").eq("company_id",activeCompanyId).gte("invoice_date",from).lte("invoice_date",to).order("invoice_date",{ascending:false});
  let pq=supabaseClient.from("enhar_purchase_invoices").select("id,grand_total,invoice_date,branch_id").eq("company_id",activeCompanyId).gte("invoice_date",from).lte("invoice_date",to);
  if(branch){sq=sq.eq("branch_id",branch);pq=pq.eq("branch_id",branch);}
  const [s,p,pr,cu]=await Promise.all([sq,pq,supabaseClient.from("enhar_products").select("id",{count:"exact",head:true}).eq("company_id",activeCompanyId).eq("is_active",true),supabaseClient.from("enhar_customers").select("id",{count:"exact",head:true}).eq("company_id",activeCompanyId).eq("is_active",true)]);
  for(const x of [s,p,pr,cu])if(x.error)throw x.error;
  document.getElementById("dashSalesTotal").textContent=money((s.data||[]).reduce((a,x)=>a+Number(x.grand_total||0),0));document.getElementById("dashSalesCount").textContent=(s.data||[]).length+" فاتورة في النتائج";
  document.getElementById("dashPurchasesTotal").textContent=money((p.data||[]).reduce((a,x)=>a+Number(x.grand_total||0),0));document.getElementById("dashPurchasesCount").textContent=(p.data||[]).length+" فاتورة شراء";
- document.getElementById("dashProductsCount").textContent=pr.count??0;document.getElementById("dashCustomersCount").textContent=cu.count??0;await renderInvoices(s.data||[]);
+ document.getElementById("dashProductsCount").textContent=pr.count??0;document.getElementById("dashCustomersCount").textContent=cu.count??0;await renderInvoices((s.data||[]).slice(0,8));
  setDashStatus("بيانات مباشرة · "+(branch?(dashboardBranches.find(b=>b.id===branch)?.name_ar||"الفرع"):"كل الفروع")+" · "+from+" إلى "+to);
  }catch(e){setDashStatus("تعذر جلب البيانات: "+e.message);}
 }
