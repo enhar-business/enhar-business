@@ -184,6 +184,28 @@ create table if not exists public.enhar_stock_document_lines (
  foreign key(company_id,product_id) references public.enhar_products(company_id,id)
 );
 
+-- Ensure catalog settings tables exist when upgrading an older installation.
+create table if not exists public.enhar_item_categories (
+ id uuid primary key default gen_random_uuid(),
+ company_id uuid not null references public.enhar_companies(id) on delete cascade,
+ category_type text not null check(category_type in ('PRODUCT','SERVICE')),
+ name_ar text not null,
+ name_en text,
+ description text,
+ is_active boolean not null default true,
+ created_at timestamptz not null default now(),
+ unique(company_id,id),
+ unique(company_id,category_type,name_ar)
+);
+
+create table if not exists public.enhar_invoice_settings (
+ company_id uuid primary key references public.enhar_companies(id) on delete cascade,
+ paper_size text not null default 'A4',
+ show_logo boolean not null default true,
+ footer_text text,
+ updated_at timestamptz not null default now()
+);
+
 -- Customer display and POS category layout preferences.
 alter table public.enhar_products
  add column if not exists pos_sort_order integer not null default 0,
