@@ -556,6 +556,134 @@ async function createPlatformCompany(){
  }catch(e){msg.textContent="لم يتم إنشاء الشركة: "+(e.message||"خطأ غير معروف");}
  finally{button.disabled=false;}
 }
+async function loadOperationalForms(){
+ if(!activeCompanyId)return;
+ const [staffR,customersR,productsR,warehousesR]=await Promise.all([
+  supabaseClient.from("enhar_staff").select("id,employee_code,full_name,staff_type,branch_id,can_perform_services,can_be_cashier,show_in_pos,show_in_booking,is_active").eq("company_id",activeCompanyId).eq("is_active",true).order("full_name"),
+  supabaseClient.from("enhar_customers").select("id,customer_code,name,phone,email,vat_number,is_active").eq("company_id",activeCompanyId).eq("is_active",true).order("name"),
+  supabaseClient.from("enhar_products").select("id,sku,name_ar,item_type,purchase_price,sale_price,tax_rate").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar"),
+  supabaseClient.from("enhar_warehouses").select("id,name_ar,branch_id").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar")
+ ]);
+ for(const x of [staffR,customersR,productsR,warehousesR])if(x.error)throw x.error;
+ window.enharStaff=staffR.data||[];window.enharCustomers=customersR.data||[];window.enharProducts=productsR.data||[];window.enharWarehouses=warehousesR.data||[];
+ const branchOptions=dashboardBranches.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ ["staffBranch","bookingBranch","voucherBranch","countBranch"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=branchOptions;});
+ const customerOptions='<option value="">بدون عميل</option>'+window.enharCustomers.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name)+' · '+escapeHTML(x.phone||"")+'</option>').join("");
+ ["walletCustomer","bookingCustomer"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=customerOptions;});
+ const serviceOptions=window.enharProducts.filter(x=>x.item_type==="SERVICE").map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ const staffServiceOptions=window.enharStaff.filter(x=>x.can_perform_services&&x.show_in_booking).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.full_name)+'</option>').join("");
+ const staffOptions=window.enharStaff.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.full_name)+'</option>').join("");
+ const productOptions=window.enharProducts.filter(x=>x.item_type==="PRODUCT").map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+' ('+escapeHTML(x.sku)+')</option>').join("");
+ ["bookingService"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=serviceOptions;});
+ ["bookingStaff"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=staffServiceOptions;});
+ ["permissionStaff"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=staffOptions;});
+ ["voucherProduct","countProduct"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=productOptions;});
+ const warehouseOptions=window.enharWarehouses.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ ["stockWarehouse","voucherWarehouse","countWarehouse"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=warehouseOptions;});
+ await Promise.all([loadStaffRows(),loadCustomerRows(),loadAppointments(),loadStockVouchers(),loadStockBalances()]);
+}
+async function loadStaffRows(){
+ const {data,error}=await supabaseClient.from("enhar_staff").select("id,employee_code,full_name,staff_type,branch_id,can_perform_services,can_be_cashier,is_active").eq("company_id",activeCompanyId).order("full_name");
+ if(error)throw error;window.enharStaff=data||[];
+ const labels={SERVICE_PROVIDER:"موظف خدمة",CASHIER:"كاشير",ACCOUNTANT:"محاسب",ACCOUNTS_MANAGER:"مدير حسابات",STOREKEEPER:"مسؤول مخزون",BRANCH_MANAGER:"مدير فرع",ADMIN:"مدير نظام"};
+ document.getElementById("staffRows").innerHTML=window.enharStaff.map(x=>'<tr><td>'+escapeHTML(x.employee_code)+'</td><td>'+escapeHTML(x.full_name)+'</td><td>'+labels[x.staff_type]+'</td><td>'+escapeHTML((dashboardBranches.find(b=>b.id===x.branch_id)||{}).name_ar||"—")+'</td><td>'+(x.can_perform_services?"نعم":"لا")+'</td><td>'+(x.can_be_cashier?"نعم":"لا")+'</td><td>'+(x.is_active?"نشط":"موقوف")+'</td></tr>').join("")||'<tr><td colspan="7" class="empty">لا يوجد موظفون مسجلون.</td></tr>';
+ const sel=document.getElementById("permissionStaff");if(sel)sel.innerHTML=window.enharStaff.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.full_name)+'</option>').join("");
+}
+async function saveStaffRecord(){
+ const code=document.getElementById("staffCode").value.trim(),name=document.getElementById("staffName").value.trim();
+ if(!code||!name){document.getElementById("staffMessage").textContent="رقم الموظف والاسم مطلوبان.";return;}
+ const row={company_id:activeCompanyId,employee_code:code,full_name:name,phone:document.getElementById("staffPhone").value.trim()||null,email:document.getElementById("staffEmail").value.trim()||null,job_title:document.getElementById("staffJobTitle").value.trim()||null,staff_type:document.getElementById("staffType").value,branch_id:document.getElementById("staffBranch").value||null,can_perform_services:document.getElementById("staffCanService").checked,can_be_cashier:document.getElementById("staffCanCashier").checked,show_in_pos:document.getElementById("staffShowPos").checked,show_in_booking:document.getElementById("staffShowBooking").checked};
+ const {error}=await supabaseClient.from("enhar_staff").insert(row);
+ document.getElementById("staffMessage").textContent=error?"لم يتم الحفظ: "+error.message:"تم حفظ ملف الموظف.";
+ if(!error){["staffCode","staffName","staffPhone","staffEmail","staffJobTitle"].forEach(id=>document.getElementById(id).value="");await loadOperationalForms();}
+}
+async function saveStaffPermissionRecord(){
+ const staffId=document.getElementById("permissionStaff").value;if(!staffId){document.getElementById("permissionMessage").textContent="اختر الموظف.";return;}
+ const row={company_id:activeCompanyId,staff_id:staffId,module_key:document.getElementById("permissionModule").value,can_view:document.getElementById("permView").checked,can_create:document.getElementById("permCreate").checked,can_update:document.getElementById("permUpdate").checked,can_delete:document.getElementById("permDelete").checked,can_approve:document.getElementById("permApprove").checked,can_manage_settings:document.getElementById("permSettings").checked};
+ const {error}=await supabaseClient.from("enhar_staff_permissions").upsert(row,{onConflict:"company_id,staff_id,module_key"});
+ document.getElementById("permissionMessage").textContent=error?"تعذر حفظ الصلاحيات: "+error.message:"تم حفظ مصفوفة الصلاحيات.";
+}
+async function loadCustomerRows(){
+ const [cr,wr]=await Promise.all([
+  supabaseClient.from("enhar_customers").select("id,customer_code,name,phone,is_active").eq("company_id",activeCompanyId).order("name"),
+  supabaseClient.from("enhar_customer_wallets").select("customer_id,balance").eq("company_id",activeCompanyId)
+ ]);
+ for(const x of [cr,wr])if(x.error)throw x.error;
+ const balances=Object.fromEntries((wr.data||[]).map(x=>[x.customer_id,Number(x.balance||0)]));
+ window.enharCustomers=cr.data||[];
+ document.getElementById("customerRows").innerHTML=window.enharCustomers.map(x=>'<tr><td>'+escapeHTML(x.customer_code)+'</td><td>'+escapeHTML(x.name)+'</td><td>'+escapeHTML(x.phone||"—")+'</td><td>'+money(balances[x.id]||0)+'</td><td>'+(x.is_active?"نشط":"موقوف")+'</td></tr>').join("")||'<tr><td colspan="5" class="empty">لا يوجد عملاء.</td></tr>';
+ const opts=window.enharCustomers.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name)+' · '+escapeHTML(x.phone||"")+'</option>').join("");
+ ["walletCustomer","bookingCustomer"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+}
+async function saveCustomerRecord(){
+ const code=document.getElementById("customerCode").value.trim(),name=document.getElementById("customerName").value.trim();
+ if(!code||!name){document.getElementById("customerMessage").textContent="رقم العميل والاسم مطلوبان.";return;}
+ const address=document.getElementById("customerAddress").value.trim();
+ const row={company_id:activeCompanyId,customer_code:code,name,phone:document.getElementById("customerPhone").value.trim()||null,email:document.getElementById("customerEmail").value.trim()||null,vat_number:document.getElementById("customerVat").value.trim()||null,address:address?{text:address}:{}};
+ const {error}=await supabaseClient.from("enhar_customers").insert(row);
+ document.getElementById("customerMessage").textContent=error?"تعذر حفظ العميل: "+error.message:"تم حفظ العميل.";
+ if(!error){["customerCode","customerName","customerPhone","customerEmail","customerVat","customerAddress"].forEach(id=>document.getElementById(id).value="");await loadCustomerRows();}
+}
+async function postCustomerWallet(){
+ const customer=document.getElementById("walletCustomer").value,amount=Number(document.getElementById("walletAmount").value),type=document.getElementById("walletType").value;
+ if(!customer||!Number.isFinite(amount)||amount<=0){document.getElementById("walletMessage").textContent="اختر العميل وأدخل مبلغاً صحيحاً.";return;}
+ const {data,error}=await supabaseClient.rpc("enhar_customer_wallet_post",{p_company_id:activeCompanyId,p_customer_id:customer,p_transaction_type:type,p_amount:amount,p_payment_method:document.getElementById("walletPayment").value,p_notes:document.getElementById("walletNotes").value.trim()||null});
+ document.getElementById("walletMessage").textContent=error?"تعذر تسجيل الحركة: "+error.message:"تم تسجيل الحركة. الرصيد الحالي: "+money(data.balance);
+ if(!error){document.getElementById("walletAmount").value="";await loadCustomerRows();}
+}
+async function loadAppointments(){
+ const {data,error}=await supabaseClient.from("enhar_appointments").select("id,appointment_number,starts_at,ends_at,status,customer_id,service_product_id,staff_id").eq("company_id",activeCompanyId).order("starts_at",{ascending:false}).limit(100);
+ if(error)throw error;
+ const customers=Object.fromEntries((window.enharCustomers||[]).map(x=>[x.id,x.name])),products=Object.fromEntries((window.enharProducts||[]).map(x=>[x.id,x.name_ar])),staff=Object.fromEntries((window.enharStaff||[]).map(x=>[x.id,x.full_name]));
+ document.getElementById("bookingRows").innerHTML=(data||[]).map(x=>'<tr><td>'+escapeHTML(x.appointment_number)+'</td><td>'+new Date(x.starts_at).toLocaleString("ar-SA")+'</td><td>'+escapeHTML(customers[x.customer_id]||"—")+'</td><td>'+escapeHTML(products[x.service_product_id]||"—")+'</td><td>'+escapeHTML(staff[x.staff_id]||"—")+'</td><td>'+escapeHTML(x.status)+'</td></tr>').join("")||'<tr><td colspan="6" class="empty">لا توجد حجوزات.</td></tr>';
+}
+async function createAppointmentRecord(){
+ const start=document.getElementById("bookingStart").value,end=document.getElementById("bookingEnd").value;
+ if(!start||!end){document.getElementById("bookingMessage").textContent="حدد بداية ونهاية الحجز.";return;}
+ const {data,error}=await supabaseClient.rpc("enhar_create_appointment",{p_company_id:activeCompanyId,p_branch_id:document.getElementById("bookingBranch").value,p_customer_id:document.getElementById("bookingCustomer").value||null,p_service_product_id:document.getElementById("bookingService").value,p_staff_id:document.getElementById("bookingStaff").value,p_starts_at:new Date(start).toISOString(),p_ends_at:new Date(end).toISOString(),p_notes:document.getElementById("bookingNotes").value.trim()||null});
+ document.getElementById("bookingMessage").textContent=error?"لم يتم إنشاء الحجز: "+error.message:"تم إنشاء الحجز بنجاح.";
+ if(!error)await loadAppointments();
+}
+async function loadStockBalances(){
+ const warehouse=document.getElementById("stockWarehouse").value;
+ let q=supabaseClient.from("enhar_stock_movements").select("product_id,quantity_in,quantity_out,warehouse_id").eq("company_id",activeCompanyId);
+ if(warehouse)q=q.eq("warehouse_id",warehouse);
+ const {data,error}=await q.limit(5000);if(error)throw error;
+ const totals={};for(const x of data||[]){totals[x.product_id]??={in:0,out:0};totals[x.product_id].in+=Number(x.quantity_in||0);totals[x.product_id].out+=Number(x.quantity_out||0);}
+ const products=window.enharProducts||[];
+ document.getElementById("stockRows").innerHTML=products.filter(p=>p.item_type==="PRODUCT").map(p=>{const t=totals[p.id]||{in:0,out:0};return '<tr><td>'+escapeHTML(p.sku)+'</td><td>'+escapeHTML(p.name_ar)+'</td><td>'+t.in+'</td><td>'+t.out+'</td><td><b>'+ (t.in-t.out)+'</b></td></tr>';}).join("")||'<tr><td colspan="5" class="empty">لا توجد منتجات.</td></tr>';
+}
+async function loadStockVouchers(){
+ const {data,error}=await supabaseClient.from("enhar_stock_vouchers").select("id,voucher_number,voucher_type,voucher_date,status").eq("company_id",activeCompanyId).order("voucher_date",{ascending:false}).limit(100);
+ if(error)throw error;
+ document.getElementById("voucherRows").innerHTML=(data||[]).map(x=>'<tr><td>'+escapeHTML(x.voucher_number)+'</td><td>'+escapeHTML(x.voucher_type)+'</td><td>'+escapeHTML(x.voucher_date)+'</td><td>'+escapeHTML(x.status)+'</td></tr>').join("")||'<tr><td colspan="4" class="empty">لا توجد سندات.</td></tr>';
+}
+async function createStockVoucherRecord(){
+ const number=document.getElementById("voucherNumber").value.trim(),product=document.getElementById("voucherProduct").value,qty=Number(document.getElementById("voucherQty").value),warehouse=document.getElementById("voucherWarehouse").value,branch=document.getElementById("voucherBranch").value;
+ if(!number||!product||!warehouse||!branch||!Number.isFinite(qty)||qty<=0){document.getElementById("voucherMessage").textContent="أكمل رقم السند والفرع والمستودع والصنف والكمية.";return;}
+ const type=document.getElementById("voucherType").value;
+ const {data:header,error:he}=await supabaseClient.from("enhar_stock_vouchers").insert({company_id:activeCompanyId,branch_id:branch,warehouse_id:warehouse,voucher_number:number,voucher_type:type,reason:document.getElementById("voucherReason").value.trim()||null,notes:document.getElementById("voucherNotes").value.trim()||null}).select("id").single();
+ if(he){document.getElementById("voucherMessage").textContent="تعذر إنشاء السند: "+he.message;return;}
+ const {error:le}=await supabaseClient.from("enhar_stock_voucher_lines").insert({company_id:activeCompanyId,voucher_id:header.id,product_id:product,quantity:qty,unit_cost:Number(document.getElementById("voucherCost").value||0)});
+ if(le){document.getElementById("voucherMessage").textContent="تم إنشاء مسودة السند لكن تعذر إضافة الصنف: "+le.message;return;}
+ const {data,error}=await supabaseClient.rpc("enhar_post_stock_voucher",{p_company_id:activeCompanyId,p_voucher_id:header.id});
+ document.getElementById("voucherMessage").textContent=error?"السند محفوظ كمسودة ولم يُرحّل: "+error.message:"تم ترحيل السند وتحديث حركة المخزون.";
+ if(!error){await loadStockVouchers();await loadStockBalances();}
+}
+async function createAndApproveStockCount(){
+ const number=document.getElementById("countNumber").value.trim(),branch=document.getElementById("countBranch").value,warehouse=document.getElementById("countWarehouse").value,product=document.getElementById("countProduct").value,qty=Number(document.getElementById("countQty").value);
+ if(!number||!branch||!warehouse||!product||!Number.isFinite(qty)||qty<0){document.getElementById("countMessage").textContent="أكمل رقم الجرد والفرع والمستودع والصنف والكمية الفعلية.";return;}
+ const {data:header,error:he}=await supabaseClient.from("enhar_stock_counts").insert({company_id:activeCompanyId,branch_id:branch,warehouse_id:warehouse,count_number:number,status:"COMPLETED"}).select("id").single();
+ if(he){document.getElementById("countMessage").textContent="تعذر إنشاء الجرد: "+he.message;return;}
+ const {data:moves,error:me}=await supabaseClient.from("enhar_stock_movements").select("quantity_in,quantity_out").eq("company_id",activeCompanyId).eq("warehouse_id",warehouse).eq("product_id",product);
+ if(me){document.getElementById("countMessage").textContent=me.message;return;}
+ const system=(moves||[]).reduce((a,x)=>a+Number(x.quantity_in||0)-Number(x.quantity_out||0),0);
+ const {error:le}=await supabaseClient.from("enhar_stock_count_lines").insert({company_id:activeCompanyId,count_id:header.id,product_id:product,system_quantity:system,counted_quantity:qty,difference_quantity:qty-system});
+ if(le){document.getElementById("countMessage").textContent="تم إنشاء الجرد لكن تعذرت إضافة السطر: "+le.message;return;}
+ const {data,error}=await supabaseClient.rpc("enhar_approve_stock_count",{p_company_id:activeCompanyId,p_count_id:header.id});
+ document.getElementById("countMessage").textContent=error?"الجرد محفوظ ولم يعتمد: "+error.message:"تم اعتماد الجرد. الفرق: "+(qty-system);
+ if(!error){await loadStockBalances();}
+}
 async function protectDashboard(){
  try{
  const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session){location.replace("./index.html");return;}currentUser=session.user;
@@ -573,7 +701,7 @@ async function protectDashboard(){
    showPage("platform-companies");
    return;
  } else activeCompanyId=members[0].company_id;
- await loadBranches();document.getElementById("cashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("invoiceBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("newCashBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("posBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");await loadDashboard();await loadCatalogOptions();await loadCashboxOptions();await loadCashSessions();await loadRealInvoices();await loadPosFilters();renderPosItems();await loadCatalogSubpages();
+ await loadBranches();await loadOperationalForms();document.getElementById("cashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("invoiceBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("newCashBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("posBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");await loadDashboard();await loadCatalogOptions();await loadCashboxOptions();await loadCashSessions();await loadRealInvoices();await loadPosFilters();renderPosItems();await loadCatalogSubpages();
  }catch(e){setDashStatus("تعذر تحميل بيانات الشركة: "+(e.message||"خطأ"));}
 }
 async function loadBranches(){const {data,error}=await supabaseClient.from("enhar_branches").select("id,name_ar").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar");if(error)throw error;dashboardBranches=data||[];document.getElementById("dashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");}
@@ -786,6 +914,15 @@ document.getElementById("catalogSearch")?.addEventListener("input",e=>{const q=e
 document.getElementById("clearCatalogForm")?.addEventListener("click",()=>{["catalogName","catalogSku","catalogBarcode","catalogImage","catalogDescription"].forEach(id=>document.getElementById(id).value="");});
 
 function toggleMenu(){document.getElementById("sidebar").classList.toggle("open");}
+document.getElementById("saveStaff")?.addEventListener("click",()=>saveStaffRecord().catch(e=>document.getElementById("staffMessage").textContent=e.message));
+document.getElementById("saveStaffPermission")?.addEventListener("click",()=>saveStaffPermissionRecord().catch(e=>document.getElementById("permissionMessage").textContent=e.message));
+document.getElementById("saveCustomer")?.addEventListener("click",()=>saveCustomerRecord().catch(e=>document.getElementById("customerMessage").textContent=e.message));
+document.getElementById("postWallet")?.addEventListener("click",()=>postCustomerWallet().catch(e=>document.getElementById("walletMessage").textContent=e.message));
+document.getElementById("createBooking")?.addEventListener("click",()=>createAppointmentRecord().catch(e=>document.getElementById("bookingMessage").textContent=e.message));
+document.getElementById("createVoucher")?.addEventListener("click",()=>createStockVoucherRecord().catch(e=>document.getElementById("voucherMessage").textContent=e.message));
+document.getElementById("createCountLine")?.addEventListener("click",()=>createAndApproveStockCount().catch(e=>document.getElementById("countMessage").textContent=e.message));
+document.getElementById("refreshStock")?.addEventListener("click",()=>loadStockBalances().catch(e=>alert(e.message)));
+document.getElementById("customerSearch")?.addEventListener("input",e=>{const q=e.target.value.toLowerCase();document.querySelectorAll("#customerRows tr").forEach(row=>row.style.display=row.textContent.toLowerCase().includes(q)?"":"none");});
 document.getElementById("platformCreateCompany")?.addEventListener("click",createPlatformCompany);
 document.getElementById("platformRefreshCompanies")?.addEventListener("click",loadPlatformCompanies);
 document.getElementById("applyDashFilters").addEventListener("click",loadDashboard);document.getElementById("dashBranch").addEventListener("change",loadDashboard);
