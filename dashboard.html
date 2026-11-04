@@ -449,8 +449,9 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
    <div class="cart-heading"><div><h2>فاتورة البيع</h2><small id="posCartCount">0 أصناف</small></div><button class="secondary" id="clearPosCart">تفريغ</button></div>
    <div class="cart-lines" id="posCartLines"><div class="cart-empty">🛒<b>السلة فارغة</b><small>اختر منتجاً أو خدمة لإضافتهما للفاتورة</small></div></div>
    <div class="cart-summary"><div><span>الإجمالي قبل الضريبة</span><b id="posSubtotal">0.00 ر.س</b></div><div><span>الضريبة</span><b id="posTax">تحسب حسب إعداد الضريبة</b></div><div class="cart-total"><span>الإجمالي</span><b id="posTotal">0.00 ر.س</b></div></div>
+   <div class="field" style="margin-top:12px"><label for="posPaymentMethod">طريقة الدفع</label><select id="posPaymentMethod"><option value="CASH">نقداً</option><option value="CARD">بطاقة</option><option value="BANK_TRANSFER">تحويل بنكي</option></select></div>
    <button class="pos-pay" id="posCheckout" disabled>الدفع وإصدار الفاتورة</button>
-   <small class="pos-footnote" id="posCheckoutNote">سيتم تفعيل الترحيل بعد استكمال ربط الفاتورة والمخزون والقيود المحاسبية.</small>
+   <small class="pos-footnote" id="posCheckoutNote">يتطلب جلسة صندوق مفتوحة. يتم التحقق من المخزون والضريبة في قاعدة البيانات قبل ترحيل الفاتورة.</small>
   </aside>
  </div>
 </section>
@@ -672,7 +673,27 @@ document.querySelectorAll("[data-pos-type]").forEach(b=>b.addEventListener("clic
 document.querySelectorAll("[data-pos-sale]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-pos-sale]").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("posSaleType").value=b.dataset.posSale;renderPosItems();}));
 ["posItemType","posCategory","posSaleType","posSearch"].forEach(id=>document.getElementById(id)?.addEventListener(id==="posSearch"?"input":"change",()=>{if(id==="posItemType")loadPosFilters().then(renderPosItems);else renderPosItems();}));
 document.getElementById("clearPosCart")?.addEventListener("click",()=>{window.posCart=[];renderPosCart();});
-document.getElementById("posCheckout")?.addEventListener("click",()=>{document.getElementById("posCheckoutNote").textContent="لم يتم ترحيل الفاتورة: نحتاج أولاً ربط تفاصيل الفاتورة والمخزون والضريبة والصندوق داخل معاملة قاعدة بيانات واحدة.";});
+document.getElementById("posCheckout")?.addEventListener("click",async()=>{
+ const button=document.getElementById("posCheckout"),note=document.getElementById("posCheckoutNote");
+ if(!activeCompanyId||!window.posCart?.length)return;
+ const branchId=document.getElementById("posBranch").value;
+ const sessionId=document.getElementById("posCashSession").value;
+ if(!branchId){note.textContent="اختر الفرع أولاً.";return;}
+ if(!sessionId){note.textContent="افتح جلسة صندوق واخترها قبل البيع.";return;}
+ button.disabled=true;button.textContent="جارٍ ترحيل الفاتورة...";
+ try{
+  const payload=window.posCart.map(x=>({product_id:x.id,quantity:x.qty,unit_price:x.price,discount:0}));
+  const {data,error}=await supabaseClient.rpc("enhar_post_pos_invoice",{
+   p_company_id:activeCompanyId,p_branch_id:branchId,p_cash_session_id:sessionId,
+   p_customer_id:null,p_payment_method:document.getElementById("posPaymentMethod").value,p_lines:payload
+  });
+  if(error)throw error;
+  window.posCart=[];renderPosCart();
+  note.textContent="تم ترحيل الفاتورة "+data.invoice_number+" بنجاح. الإجمالي شامل الضريبة: "+money(data.grand_total);
+  await loadRealInvoices();await loadCashSessions();await loadDashboard();
+ }catch(e){note.textContent="لم يتم ترحيل الفاتورة: "+(e.message||"خطأ غير معروف");}
+ finally{button.textContent="الدفع وإصدار الفاتورة";button.disabled=!window.posCart.length;}
+});
 
 document.getElementById("createCashbox")?.addEventListener("click",()=>createCashbox().catch(e=>document.getElementById("cashCreateMessage").textContent=e.message));document.getElementById("openCashSession")?.addEventListener("click",()=>openCashSession().catch(e=>document.getElementById("cashOpenMessage").textContent=e.message));
 document.getElementById("savePrintSettings")?.addEventListener("click",()=>{const row={company_id:activeCompanyId,paper_size:document.getElementById("printSize").value,company_name:document.getElementById("printCompanyName").value,vat_number:document.getElementById("printVat").value,commercial_registration:document.getElementById("printCr").value,address:document.getElementById("printAddress").value,footer_text:document.getElementById("printFooter").value};supabaseClient.from("enhar_invoice_settings").upsert(row,{onConflict:"company_id"}).then(({error})=>document.getElementById("printMessage").textContent=error?error.message:"تم حفظ الإعدادات.");});
