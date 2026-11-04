@@ -19,6 +19,14 @@ alter table public.enhar_sales_payments
  check(payment_method in ('CASH','CARD','BANK_TRANSFER','WALLET'));
 
 alter table public.enhar_sales_invoices add column if not exists seller_staff_id uuid;
+do $
+begin
+ if not exists(select 1 from pg_constraint where conname='enhar_sales_invoice_seller_staff_fk') then
+  alter table public.enhar_sales_invoices
+   add constraint enhar_sales_invoice_seller_staff_fk
+   foreign key(company_id,seller_staff_id) references public.enhar_staff(company_id,id);
+ end if;
+end $;
 
 create or replace function public.enhar_post_pos_invoice_with_wallet(
  p_company_id uuid,p_branch_id uuid,p_cash_session_id uuid,p_customer_id uuid,
@@ -88,6 +96,6 @@ begin
 end $$;
 
 revoke all on function public.enhar_post_pos_invoice_with_wallet(uuid,uuid,uuid,uuid,text,jsonb,numeric,uuid) from public,anon;
-grant execute on function public.enhar_post_pos_invoice_with_wallet(uuid,uuid,uuid,uuid,text,jsonb,numeric) to authenticated;
+grant execute on function public.enhar_post_pos_invoice_with_wallet(uuid,uuid,uuid,uuid,text,jsonb,numeric,uuid) to authenticated;
 commit;
 notify pgrst, 'reload schema';
