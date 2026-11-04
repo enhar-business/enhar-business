@@ -560,6 +560,41 @@ async function createPlatformCompany(){
  }catch(e){msg.textContent="لم يتم إنشاء الشركة: "+(e.message||"خطأ غير معروف");}
  finally{button.disabled=false;}
 }
+async function loadSuppliersAndPurchases(){
+ const {data,error}=await supabaseClient.from("enhar_suppliers").select("id,supplier_code,name,phone,opening_balance,is_active").eq("company_id",activeCompanyId).order("name");
+ if(error)throw error;window.enharSuppliers=data||[];
+ const opts=window.enharSuppliers.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name)+' · '+escapeHTML(x.supplier_code)+'</option>').join("");
+ const sel=document.getElementById("purchaseSupplier");if(sel)sel.innerHTML=opts;
+ document.getElementById("supplierRows").innerHTML=window.enharSuppliers.map(x=>'<tr><td>'+escapeHTML(x.supplier_code)+'</td><td>'+escapeHTML(x.name)+'</td><td>'+escapeHTML(x.phone||"—")+'</td><td>'+money(x.opening_balance)+'</td><td>'+(x.is_active?"نشط":"موقوف")+'</td></tr>').join("")||'<tr><td colspan="5" class="empty">لا يوجد موردون.</td></tr>';
+ await loadPurchaseInvoices();
+}
+async function saveSupplierRecord(){
+ const code=document.getElementById("supplierCode").value.trim(),name=document.getElementById("supplierName").value.trim();
+ if(!code||!name){document.getElementById("supplierMessage").textContent="رمز المورد والاسم مطلوبان.";return;}
+ const row={company_id:activeCompanyId,supplier_code:code,name,phone:document.getElementById("supplierPhone").value.trim()||null,email:document.getElementById("supplierEmail").value.trim()||null,vat_number:document.getElementById("supplierVat").value.trim()||null,opening_balance:Number(document.getElementById("supplierOpening").value||0)};
+ const {error}=await supabaseClient.from("enhar_suppliers").insert(row);
+ document.getElementById("supplierMessage").textContent=error?"تعذر حفظ المورد: "+error.message:"تم حفظ المورد.";
+ if(!error){["supplierCode","supplierName","supplierPhone","supplierEmail","supplierVat"].forEach(id=>document.getElementById(id).value="");await loadSuppliersAndPurchases();}
+}
+async function loadPurchaseInvoices(){
+ const {data,error}=await supabaseClient.from("enhar_purchase_invoices").select("id,invoice_number,invoice_date,supplier_id,grand_total,status").eq("company_id",activeCompanyId).order("invoice_date",{ascending:false}).limit(200);
+ if(error)throw error;
+ const suppliers=Object.fromEntries((window.enharSuppliers||[]).map(x=>[x.id,x.name]));
+ document.getElementById("purchaseRows").innerHTML=(data||[]).map(x=>'<tr><td>'+escapeHTML(x.invoice_number)+'</td><td>'+escapeHTML(x.invoice_date)+'</td><td>'+escapeHTML(suppliers[x.supplier_id]||"—")+'</td><td>'+money(x.grand_total)+'</td><td>'+escapeHTML(x.status)+'</td></tr>').join("")||'<tr><td colspan="5" class="empty">لا توجد فواتير مشتريات.</td></tr>';
+}
+async function createPurchaseInvoice(){
+ const number=document.getElementById("purchaseNumber").value.trim(),branch=document.getElementById("purchaseBranch").value,warehouse=document.getElementById("purchaseWarehouse").value,product=document.getElementById("purchaseProduct").value;
+ const qty=Number(document.getElementById("purchaseQty").value),cost=Number(document.getElementById("purchaseCost").value),taxRate=Number(document.getElementById("purchaseTax").value||0);
+ if(!number||!branch||!warehouse||!product||!Number.isFinite(qty)||qty<=0||!Number.isFinite(cost)||cost<0||taxRate<0||taxRate>100){document.getElementById("purchaseMessage").textContent="أكمل رقم الفاتورة والفرع والمستودع والصنف والكمية والتكلفة والضريبة.";return;}
+ const subtotal=qty*cost,tax=Math.round(subtotal*taxRate)/100,grand=subtotal+tax;
+ const {data:header,error:he}=await supabaseClient.from("enhar_purchase_invoices").insert({company_id:activeCompanyId,branch_id:branch,warehouse_id:warehouse,supplier_id:document.getElementById("purchaseSupplier").value||null,invoice_number:number,supplier_invoice_number:document.getElementById("purchaseSupplierNumber").value.trim()||null,invoice_date:document.getElementById("purchaseDate").value||today,status:"DRAFT",subtotal,tax_total:tax,grand_total:grand,notes:document.getElementById("purchaseNotes").value.trim()||null}).select("id").single();
+ if(he){document.getElementById("purchaseMessage").textContent="تعذر حفظ الفاتورة: "+he.message;return;}
+ const {error:le}=await supabaseClient.from("enhar_purchase_invoice_lines").insert({company_id:activeCompanyId,invoice_id:header.id,product_id:product,description:(window.enharProducts.find(x=>x.id===product)||{}).name_ar||null,quantity:qty,unit_cost:cost,discount:0,tax_rate:taxRate,line_total:grand});
+ if(le){document.getElementById("purchaseMessage").textContent="حُفظت مسودة الفاتورة لكن تعذر حفظ الصنف: "+le.message;return;}
+ const {error}=await supabaseClient.rpc("enhar_post_purchase_invoice",{p_company_id:activeCompanyId,p_invoice_id:header.id});
+ document.getElementById("purchaseMessage").textContent=error?"حُفظت المسودة ولم تُرحّل: "+error.message:"تم ترحيل فاتورة الشراء وتحديث المخزون. الإجمالي: "+money(grand);
+ if(!error){document.getElementById("purchaseNumber").value="";await loadPurchaseInvoices();await loadStockBalances();}
+}
 async function loadOperationalForms(){
  if(!activeCompanyId)return;
  const [staffR,customersR,productsR,warehousesR]=await Promise.all([
@@ -584,7 +619,11 @@ async function loadOperationalForms(){
  ["voucherProduct","countProduct"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=productOptions;});
  const warehouseOptions=window.enharWarehouses.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
  ["stockWarehouse","voucherWarehouse","countWarehouse"].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=warehouseOptions;});
- await Promise.all([loadStaffRows(),loadCustomerRows(),loadAppointments(),loadStockVouchers(),loadStockBalances()]);
+ await Promise.all([loadStaffRows(),loadCustomerRows(),loadAppointments(),loadStockVouchers(),loadStockBalances(),loadSuppliersAndPurchases()]);
+ const wh=window.enharWarehouses[0]?.id||"";["purchaseWarehouse","stockWarehouse","voucherWarehouse","countWarehouse"].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=wh;});
+ const prods=window.enharProducts.filter(x=>x.item_type==="PRODUCT").map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");const purchaseProduct=document.getElementById("purchaseProduct");if(purchaseProduct)purchaseProduct.innerHTML=prods;
+ const purchaseBranch=document.getElementById("purchaseBranch");if(purchaseBranch)purchaseBranch.innerHTML=dashboardBranches.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ document.getElementById("purchaseDate").value=today;
 }
 async function loadStaffRows(){
  const {data,error}=await supabaseClient.from("enhar_staff").select("id,employee_code,full_name,staff_type,branch_id,can_perform_services,can_be_cashier,is_active").eq("company_id",activeCompanyId).order("full_name");
@@ -918,6 +957,8 @@ document.getElementById("catalogSearch")?.addEventListener("input",e=>{const q=e
 document.getElementById("clearCatalogForm")?.addEventListener("click",()=>{["catalogName","catalogSku","catalogBarcode","catalogImage","catalogDescription"].forEach(id=>document.getElementById(id).value="");});
 
 function toggleMenu(){document.getElementById("sidebar").classList.toggle("open");}
+document.getElementById("saveSupplier")?.addEventListener("click",()=>saveSupplierRecord().catch(e=>document.getElementById("supplierMessage").textContent=e.message));
+document.getElementById("savePurchaseInvoice")?.addEventListener("click",()=>createPurchaseInvoice().catch(e=>document.getElementById("purchaseMessage").textContent=e.message));
 document.getElementById("saveStaff")?.addEventListener("click",()=>saveStaffRecord().catch(e=>document.getElementById("staffMessage").textContent=e.message));
 document.getElementById("saveStaffPermission")?.addEventListener("click",()=>saveStaffPermissionRecord().catch(e=>document.getElementById("permissionMessage").textContent=e.message));
 document.getElementById("saveCustomer")?.addEventListener("click",()=>saveCustomerRecord().catch(e=>document.getElementById("customerMessage").textContent=e.message));
