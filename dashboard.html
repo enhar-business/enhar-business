@@ -460,7 +460,8 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 <section class="page" id="bundles"><div class="page-heading"><div><h1>المنتجات المركبة</h1><p>قائمة الأصناف التي تم تعريفها كمنتج مركب.</p></div></div><div class="panel"><div id="bundleRows" class="empty">جارٍ التحميل</div></div></section></main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
 (function(){
  const key="enhar-business-theme";
  function setTheme(mode){
@@ -473,7 +474,6 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
  setTheme(saved==="light"?"light":"dark");
  document.getElementById("themeToggle")?.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
 })();
-
 </script>
 <script>
 const SUPABASE_URL="https://bibkxfdtmweotjtdrfsg.supabase.co",SUPABASE_PUBLISHABLE_KEY="sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB";
