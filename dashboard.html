@@ -230,10 +230,12 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
     <div class="menu-title">الرئيسية</div>
     <button class="active" data-page="dashboard"><span class="ico">⌂</span>لوحة التحكم</button>
 
-    <div class="menu-title">إدارة المنصة</div>
-    <button data-page="platform-companies"><span class="ico">🏢</span>الشركات والتجارب</button>
-    <button type="button" onclick="location.href='./billing.html'"><span class="ico">💳</span>الاشتراك والدفع</button>
-    <button type="button" onclick="location.href='./platform-subscriptions.html'"><span class="ico">⚙️</span>إدارة الباقات والمشتركين</button>
+    <div class="menu-title" id="platformAdminMenuTitle" data-platform-admin-only>إدارة المنصة</div>
+    <button data-page="platform-companies" data-platform-admin-only><span class="ico">🏢</span>الشركات والتجارب</button>
+    <button type="button" onclick="location.href='./platform-subscriptions.html'" data-platform-admin-only><span class="ico">⚙️</span>إدارة الباقات والمشتركين</button>
+
+    <div class="menu-title" id="companyBillingMenuTitle" data-company-admin-only>حساب المنشأة</div>
+    <button type="button" onclick="location.href='./billing.html'" data-company-admin-only><span class="ico">💳</span>اشتراكي والدفع</button>
 
     <div class="menu-title">إدارة الأعمال</div>
     <div class="menu-group open">
@@ -738,8 +740,10 @@ async function protectDashboard(){
  document.getElementById("signedInEmail").textContent=session.user.email||(isPlatformAdmin?"Super Admin":"مستخدم");
  const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
  if(!isPlatformAdmin&&!members?.length){await supabaseClient.auth.signOut();location.replace("./index.html");return;}
- const platformNav=document.querySelector('[data-page="platform-companies"]');
- if(platformNav)platformNav.style.display=isPlatformAdmin?"flex":"none";
+ document.querySelectorAll("[data-platform-admin-only]").forEach(el=>{el.style.display=isPlatformAdmin?(el.classList.contains("menu-title")?"block":"flex"):"none";});
+ const companyRole=String(members?.[0]?.role||"").toUpperCase();
+ const canManageBilling=members?.length>0&&["OWNER","ADMIN"].includes(companyRole);
+ document.querySelectorAll("[data-company-admin-only]").forEach(el=>{el.style.display=canManageBilling?(el.classList.contains("menu-title")?"block":"flex"):"none";});
  if(!members?.length){
    activeCompanyId=null;
    setDashStatus("لا توجد منشأة مرتبطة بهذا الحساب. استخدم إدارة المنصة لإنشاء شركة وربط مالكها.");
