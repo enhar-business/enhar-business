@@ -154,6 +154,33 @@ td{color:#e8e1d2}
 .badge-open{color:#6ed6a0}.badge-closed{color:#e9c36f}.badge-diff{color:#e46b6b}
 @media(max-width:850px){.module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.module-grid{grid-template-columns:1fr}}
+
+/* Professional ENHAR POS */
+#pos.page.active{display:block;background:#f4f6f8;color:#17212b;margin:-28px;padding:22px;min-height:calc(100vh - 75px)}
+#pos .pos-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+#pos .pos-heading h1{color:#1c2833;margin:0 0 6px;font-size:24px}#pos .pos-heading p{color:#718096;margin:0;font-size:12px}
+.pos-live{font-size:12px;color:#16836e;background:#e4f5ef;padding:9px 13px;border-radius:20px}.pos-live span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#20a879;margin-left:6px}
+.pos-topbar{display:grid;grid-template-columns:1fr 1.2fr 1fr 1fr;gap:10px;background:white;padding:13px;border:1px solid #e3e8ed;border-radius:12px;margin-bottom:14px}
+#pos .field label{color:#718096}#pos .field input,#pos .field select{background:#fff;color:#1b2732;border:1px solid #dce3e8;padding:10px}
+.pos-workspace{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px;align-items:stretch}
+.pos-catalog,.pos-cart{background:white;border:1px solid #e0e6eb;border-radius:12px;padding:15px;min-width:0}
+.pos-controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pos-tabs{display:flex;background:#f0f2f5;border-radius:9px;padding:3px;gap:3px}.pos-tabs button{border:0;background:transparent;padding:9px 17px;border-radius:7px;color:#425466;font-size:13px}.pos-tabs button.active{background:#078b86;color:white;font-weight:bold}
+.pos-categories{display:flex;gap:8px;overflow-x:auto;padding:3px 0 12px;margin-bottom:8px}
+.pos-cat{white-space:nowrap;border:1px solid #dce3e8;border-radius:20px;padding:8px 14px;background:white;color:#455463;font-size:12px}.pos-cat.active{background:#e2f5f3;border-color:#078b86;color:#087d78}
+.pos-search{display:flex;align-items:center;gap:9px;background:#f5f7f9;border:1px solid #e5eaee;border-radius:9px;padding:0 12px;margin-bottom:14px}.pos-search span{font-size:23px;color:#078b86}.pos-search input{flex:1;border:0!important;background:transparent!important;padding:13px 4px!important;color:#17212b!important;outline:none}.pos-search kbd{font-size:10px;color:#82909d;background:white;border:1px solid #e1e6ea;border-radius:4px;padding:3px 6px}
+.pos-item-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pos-item{border:1px solid #e3e8ec;border-radius:10px;overflow:hidden;background:#fff;cursor:pointer;transition:.15s;text-align:right;color:#1e2934;padding:0}.pos-item:hover{border-color:#078b86;box-shadow:0 5px 16px #1232;transform:translateY(-2px)}
+.pos-item img{width:100%;height:105px;object-fit:cover;background:#f3f5f7;display:block}.pos-item .pos-item-noimage{height:105px;display:grid;place-items:center;background:#f4f6f8;color:#a0aab4;font-size:30px}
+.pos-item-info{padding:9px}.pos-item-info b{display:block;font-size:12px;min-height:34px;line-height:1.5}.pos-item-info small{display:block;color:#078b86;font-weight:bold;margin-top:5px}
+.pos-cart{display:flex;flex-direction:column;min-height:590px}.cart-heading{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #edf0f2;padding-bottom:12px}.cart-heading h2{font-size:17px;margin:0;color:#1e2934}.cart-heading small{color:#8a96a2;display:block;margin-top:4px}
+.cart-lines{flex:1;min-height:220px;max-height:430px;overflow:auto}.cart-empty{height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#a3adb7;gap:10px;font-size:28px}.cart-empty b{font-size:14px;color:#667481}.cart-empty small{font-size:11px}
+.cart-line{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 0;border-bottom:1px solid #edf0f2}.cart-line b{font-size:12px;color:#293744}.cart-line small{display:block;color:#84919d;margin-top:4px;font-size:11px}.cart-line-actions{display:flex;align-items:center;gap:5px}.cart-line-actions button{width:27px;height:27px;border:1px solid #dfe5e9;border-radius:6px;background:white;color:#334}.cart-line-actions strong{min-width:20px;text-align:center;font-size:12px}.cart-line-price{font-size:12px;font-weight:bold;color:#087d78;text-align:left;margin-top:7px}
+.cart-summary{border-top:1px solid #e8edf0;padding-top:12px}.cart-summary>div{display:flex;justify-content:space-between;padding:6px 0;font-size:12px;color:#71808d}.cart-summary b{color:#263541}.cart-total{border-top:1px dashed #dce3e8;margin-top:6px;padding-top:12px!important;font-size:15px!important}.cart-total b{font-size:20px;color:#087d78}
+.pos-pay{width:100%;padding:14px;border:0;border-radius:9px;background:#078b86;color:white;font-weight:bold;margin-top:13px}.pos-pay:disabled{background:#dce2e4;color:#82909a;cursor:not-allowed}.pos-footnote{font-size:10px;color:#8c99a4;line-height:1.7;margin:9px 0 0}
+@media(max-width:1150px){.pos-workspace{grid-template-columns:minmax(0,1fr) 320px}.pos-item-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:850px){.pos-topbar{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-workspace{grid-template-columns:1fr}.pos-cart{min-height:400px;order:2}.pos-item-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:520px){#pos.page.active{margin:-18px -13px;padding:12px}.pos-topbar{grid-template-columns:1fr}.pos-item-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pos-controls{align-items:stretch;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -363,7 +390,34 @@ td{color:#e8e1d2}
 
 <div class="footer">ENHAR BUSINESS © 2026 — منصة الأعمال والمحاسبة</div>
 </div>
-<section class="page" id="pos"><div class="page-heading"><div><h1>شاشة البيع</h1><p>اختر الفرع والصندوق ونوع البيع، ثم ابحث عن المنتج أو الخدمة.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>الفرع</label><select id="posBranch"></select></div><div class="field"><label>الصندوق</label><select id="posCashSession"><option value="">اختر جلسة مفتوحة</option></select></div><div class="field"><label>نوع البيع</label><select id="posSaleType"><option value="RETAIL">تجزئة</option><option value="WHOLESALE">جملة</option></select></div><div class="field"><label>نوع العناصر</label><select id="posItemType"><option value="PRODUCT">المنتجات</option><option value="SERVICE">الخدمات</option></select></div><div class="field"><label>الفئة</label><select id="posCategory"><option value="">كل الفئات</option></select></div><div class="field"><label>بحث / باركود</label><input id="posSearch" placeholder="ابحث بالاسم أو امسح الباركود"></div></div><div class="form-actions"><button class="primary" id="loadPosItems">عرض الأصناف</button></div><div class="module-grid" id="posItemCards"></div><p id="posMessage" class="notice">هذه النسخة تعرض الأصناف النشطة من قاعدة البيانات. ترحيل الفاتورة والمخزون يحتاج إجراء محاسبي آمن قبل تفعيل الدفع.</p></div></section>
+<section class="page" id="pos">
+ <div class="pos-heading"><div><h1>شاشة البيع</h1><p>نقطة بيع ENHAR · المنتجات والخدمات والفواتير</p></div><div class="pos-live"><span></span> متصل بقاعدة البيانات</div></div>
+ <div class="pos-topbar">
+  <div class="field"><label>الفرع</label><select id="posBranch"></select></div>
+  <div class="field"><label>جلسة الصندوق المفتوحة</label><select id="posCashSession"><option value="">اختر جلسة مفتوحة</option></select></div>
+  <div class="field"><label>العميل</label><input id="posCustomer" placeholder="اسم العميل أو رقم الجوال"></div>
+  <div class="field"><label>البائع / الأخصائية</label><input id="posSeller" placeholder="ابحث عن الموظف"></div>
+ </div>
+ <div class="pos-workspace">
+  <div class="pos-catalog">
+   <div class="pos-controls">
+    <div class="pos-tabs"><button class="active" data-pos-type="SERVICE">الخدمات</button><button data-pos-type="PRODUCT">المنتجات</button></div>
+    <div class="pos-tabs"><button class="active" data-pos-sale="RETAIL">التجزئة</button><button data-pos-sale="WHOLESALE">الجملة</button></div>
+   </div>
+   <div class="pos-categories" id="posCategoryChips"></div>
+   <div class="pos-search"><span>⌕</span><input id="posSearch" placeholder="ابحث باسم المنتج أو الخدمة أو امسح الباركود..."><kbd>Enter</kbd></div>
+   <div class="pos-item-grid" id="posItemCards"></div>
+   <p id="posMessage" class="pos-footnote">الأصناف المعروضة تُحمّل من كتالوج المنشأة.</p>
+  </div>
+  <aside class="pos-cart">
+   <div class="cart-heading"><div><h2>فاتورة البيع</h2><small id="posCartCount">0 أصناف</small></div><button class="secondary" id="clearPosCart">تفريغ</button></div>
+   <div class="cart-lines" id="posCartLines"><div class="cart-empty">🛒<b>السلة فارغة</b><small>اختر منتجاً أو خدمة لإضافتهما للفاتورة</small></div></div>
+   <div class="cart-summary"><div><span>الإجمالي قبل الضريبة</span><b id="posSubtotal">0.00 ر.س</b></div><div><span>الضريبة</span><b id="posTax">تحسب حسب إعداد الضريبة</b></div><div class="cart-total"><span>الإجمالي</span><b id="posTotal">0.00 ر.س</b></div></div>
+   <button class="pos-pay" id="posCheckout" disabled>الدفع وإصدار الفاتورة</button>
+   <small class="pos-footnote" id="posCheckoutNote">سيتم تفعيل الترحيل بعد استكمال ربط الفاتورة والمخزون والقيود المحاسبية.</small>
+  </aside>
+ </div>
+</section>
 <section class="page" id="invoice-settings"><div class="page-heading"><div><h1>إعدادات الفواتير والطباعة</h1><p>حفظ تفضيلات الطباعة لكل منشأة.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>حجم الورق</label><select id="printSize"><option value="A4">A4</option><option value="THERMAL_80">حراري 80 مم</option><option value="THERMAL_58">حراري 58 مم</option></select></div><div class="field"><label>اسم المنشأة في الفاتورة</label><input id="printCompanyName"></div><div class="field"><label>الرقم الضريبي</label><input id="printVat"></div><div class="field"><label>السجل التجاري</label><input id="printCr"></div><div class="field"><label>العنوان</label><input id="printAddress"></div><div class="field"><label>نص أسفل الفاتورة</label><input id="printFooter"></div></div><div class="form-actions"><button class="primary" id="savePrintSettings">حفظ الإعدادات</button></div><p id="printMessage" class="notice"></p></div></section>
 <section class="page" id="promotions"><div class="page-heading"><div><h1>التسويق والعروض</h1><p>تعريف عروض مرتبطة بمنتجات أو خدمات وفترة صلاحية.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>اسم العرض</label><input id="promoName"></div><div class="field"><label>نوع العرض</label><select id="promoType"><option value="PERCENT">خصم نسبة مئوية</option><option value="FIXED">خصم مبلغ ثابت</option><option value="PRICE">سعر خاص</option></select></div><div class="field"><label>قيمة العرض</label><input id="promoValue" type="number" min="0" step=".01"></div><div class="field"><label>يبدأ</label><input id="promoStart" type="date"></div><div class="field"><label>ينتهي</label><input id="promoEnd" type="date"></div><div class="field"><label>الفرع</label><select id="promoBranch"><option value="">كل الفروع</option></select></div></div><div class="form-actions"><button class="primary" id="savePromo">حفظ العرض</button></div><p id="promoMessage" class="notice"></p></div><div class="panel"><h2>العروض المسجلة</h2><div id="promoRows" class="empty">جارٍ التحميل</div></div></section>
 <section class="page" id="services"><div class="page-heading"><div><h1>قائمة الخدمات</h1><p>عرض الخدمات فقط من كتالوج المنشأة.</p></div><button class="primary" onclick="showPage('products')">إضافة خدمة</button></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الرمز</th><th>الفئة</th><th>السعر</th><th>حالة الحجوزات</th></tr></thead><tbody id="serviceRows"></tbody></table></div></div></section>
@@ -520,10 +574,30 @@ async function loadPosFilters(){
  document.getElementById("posCashSession").innerHTML='<option value="">اختر جلسة مفتوحة</option>'+(sessions.data||[]).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.cashbox_id)+'</option>').join("");
  document.getElementById("posBranch").innerHTML=dashboardBranches.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
 }
+window.posCart=[];
+function renderPosCategories(){
+ const typ=document.getElementById("posItemType").value,cat=document.getElementById("posCategory");
+ const opts=[...cat.options];document.getElementById("posCategoryChips").innerHTML='<button class="pos-cat '+(!cat.value?'active':'')+'" data-cat="">الكل</button>'+opts.filter(o=>o.value).map(o=>'<button class="pos-cat '+(cat.value===o.value?'active':'')+'" data-cat="'+o.value+'">'+escapeHTML(o.textContent)+'</button>').join("");
+ document.querySelectorAll("[data-cat]").forEach(b=>b.addEventListener("click",()=>{cat.value=b.dataset.cat;renderPosCategories();renderPosItems();}));
+}
 function renderPosItems(){
- const typ=document.getElementById("posItemType").value,cat=document.getElementById("posCategory").value,q=document.getElementById("posSearch").value.toLowerCase(),sale=document.getElementById("posSaleType").value;
- const items=(window.posCatalog||[]).filter(x=>x.item_type===typ&&x.show_in_pos!==false&&(!cat||x.category_id===cat)&&(sale==="RETAIL"?x.allow_retail:x.allow_wholesale)&&[x.name_ar,x.sku,x.barcode].some(v=>(v||"").toLowerCase().includes(q)));
- document.getElementById("posItemCards").innerHTML=items.length?items.map(x=>'<div class="module-card">'+(x.image_url?'<img src="'+escapeHTML(x.image_url)+'" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:8px">':"")+'<b>'+escapeHTML(x.name_ar)+'</b><small>'+escapeHTML(x.sku)+' · '+money(sale==="RETAIL"?x.sale_price:x.wholesale_price)+'</small></div>').join(""):'<div class="empty">لا توجد أصناف مطابقة. تأكد من الفئة وخيارات الظهور.</div>';
+ const typ=document.getElementById("posItemType").value,cat=document.getElementById("posCategory").value,q=document.getElementById("posSearch").value.trim().toLowerCase(),sale=document.getElementById("posSaleType").value;
+ const items=(window.posCatalog||[]).filter(x=>x.item_type===typ&&x.show_in_pos!==false&&(!cat||x.category_id===cat)&&(sale==="RETAIL"?x.allow_retail!==false:x.allow_wholesale===true)&&[x.name_ar,x.sku,x.barcode].some(v=>(v||"").toLowerCase().includes(q)));
+ document.getElementById("posItemCards").innerHTML=items.length?items.map(x=>'<button type="button" class="pos-item" onclick="addPosItem(\''+x.id+'\')">'+(x.image_url?'<img src="'+escapeHTML(x.image_url)+'" alt="">':'<div class="pos-item-noimage">✧</div>')+'<div class="pos-item-info"><b>'+escapeHTML(x.name_ar)+'</b><small>'+money(sale==="RETAIL"?x.sale_price:x.wholesale_price)+'</small></div></button>').join(""):'<div class="empty">لا توجد أصناف مطابقة في هذه الفئة.</div>';
+ renderPosCategories();
+}
+function addPosItem(id){
+ const item=(window.posCatalog||[]).find(x=>x.id===id);if(!item)return;
+ const sale=document.getElementById("posSaleType").value,price=Number(sale==="RETAIL"?item.sale_price:item.wholesale_price||item.sale_price||0);
+ const line=window.posCart.find(x=>x.id===id);if(line)line.qty++;else window.posCart.push({id:item.id,name:item.name_ar,sku:item.sku,price,qty:1});
+ renderPosCart();
+}
+function changePosQty(id,delta){const x=window.posCart.find(i=>i.id===id);if(!x)return;x.qty+=delta;if(x.qty<=0)window.posCart=window.posCart.filter(i=>i.id!==id);renderPosCart();}
+function renderPosCart(){
+ const rows=window.posCart;const sub=rows.reduce((a,x)=>a+x.price*x.qty,0);
+ document.getElementById("posCartCount").textContent=rows.reduce((a,x)=>a+x.qty,0)+" وحدات";
+ document.getElementById("posCartLines").innerHTML=rows.length?rows.map(x=>'<div class="cart-line"><div><b>'+escapeHTML(x.name)+'</b><small>'+escapeHTML(x.sku||"")+' · '+money(x.price)+'</small><div class="cart-line-price">'+money(x.price*x.qty)+'</div></div><div class="cart-line-actions"><button onclick="changePosQty(\''+x.id+'\',-1)">−</button><strong>'+x.qty+'</strong><button onclick="changePosQty(\''+x.id+'\',1)">+</button></div></div>').join(""):'<div class="cart-empty">🛒<b>السلة فارغة</b><small>اختر منتجاً أو خدمة لإضافتهما للفاتورة</small></div>';
+ document.getElementById("posSubtotal").textContent=money(sub);document.getElementById("posTotal").textContent=money(sub);document.getElementById("posCheckout").disabled=!rows.length;
 }
 async function loadCatalogSubpages(){
  const {data,error}=await supabaseClient.from("enhar_products").select("id,name_ar,sku,item_type,category_id,sale_price,show_in_booking,is_bundle").eq("company_id",activeCompanyId).eq("is_active",true);if(error)throw error;
@@ -544,8 +618,12 @@ document.querySelectorAll(".group-toggle").forEach(b=>b.addEventListener("click"
 document.getElementById("filterCash")?.addEventListener("click",()=>loadCashSessions().catch(e=>alert(e.message)));
 document.getElementById("filterInvoices")?.addEventListener("click",()=>loadRealInvoices().catch(e=>alert(e.message)));
 document.getElementById("saveCashSettings")?.addEventListener("click",saveCashSettings);
-document.getElementById("loadPosItems")?.addEventListener("click",()=>{loadPosFilters().then(renderPosItems).catch(e=>document.getElementById("posMessage").textContent=e.message);});
-["posItemType","posCategory","posSaleType","posSearch"].forEach(id=>document.getElementById(id)?.addEventListener("change",()=>{if(id==="posItemType")loadPosFilters().then(renderPosItems);else renderPosItems();}));
+document.querySelectorAll("[data-pos-type]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-pos-type]").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("posItemType").value=b.dataset.posType;loadPosFilters().then(renderPosItems).catch(e=>document.getElementById("posMessage").textContent=e.message);}));
+document.querySelectorAll("[data-pos-sale]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-pos-sale]").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("posSaleType").value=b.dataset.posSale;renderPosItems();}));
+["posItemType","posCategory","posSaleType","posSearch"].forEach(id=>document.getElementById(id)?.addEventListener(id==="posSearch"?"input":"change",()=>{if(id==="posItemType")loadPosFilters().then(renderPosItems);else renderPosItems();}));
+document.getElementById("clearPosCart")?.addEventListener("click",()=>{window.posCart=[];renderPosCart();});
+document.getElementById("posCheckout")?.addEventListener("click",()=>{document.getElementById("posCheckoutNote").textContent="لم يتم ترحيل الفاتورة: نحتاج أولاً ربط تفاصيل الفاتورة والمخزون والضريبة والصندوق داخل معاملة قاعدة بيانات واحدة.";});
+
 document.getElementById("createCashbox")?.addEventListener("click",()=>createCashbox().catch(e=>document.getElementById("cashCreateMessage").textContent=e.message));document.getElementById("openCashSession")?.addEventListener("click",()=>openCashSession().catch(e=>document.getElementById("cashOpenMessage").textContent=e.message));
 document.getElementById("savePrintSettings")?.addEventListener("click",()=>{const row={company_id:activeCompanyId,paper_size:document.getElementById("printSize").value,company_name:document.getElementById("printCompanyName").value,vat_number:document.getElementById("printVat").value,commercial_registration:document.getElementById("printCr").value,address:document.getElementById("printAddress").value,footer_text:document.getElementById("printFooter").value};supabaseClient.from("enhar_invoice_settings").upsert(row,{onConflict:"company_id"}).then(({error})=>document.getElementById("printMessage").textContent=error?error.message:"تم حفظ الإعدادات.");});
 document.getElementById("savePromo")?.addEventListener("click",()=>{const row={company_id:activeCompanyId,name:document.getElementById("promoName").value,type:document.getElementById("promoType").value,value:Number(document.getElementById("promoValue").value||0),starts_on:document.getElementById("promoStart").value||null,ends_on:document.getElementById("promoEnd").value||null,branch_id:document.getElementById("promoBranch").value||null};supabaseClient.from("enhar_promotions").insert(row).then(({error})=>document.getElementById("promoMessage").textContent=error?error.message:"تم حفظ العرض.");});
