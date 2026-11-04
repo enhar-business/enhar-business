@@ -530,9 +530,13 @@ async function createPlatformCompany(){
 async function protectDashboard(){
  try{
  const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session){location.replace("./index.html");return;}currentUser=session.user;
- const {data:role,error:re}=await supabaseClient.rpc("is_platform_admin");if(re||role!==true){await supabaseClient.auth.signOut();location.replace("./index.html");return;}
- document.getElementById("signedInEmail").textContent=session.user.email||"Super Admin";
+ const {data:role,error:re}=await supabaseClient.rpc("is_platform_admin");if(re)throw re;
+ const isPlatformAdmin=role===true;
+ document.getElementById("signedInEmail").textContent=session.user.email||(isPlatformAdmin?"Super Admin":"مستخدم");
  const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
+ if(!isPlatformAdmin&&!members?.length){await supabaseClient.auth.signOut();location.replace("./index.html");return;}
+ const platformNav=document.querySelector('[data-page="platform-companies"]');
+ if(platformNav)platformNav.style.display=isPlatformAdmin?"flex":"none";
  if(!members?.length){
    activeCompanyId=null;
    setDashStatus("لا توجد منشأة مرتبطة بهذا الحساب. استخدم إدارة المنصة لإنشاء شركة وربط مالكها.");
@@ -762,7 +766,7 @@ document.getElementById("dashFrom").value=today;document.getElementById("dashTo"
 </script>
 <script>
 const titles={
- dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",
+ dashboard:"لوحة التحكم","platform-companies":"إدارة الشركات والتجارب",sales:"المبيعات والفواتير",purchases:"المشتريات",
  products:"المنتجات والخدمات",inventory:"المخزون والمستودعات",
  customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",
  reports:"التقارير",employees:"الموظفون والصلاحيات",
