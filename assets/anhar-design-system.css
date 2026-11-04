@@ -1,8 +1,8 @@
 /* ANHAR Design System — v1 */
 :root{
- --an-bg:#09071d;--an-surface:#100d2b;--an-surface-2:#17123a;--an-line:#30265a;
- --an-text:#f7f5ff;--an-muted:#aaa2c9;--an-purple:#8b45ff;--an-purple-2:#6535dc;
- --an-blue:#287cff;--an-cyan:#52c8ff;--an-gold:#d9b76a;--an-radius:18px;
+ --an-bg:#17152D;--an-surface:#211f3e;--an-surface-2:#37316B;--an-line:#37316B;
+ --an-text:#f7f5ff;--an-muted:#aaa2c9;--an-purple:#37316B;--an-purple-2:#5b529f;
+ --an-blue:#8374E8;--an-cyan:#a69bf1;--an-gold:#D4AF37;--an-radius:18px;
  --an-shadow:0 14px 40px rgba(3,2,18,.22);
 }
 html,body{background:var(--an-bg)!important;color:var(--an-text)!important;font-family:Tahoma,Arial,sans-serif}
@@ -86,3 +86,6 @@ th{color:#a99dc8!important}
 #pos .pos-search{background:#0c0923!important;border-color:#493776!important}
 #pos .pos-search input{color:#fff!important}
 #pos .pos-footnote,#pos .cart-heading small{color:#aaa0ca!important}
+
+/* Official palette from ANHAR specification */
+:root{--an-bg:#17152D;--an-surface:#211f3e;--an-surface-2:#37316B;--an-line:#37316B;--an-text:#F9FAFB;--an-muted:#c4c0d8;--an-purple:#37316B;--an-purple-2:#5b529f;--an-blue:#8374E8;--an-cyan:#a69bf1;--an-gold:#D4AF37}
