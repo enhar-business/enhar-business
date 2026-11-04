@@ -470,216 +470,174 @@
   <script>
     const SUPABASE_URL = "https://bibkxfdtmweotjtdrfsg.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+    let supabaseClient = null;
+    let currentLanguage = "ar";
     const text = {
-      ar: {
-        dir: "rtl",
-        brandTitle: "إنهار للأعمال والمحاسبة",
-        tagline: "أعمالك تستحق إدارة أكثر ذكاءً",
-        description: "كل أعمالك في مكان واحد...<br>من المبيعات والمشتريات إلى المخزون والحسابات والتقارير.<br>تحكّم أكبر، قرارات أوضح، ونمو بثقة.",
-        features: ["إدارة المبيعات", "المحاسبة", "المخزون", "إدارة الفروع"],
-        welcome: "مرحباً بعودتك 👋",
-        welcomeText: "سجّل الدخول إلى حساب شركتك وابدأ بإدارة أعمالك بكل سهولة.",
-        identityLabel: "رقم الجوال أو البريد الإلكتروني",
-        identityPlaceholder: "أدخل رقم الجوال أو البريد الإلكتروني",
-        passwordLabel: "كلمة المرور",
-        passwordPlaceholder: "أدخل كلمة المرور",
-        show: "إظهار",
-        hide: "إخفاء",
-        remember: "تذكرني",
-        forgot: "نسيت كلمة المرور؟",
-        login: "تسجيل الدخول",
-        register: "ليس لديك حساب؟",
-        registerLink: "اطلب إنشاء حساب شركتك",
-        footer: "منصة الأعمال والمحاسبة",
-        copyright: "جميع الحقوق محفوظة © 2026",
-        loginNotice: "هذه واجهة تسجيل الدخول فقط. لم يتم ربطها بعد بخادم الحسابات وقاعدة البيانات، لذلك لن يتم تسجيل الدخول فعلياً حتى تكتمل مرحلة الربط.",
-        forgotNotice: "سيتم تفعيل استعادة كلمة المرور بعد ربط خدمة الحسابات.",
-        registerNotice: "لطلب حساب شركة، استخدم رابط التواصل أو تواصل مع إدارة ENHAR BUSINESS."
+      ar: { dir:"rtl", brandTitle:"إنهار للأعمال والمحاسبة", tagline:"أعمالك تستحق إدارة أكثر ذكاءً",
+        description:"كل أعمالك في مكان واحد...<br>من المبيعات والمشتريات إلى المخزون والحسابات والتقارير.<br>تحكّم أكبر، قرارات أوضح، ونمو بثقة.",
+        features:["إدارة المبيعات","المحاسبة","المخزون","إدارة الفروع"], welcome:"مرحباً بعودتك 👋",
+        welcomeText:"سجّل الدخول إلى حساب شركتك وابدأ بإدارة أعمالك بكل سهولة.",
+        identityLabel:"البريد الإلكتروني", identityPlaceholder:"أدخل بريدك الإلكتروني",
+        passwordLabel:"كلمة المرور", passwordPlaceholder:"أدخل كلمة المرور", show:"إظهار", hide:"إخفاء",
+        remember:"تذكرني", forgot:"نسيت كلمة المرور؟", login:"تسجيل الدخول",
+        register:"ليس لديك حساب؟", registerLink:"اطلب إنشاء حساب شركتك",
+        footer:"منصة الأعمال والمحاسبة", copyright:"جميع الحقوق محفوظة © 2026",
+        needEmail:"أدخل بريدك الإلكتروني أولاً.", needPassword:"أدخل كلمة المرور.",
+        phone:"الدخول برقم الجوال غير مفعّل حالياً. استخدم البريد الإلكتروني.",
+        loading:"جارٍ التحقق من الاتصال...", signing:"جارٍ تسجيل الدخول...",
+        noSdk:"تعذر تحميل مكتبة الاتصال. حدّث الصفحة أو جرّب شبكة أخرى.",
+        network:"تعذر الوصول إلى Supabase من المتصفح. تحقق من اتصال الشبكة أو مانع الإعلانات/الحماية، ثم أعد المحاولة.",
+        badKey:"رفض Supabase مفتاح الاتصال. راجع Publishable Key في إعدادات Data API.",
+        badLogin:"البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        notAdmin:"تم تسجيل الدخول، لكن هذا الحساب ليس مدير المنصة.",
+        roleError:"تم تسجيل الدخول لكن تعذر التحقق من صلاحية مدير المنصة. تحقق من دالة is_platform_admin في قاعدة البيانات.",
+        forgotSent:"إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.",
+        generic:"تعذر إكمال العملية. راجع البيانات وحاول مجدداً.",
+        registerNotice:"لطلب حساب شركة، تواصل مع إدارة ENHAR BUSINESS."
       },
-
-      en: {
-        dir: "ltr",
-        brandTitle: "ENHAR BUSINESS",
-        tagline: "Your business deserves smarter management",
-        description: "Everything in one place...<br>From sales and purchasing to inventory, accounting and reports.<br>More control, clearer decisions and confident growth.",
-        features: ["Sales Management", "Accounting", "Inventory", "Branches"],
-        welcome: "Welcome back 👋",
-        welcomeText: "Sign in to your company account and manage your business with ease.",
-        identityLabel: "Mobile number or email address",
-        identityPlaceholder: "Enter your mobile number or email address",
-        passwordLabel: "Password",
-        passwordPlaceholder: "Enter your password",
-        show: "Show",
-        hide: "Hide",
-        remember: "Remember me",
-        forgot: "Forgot password?",
-        login: "Sign in",
-        register: "Don't have an account?",
-        registerLink: "Request a company account",
-        footer: "Business & Accounting Platform",
-        copyright: "All rights reserved © 2026",
-        loginNotice: "This is the login interface only. It is not connected to an authentication server or database yet, so real sign-in will work after that integration is completed.",
-        forgotNotice: "Password recovery will be enabled after the authentication service is connected.",
-        registerNotice: "To request a company account, contact ENHAR BUSINESS."
+      en: { dir:"ltr", brandTitle:"ENHAR BUSINESS", tagline:"Your business deserves smarter management",
+        description:"Everything in one place...<br>From sales and purchasing to inventory, accounting and reports.<br>More control, clearer decisions and confident growth.",
+        features:["Sales Management","Accounting","Inventory","Branches"], welcome:"Welcome back 👋",
+        welcomeText:"Sign in to your company account and manage your business with ease.",
+        identityLabel:"Email address", identityPlaceholder:"Enter your email address",
+        passwordLabel:"Password", passwordPlaceholder:"Enter your password", show:"Show", hide:"Hide",
+        remember:"Remember me", forgot:"Forgot password?", login:"Sign in",
+        register:"Don't have an account?", registerLink:"Request a company account",
+        footer:"Business & Accounting Platform", copyright:"All rights reserved © 2026",
+        needEmail:"Enter your email address first.", needPassword:"Enter your password.",
+        phone:"Phone sign-in is not enabled yet. Use your email address.",
+        loading:"Checking connection...", signing:"Signing in...",
+        noSdk:"The connection library could not load. Refresh or try another network.",
+        network:"The browser could not reach Supabase. Check your network, browser protection or ad blocker, then retry.",
+        badKey:"Supabase rejected the API key. Verify the Publishable Key in Data API settings.",
+        badLogin:"Email or password is incorrect.",
+        notAdmin:"Signed in, but this account is not a platform administrator.",
+        roleError:"Signed in, but the platform-admin permission could not be verified. Check the is_platform_admin database function.",
+        forgotSent:"If the email is registered, a password reset link will be sent.",
+        generic:"The operation could not be completed. Check the details and try again.",
+        registerNotice:"Contact ENHAR BUSINESS to request a company account."
       }
     };
-
-    let currentLanguage = "ar";
-
-    function setLanguage(language) {
-      currentLanguage = language;
-      const t = text[language];
-
-      document.documentElement.lang = language;
-      document.documentElement.dir = t.dir;
-
-      document.getElementById("brandTitle").textContent = t.brandTitle;
-      document.getElementById("brandTagline").textContent = t.tagline;
-      document.getElementById("brandDescription").innerHTML = t.description;
-
-      ["feature1", "feature2", "feature3", "feature4"].forEach((id, i) => {
-        document.getElementById(id).textContent = t.features[i];
-      });
-
-      document.getElementById("welcomeTitle").textContent = t.welcome;
-      document.getElementById("welcomeText").textContent = t.welcomeText;
-      document.getElementById("identityLabel").textContent = t.identityLabel;
-      document.getElementById("loginId").placeholder = t.identityPlaceholder;
-      document.getElementById("passwordLabel").textContent = t.passwordLabel;
-      document.getElementById("password").placeholder = t.passwordPlaceholder;
-
-      document.getElementById("showPasswordButton").textContent =
-        document.getElementById("password").type === "password" ? t.show : t.hide;
-
-      document.getElementById("rememberText").textContent = t.remember;
-      document.getElementById("forgotLink").textContent = t.forgot;
-      document.getElementById("loginButton").textContent = t.login;
-      document.getElementById("registerText").textContent = t.register;
-      document.getElementById("registerLink").textContent = t.registerLink;
-      document.getElementById("footerDescription").textContent = t.footer;
-      document.getElementById("copyright").textContent = t.copyright;
-
-      document.getElementById("arabicButton").classList.toggle("active", language === "ar");
-      document.getElementById("englishButton").classList.toggle("active", language === "en");
-
-      document.getElementById("notice").style.display = "none";
-    }
 
     function showNotice(message) {
       const notice = document.getElementById("notice");
       notice.textContent = message;
       notice.style.display = "block";
     }
-
-    document.getElementById("arabicButton").addEventListener("click", () => {
-      setLanguage("ar");
-    });
-
-    document.getElementById("englishButton").addEventListener("click", () => {
-      setLanguage("en");
-    });
-
-    document.getElementById("showPasswordButton").addEventListener("click", () => {
-      const password = document.getElementById("password");
-
-      password.type = password.type === "password" ? "text" : "password";
-
-      const t = text[currentLanguage];
-
-      document.getElementById("showPasswordButton").textContent =
-        password.type === "password" ? t.show : t.hide;
-    });
-
-    document.getElementById("forgotLink").addEventListener("click", async (event) => {
-      event.preventDefault();
-      const email = document.getElementById("loginId").value.trim();
-      if (!email || !email.includes("@")) {
-        showNotice(currentLanguage === "ar"
-          ? "اكتب بريدك الإلكتروني أولاً في خانة البريد، ثم اضغط نسيت كلمة المرور."
-          : "Enter your email address first, then click Forgot password.");
-        document.getElementById("loginId").focus();
-        return;
-      }
-      try {
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + window.location.pathname
-        });
-        if (error) throw error;
-        showNotice(currentLanguage === "ar"
-          ? "أرسلنا رابط تغيير كلمة المرور إلى بريدك. افتح الرسالة من نفس الجهاز."
-          : "A password reset link has been sent to your email. Open it on this device.");
-      } catch (error) {
-        showNotice(error.message || (currentLanguage === "ar" ? "تعذر إرسال رابط الاستعادة." : "Could not send the reset link."));
-      }
-    });
-
-    supabaseClient.auth.onAuthStateChange(async (event) => {
-      if (event !== "PASSWORD_RECOVERY") return;
-      const newPassword = window.prompt(currentLanguage === "ar"
-        ? "أدخل كلمة مرور جديدة (8 أحرف على الأقل):"
-        : "Enter a new password (at least 8 characters):");
-      if (!newPassword) {
-        showNotice(currentLanguage === "ar" ? "لم يتم تغيير كلمة المرور." : "Password was not changed.");
-        return;
-      }
-      if (newPassword.length < 8) {
-        showNotice(currentLanguage === "ar" ? "كلمة المرور يجب أن تكون 8 أحرف على الأقل. اضغط رابط الاستعادة مجدداً." : "Password must be at least 8 characters. Request a new reset link.");
-        return;
-      }
-      const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-      if (error) {
-        showNotice(error.message);
-        return;
-      }
-      showNotice(currentLanguage === "ar" ? "تم تغيير كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول." : "Password updated. You can now sign in.");
-    });
-
-    document.getElementById("registerLink").addEventListener("click", (event) => {
-      const href = event.currentTarget.getAttribute("href");
-
-      if (href === "#") {
-        event.preventDefault();
-        showNotice(text[currentLanguage].registerNotice);
-      }
-    });
-
-    document.getElementById("loginForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const loginId = document.getElementById("loginId").value.trim();
-      const password = document.getElementById("password").value;
+    function setBusy(busy, label) {
       const button = document.getElementById("loginButton");
-      if (!loginId || !password) {
-        showNotice(currentLanguage === "ar" ? "يرجى إدخال البريد الإلكتروني وكلمة المرور." : "Please enter your email and password.");
-        return;
+      button.disabled = busy;
+      button.textContent = busy ? label : text[currentLanguage].login;
+    }
+    function isNetworkError(error) {
+      return error instanceof TypeError || /failed to fetch|networkerror|load failed/i.test(error?.message || "");
+    }
+    function explainError(error) {
+      const t = text[currentLanguage];
+      const message = error?.message || "";
+      if (isNetworkError(error)) return t.network;
+      if (/invalid api key|no api key|apikey/i.test(message)) return t.badKey;
+      if (/invalid login credentials/i.test(message)) return t.badLogin;
+      return message || t.generic;
+    }
+    function initializeSupabase() {
+      if (!window.supabase?.createClient) {
+        showNotice(text[currentLanguage].noSdk);
+        return false;
       }
-      if (!loginId.includes("@")) {
-        showNotice(currentLanguage === "ar" ? "الدخول برقم الجوال غير مفعّل حالياً. استخدم البريد الإلكتروني." : "Phone sign-in is not enabled yet. Please use your email address.");
-        return;
-      }
-      button.disabled = true;
-      button.textContent = currentLanguage === "ar" ? "جارٍ التحقق..." : "Signing in...";
-      try {
-        const result = await supabaseClient.auth.signInWithPassword({ email: loginId, password });
-        if (result.error) throw result.error;
-        const role = await supabaseClient.rpc("is_platform_admin");
-        if (role.error) {
-          await supabaseClient.auth.signOut();
-          throw new Error(currentLanguage === "ar" ? "تعذر التحقق من صلاحية مدير المنصة. تأكد من إعداد الدالة في Supabase." : "Could not verify platform administrator role.");
-        }
-        if (role.data !== true) {
-          await supabaseClient.auth.signOut();
-          throw new Error(currentLanguage === "ar" ? "هذا الحساب لا يملك صلاحية مدير المنصة." : "This account is not a platform administrator.");
-        }
-        window.location.href = "./dashboard.html";
-      } catch (error) {
-        showNotice(error.message || (currentLanguage === "ar" ? "تعذر تسجيل الدخول." : "Unable to sign in."));
-      } finally {
-        button.disabled = false;
-        button.textContent = text[currentLanguage].login;
-      }
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
+      return true;
+    }
+    function setLanguage(language) {
+      currentLanguage = language;
+      const t = text[language];
+      document.documentElement.lang = language;
+      document.documentElement.dir = t.dir;
+      document.getElementById("brandTitle").textContent = t.brandTitle;
+      document.getElementById("brandTagline").textContent = t.tagline;
+      document.getElementById("brandDescription").innerHTML = t.description;
+      ["feature1","feature2","feature3","feature4"].forEach((id,i)=>document.getElementById(id).textContent=t.features[i]);
+      document.getElementById("welcomeTitle").textContent=t.welcome;
+      document.getElementById("welcomeText").textContent=t.welcomeText;
+      document.getElementById("identityLabel").textContent=t.identityLabel;
+      document.getElementById("loginId").placeholder=t.identityPlaceholder;
+      document.getElementById("passwordLabel").textContent=t.passwordLabel;
+      document.getElementById("password").placeholder=t.passwordPlaceholder;
+      document.getElementById("showPasswordButton").textContent=document.getElementById("password").type==="password"?t.show:t.hide;
+      document.getElementById("rememberText").textContent=t.remember;
+      document.getElementById("forgotLink").textContent=t.forgot;
+      document.getElementById("loginButton").textContent=t.login;
+      document.getElementById("registerText").textContent=t.register;
+      document.getElementById("registerLink").textContent=t.registerLink;
+      document.getElementById("footerDescription").textContent=t.footer;
+      document.getElementById("copyright").textContent=t.copyright;
+      document.getElementById("arabicButton").classList.toggle("active",language==="ar");
+      document.getElementById("englishButton").classList.toggle("active",language==="en");
+    }
+    document.getElementById("arabicButton").addEventListener("click",()=>setLanguage("ar"));
+    document.getElementById("englishButton").addEventListener("click",()=>setLanguage("en"));
+    document.getElementById("showPasswordButton").addEventListener("click",()=>{
+      const p=document.getElementById("password"); p.type=p.type==="password"?"text":"password";
+      document.getElementById("showPasswordButton").textContent=p.type==="password"?text[currentLanguage].show:text[currentLanguage].hide;
     });
+    document.getElementById("registerLink").addEventListener("click",()=>showNotice(text[currentLanguage].registerNotice));
+
+    document.getElementById("forgotLink").addEventListener("click",async(event)=>{
+      event.preventDefault();
+      if(!initializeSupabase()) return;
+      const email=document.getElementById("loginId").value.trim();
+      if(!email.includes("@")) { showNotice(text[currentLanguage].needEmail); return; }
+      try {
+        const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+        if(error) throw error;
+        showNotice(text[currentLanguage].forgotSent);
+      } catch(error) { showNotice(explainError(error)); }
+    });
+
+    document.getElementById("loginForm").addEventListener("submit",async(event)=>{
+      event.preventDefault();
+      if(!initializeSupabase()) return;
+      const email=document.getElementById("loginId").value.trim();
+      const password=document.getElementById("password").value;
+      if(!email) { showNotice(text[currentLanguage].needEmail); return; }
+      if(!email.includes("@")) { showNotice(text[currentLanguage].phone); return; }
+      if(!password) { showNotice(text[currentLanguage].needPassword); return; }
+      setBusy(true,text[currentLanguage].loading);
+      try {
+        const health=await fetch(SUPABASE_URL+"/auth/v1/health",{headers:{"apikey":SUPABASE_PUBLISHABLE_KEY}});
+        if(health.status===401||health.status===403) throw new Error("Invalid API key");
+        if(!health.ok) throw new Error("Supabase health check returned HTTP "+health.status);
+        setBusy(true,text[currentLanguage].signing);
+        const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+        if(error) throw error;
+        const {data:roleData,error:roleError}=await supabaseClient.rpc("is_platform_admin");
+        if(roleError) {
+          await supabaseClient.auth.signOut();
+          throw new Error(text[currentLanguage].roleError);
+        }
+        if(roleData!==true) {
+          await supabaseClient.auth.signOut();
+          throw new Error(text[currentLanguage].notAdmin);
+        }
+        window.location.replace("./dashboard.html");
+      } catch(error) {
+        showNotice(explainError(error));
+      } finally { setBusy(false); }
+    });
+
+    if (initializeSupabase()) {
+      supabaseClient.auth.onAuthStateChange(async(event)=>{
+        if(event!=="PASSWORD_RECOVERY") return;
+        const newPassword=window.prompt(currentLanguage==="ar"?"أدخل كلمة مرور جديدة (8 أحرف على الأقل):":"Enter a new password (at least 8 characters):");
+        if(!newPassword) return;
+        if(newPassword.length<8) { showNotice(currentLanguage==="ar"?"كلمة المرور يجب أن تكون 8 أحرف على الأقل.":"Password must be at least 8 characters."); return; }
+        const {error}=await supabaseClient.auth.updateUser({password:newPassword});
+        showNotice(error?explainError(error):(currentLanguage==="ar"?"تم تغيير كلمة المرور بنجاح.":"Password updated successfully."));
+      });
+    }
   </script>
 </body>
 </html>
