@@ -481,8 +481,8 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
  <div class="pos-topbar">
   <div class="field"><label>الفرع</label><select id="posBranch"></select></div>
   <div class="field"><label>جلسة الصندوق المفتوحة</label><select id="posCashSession"><option value="">اختر جلسة مفتوحة</option></select></div>
-  <div class="field"><label>العميل</label><input id="posCustomer" placeholder="اسم العميل أو رقم الجوال"></div>
-  <div class="field"><label>البائع / الأخصائية</label><input id="posSeller" placeholder="ابحث عن الموظف"></div>
+  <div class="field"><label>العميل</label><select id="posCustomer"><option value="">عميل نقدي / بدون عميل</option></select><small id="posWalletBalance" class="pos-footnote">رصيد العميل: 0.00 ر.س</small></div>
+  <div class="field"><label>موظف الخدمة / البائع</label><select id="posSeller"><option value="">بدون تحديد</option></select></div>
  </div>
  <div class="pos-workspace">
   <div class="pos-catalog">
@@ -501,7 +501,8 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
    <div class="cart-heading"><div><h2>فاتورة البيع</h2><small id="posCartCount">0 أصناف</small></div><button class="secondary" id="clearPosCart">تفريغ</button></div>
    <div class="cart-lines" id="posCartLines"><div class="cart-empty">🛒<b>السلة فارغة</b><small>اختر منتجاً أو خدمة لإضافتهما للفاتورة</small></div></div>
    <div class="cart-summary"><div><span>الإجمالي قبل الضريبة</span><b id="posSubtotal">0.00 ر.س</b></div><div><span>الضريبة</span><b id="posTax">تحسب حسب إعداد الضريبة</b></div><div class="cart-total"><span>الإجمالي</span><b id="posTotal">0.00 ر.س</b></div></div>
-   <div class="field" style="margin-top:12px"><label for="posPaymentMethod">طريقة الدفع</label><select id="posPaymentMethod"><option value="CASH">نقداً</option><option value="CARD">بطاقة</option><option value="BANK_TRANSFER">تحويل بنكي</option></select></div>
+   <div class="field" style="margin-top:12px"><label for="posPaymentMethod">طريقة الدفع للجزء المتبقي</label><select id="posPaymentMethod"><option value="CASH">نقداً</option><option value="CARD">بطاقة</option><option value="BANK_TRANSFER">تحويل بنكي</option></select></div>
+   <div class="field" style="margin-top:10px"><label for="posWalletUse">استخدام رصيد العميل (ر.س)</label><input id="posWalletUse" type="number" min="0" step=".01" value="0"></div>
    <button class="pos-pay" id="posCheckout" disabled>الدفع وإصدار الفاتورة</button>
    <small class="pos-footnote" id="posCheckoutNote">يتطلب جلسة صندوق مفتوحة. يتم التحقق من المخزون والضريبة في قاعدة البيانات قبل ترحيل الفاتورة.</small>
   </aside>
@@ -866,6 +867,15 @@ async function loadRealInvoices(){
  const f=document.getElementById("invoiceFrom").value,t=document.getElementById("invoiceTo").value,b=document.getElementById("invoiceBranch").value;if(f)q=q.gte("invoice_date",f);if(t)q=q.lte("invoice_date",t);if(b)q=q.eq("branch_id",b);
  const {data,error}=await q;if(error)throw error;document.getElementById("realInvoicesRows").innerHTML=(data||[]).length?data.map(x=>'<tr><td>'+escapeHTML(x.invoice_number)+'</td><td>'+escapeHTML(x.invoice_date)+'</td><td>'+escapeHTML((dashboardBranches.find(b=>b.id===x.branch_id)||{}).name_ar||"—")+'</td><td>'+escapeHTML(x.status)+'</td><td>'+money(x.grand_total)+'</td></tr>').join(""):'<tr><td colspan="5" class="empty">لا توجد فواتير محفوظة.</td></tr>';
 }
+async function loadPosWalletBalance(){
+ const customer=document.getElementById("posCustomer")?.value;
+ const label=document.getElementById("posWalletBalance");if(!label)return;
+ if(!customer){label.textContent="رصيد العميل: —";return;}
+ const {data,error}=await supabaseClient.from("enhar_customer_wallets").select("balance").eq("company_id",activeCompanyId).eq("customer_id",customer).maybeSingle();
+ if(error){label.textContent="تعذر قراءة رصيد العميل";return;}
+ label.textContent="رصيد العميل المتاح: "+money(data?.balance||0);
+ const input=document.getElementById("posWalletUse");if(input)input.max=String(Number(data?.balance||0));
+}
 async function loadPosFilters(){
  const [cats,items,sessions]=await Promise.all([
   supabaseClient.from("enhar_item_categories").select("id,name_ar,category_type").eq("company_id",activeCompanyId).eq("is_active",true),
@@ -873,7 +883,10 @@ async function loadPosFilters(){
   supabaseClient.from("enhar_cash_sessions").select("id,cashbox_id,branch_id").eq("company_id",activeCompanyId).eq("status","OPEN")
  ]);
  for(const x of [cats,items,sessions])if(x.error)throw x.error;
- window.posCatalog=items.data||[];document.getElementById("posCategory").innerHTML='<option value="">كل الفئات</option>'+(cats.data||[]).filter(x=>x.category_type===document.getElementById("posItemType").value).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ window.posCatalog=items.data||[];
+ const cust=document.getElementById("posCustomer");if(cust)cust.innerHTML='<option value="">عميل نقدي / بدون عميل</option>'+(window.enharCustomers||[]).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name)+' · '+escapeHTML(x.phone||"")+'</option>').join("");
+ const seller=document.getElementById("posSeller");if(seller)seller.innerHTML='<option value="">بدون تحديد</option>'+(window.enharStaff||[]).filter(x=>x.show_in_pos).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.full_name)+'</option>').join("");
+ document.getElementById("posCategory").innerHTML='<option value="">كل الفئات</option>'+(cats.data||[]).filter(x=>x.category_type===document.getElementById("posItemType").value).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
  document.getElementById("posCashSession").innerHTML='<option value="">اختر جلسة مفتوحة</option>'+(sessions.data||[]).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.cashbox_id)+'</option>').join("");
  document.getElementById("posBranch").innerHTML=dashboardBranches.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
 }
@@ -924,6 +937,7 @@ document.getElementById("saveCashSettings")?.addEventListener("click",saveCashSe
 document.querySelectorAll("[data-pos-type]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-pos-type]").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("posItemType").value=b.dataset.posType;loadPosFilters().then(renderPosItems).catch(e=>document.getElementById("posMessage").textContent=e.message);}));
 document.querySelectorAll("[data-pos-sale]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-pos-sale]").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("posSaleType").value=b.dataset.posSale;renderPosItems();}));
 ["posItemType","posCategory","posSaleType","posSearch"].forEach(id=>document.getElementById(id)?.addEventListener(id==="posSearch"?"input":"change",()=>{if(id==="posItemType")loadPosFilters().then(renderPosItems);else renderPosItems();}));
+document.getElementById("posCustomer")?.addEventListener("change",loadPosWalletBalance);
 document.getElementById("clearPosCart")?.addEventListener("click",()=>{window.posCart=[];renderPosCart();});
 document.getElementById("posCheckout")?.addEventListener("click",async()=>{
  const button=document.getElementById("posCheckout"),note=document.getElementById("posCheckoutNote");
@@ -935,13 +949,17 @@ document.getElementById("posCheckout")?.addEventListener("click",async()=>{
  button.disabled=true;button.textContent="جارٍ ترحيل الفاتورة...";
  try{
   const payload=window.posCart.map(x=>({product_id:x.id,quantity:x.qty,unit_price:x.price,discount:0}));
-  const {data,error}=await supabaseClient.rpc("enhar_post_pos_invoice",{
+  const {data,error}=await supabaseClient.rpc("enhar_post_pos_invoice_with_wallet",{
    p_company_id:activeCompanyId,p_branch_id:branchId,p_cash_session_id:sessionId,
-   p_customer_id:null,p_payment_method:document.getElementById("posPaymentMethod").value,p_lines:payload
+   p_customer_id:document.getElementById("posCustomer").value||null,
+   p_payment_method:document.getElementById("posPaymentMethod").value,p_lines:payload,
+   p_wallet_amount:Number(document.getElementById("posWalletUse").value||0),
+   p_seller_staff_id:document.getElementById("posSeller").value||null
   });
   if(error)throw error;
   window.posCart=[];renderPosCart();
-  note.textContent="تم ترحيل الفاتورة "+data.invoice_number+" بنجاح. الإجمالي شامل الضريبة: "+money(data.grand_total);
+  note.textContent="تم ترحيل الفاتورة "+data.invoice_number+" بنجاح. الإجمالي: "+money(data.grand_total)+(data.wallet_used?" · رصيد مستخدم: "+money(data.wallet_used)+" · المتبقي: "+money(data.cash_due):"");
+  document.getElementById("posWalletUse").value="0";await loadPosWalletBalance();
   await loadRealInvoices();await loadCashSessions();await loadDashboard();
  }catch(e){note.textContent="لم يتم ترحيل الفاتورة: "+(e.message||"خطأ غير معروف");}
  finally{button.textContent="الدفع وإصدار الفاتورة";button.disabled=!window.posCart.length;}
