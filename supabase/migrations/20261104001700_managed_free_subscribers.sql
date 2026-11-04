@@ -54,4 +54,39 @@ end $$;
 revoke all on function public.enhar_admin_create_managed_company(uuid,text,text,timestamptz) from public,anon,authenticated;
 grant execute on function public.enhar_admin_create_managed_company(uuid,text,text,timestamptz) to service_role;
 
+
+create or replace function public.enhar_admin_manage_free_subscription(
+ p_company_id uuid,
+ p_action text,
+ p_period_end timestamptz default null
+) returns jsonb
+language plpgsql security definer set search_path=''
+as $
+declare v_company public.enhar_companies%rowtype; v_plan public.enhar_subscription_plans%rowtype;
+begin
+ if auth.uid() is null or not public.is_platform_admin() then raise exception 'Platform administrator required'; end if;
+ select * into v_company from public.enhar_companies where id=p_company_id for update;
+ if not found then raise exception 'Company not found'; end if;
+ if p_action in ('RENEW','ACTIVATE') then
+   select * into v_plan from public.enhar_subscription_plans where plan_code='FREE-MANAGED' and is_active and not is_test;
+   if not found then raise exception 'Free plan is not configured'; end if;
+   if p_action='RENEW' and (p_period_end is null or p_period_end<=now()) then raise exception 'A future end date is required'; end if;
+   insert into public.enhar_company_subscriptions(company_id,plan_id,status,current_period_start,current_period_end,extra_cashboxes,extra_users,updated_at)
+   values(p_company_id,v_plan.id,'ACTIVE',now(),coalesce(p_period_end,now()+interval '1 year'),0,0,now())
+   on conflict(company_id) do update set plan_id=excluded.plan_id,status='ACTIVE',current_period_start=now(),current_period_end=excluded.current_period_end,updated_at=now();
+   update public.enhar_companies set status='ACTIVE',subscription_status='ACTIVE',trial_ends_at=coalesce(p_period_end,now()+interval '1 year'),updated_at=now() where id=p_company_id;
+ elsif p_action='SUSPEND' then
+   update public.enhar_companies set status='SUSPENDED',subscription_status='SUSPENDED',updated_at=now() where id=p_company_id;
+   update public.enhar_company_subscriptions set status='SUSPENDED',updated_at=now() where company_id=p_company_id;
+ elsif p_action='CLOSE' then
+   update public.enhar_companies set status='CLOSED',subscription_status='CANCELLED',updated_at=now() where id=p_company_id;
+   update public.enhar_company_subscriptions set status='CANCELLED',updated_at=now() where company_id=p_company_id;
+ else raise exception 'Unsupported free subscription action'; end if;
+ insert into public.enhar_subscription_audit(company_id,actor_user_id,action,details)
+ values(p_company_id,auth.uid(),'FREE_'||p_action,jsonb_build_object('period_end',p_period_end));
+ return jsonb_build_object('ok',true,'action',p_action,'company_id',p_company_id);
+end $;
+revoke all on function public.enhar_admin_manage_free_subscription(uuid,text,timestamptz) from public,anon;
+grant execute on function public.enhar_admin_manage_free_subscription(uuid,text,timestamptz) to authenticated;
+
 commit;
