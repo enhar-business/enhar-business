@@ -37,10 +37,10 @@ async function init(){
  if(me)throw me;
  const eligible=(members||[]).filter(x=>["OWNER","ADMIN"].includes(x.role));
  company.innerHTML=eligible.map(x=>'<option value="'+x.company_id+'">'+(x.enhar_companies?.name_ar||"منشأة")+'</option>').join("")||'<option value="">لا توجد منشأة</option>';
- const {data,error:pe}=await client.from("enhar_subscription_plans").select("id,name_ar,billing_period,amount_halalas,currency").eq("is_active",true).eq("is_test",false).order("amount_halalas");
+ const {data,error:pe}=await client.from("enhar_subscription_plans").select("id,name_ar,billing_period,amount_halalas,currency,cashbox_limit,user_limit").eq("is_active",true).eq("is_test",false).order("amount_halalas");
  if(pe)throw pe;
  if(!data?.length){plans.innerHTML='<div class="notice">لا توجد باقات منشورة حالياً. يلزم اعتماد أسعار الاشتراك قبل إتاحتها للعملاء.</div>';return}
- plans.innerHTML=data.map(p=>'<article class="plan"><h2>'+p.name_ar+'</h2><div class="price">'+money(p.amount_halalas,p.currency)+'</div><p>'+(p.billing_period==="YEARLY"?"اشتراك سنوي":"اشتراك شهري")+'</p><button data-plan="'+p.id+'">اشترك الآن</button></article>').join("");
+ plans.innerHTML=data.map(p=>'<article class="plan"><h2>'+p.name_ar+'</h2><div class="price">'+money(p.amount_halalas,p.currency)+'</div><p>'+(p.billing_period==="YEARLY"?"اشتراك لمدة سنة":"اشتراك لمدة 6 أشهر")+"<br>الصناديق: "+p.cashbox_limit+" · المستخدمون: "+p.user_limit+'</p><button data-plan="'+p.id+'">اشترك الآن</button></article>').join("");
  plans.querySelectorAll("button[data-plan]").forEach(b=>b.onclick=()=>checkout(b.dataset.plan,b));
  company.onchange=()=>showStatus(eligible.find(x=>x.company_id===company.value)?.enhar_companies);
  showStatus(eligible[0]?.enhar_companies);
