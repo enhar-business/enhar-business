@@ -1,5 +1,21 @@
 <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة اشتراكات ENHAR</title><style>
-*{box-sizing:border-box}body{margin:0;background:#101010;color:#f5f1e8;font-family:Tahoma,Arial;padding:24px}main{max-width:1100px;margin:auto}h1,h2{color:#f2d88e}.panel{background:#191919;border:1px solid #302a1c;border-radius:12px;padding:20px;margin:15px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.field label{display:block;color:#aaa18f;font-size:12px;margin-bottom:8px}.field input,.field select{width:100%;padding:12px;background:#101010;color:white;border:1px solid #514329;border-radius:8px}button{padding:12px 17px;border:0;border-radius:8px;background:linear-gradient(110deg,#a9873c,#f0d68e);font-weight:bold;cursor:pointer}.secondary{background:#302817;color:#f2d88e;border:1px solid #514329}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.msg{color:#f2d88e;white-space:pre-wrap;margin-top:14px}.muted{color:#aaa18f;font-size:12px;line-height:1.8}table{width:100%;border-collapse:collapse}td,th{text-align:right;padding:11px;border-bottom:1px solid #302a1c;font-size:12px}.wrap{overflow:auto}@media(max-width:600px){body{padding:12px}}</style></head><body><main>
+*{box-sizing:border-box}body{margin:0;background:#101010;color:#f5f1e8;font-family:Tahoma,Arial;padding:24px}main{max-width:1100px;margin:auto}h1,h2{color:#f2d88e}.panel{background:#191919;border:1px solid #302a1c;border-radius:12px;padding:20px;margin:15px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.field label{display:block;color:#aaa18f;font-size:12px;margin-bottom:8px}.field input,.field select{width:100%;padding:12px;background:#101010;color:white;border:1px solid #514329;border-radius:8px}button{padding:12px 17px;border:0;border-radius:8px;background:linear-gradient(110deg,#a9873c,#f0d68e);font-weight:bold;cursor:pointer}.secondary{background:#302817;color:#f2d88e;border:1px solid #514329}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.msg{color:#f2d88e;white-space:pre-wrap;margin-top:14px}.muted{color:#aaa18f;font-size:12px;line-height:1.8}table{width:100%;border-collapse:collapse}td,th{text-align:right;padding:11px;border-bottom:1px solid #302a1c;font-size:12px}.wrap{overflow:auto}@media(max-width:600px){body{padding:12px}}
+/* ANHAR unified design system */
+:root{--anhar-navy:#08051e;--anhar-navy-2:#100b2b;--anhar-purple:#793df0;--anhar-blue:#287cff;--anhar-cyan:#54c8ff;--anhar-gold:#d5b15e;--anhar-white:#f8f7ff;--anhar-muted:#aaa0ca;--anhar-border:#30245a}
+html,body{background:var(--anhar-navy);color:var(--anhar-white);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+input,select,textarea{background:#171039!important;color:#fff!important;border-color:#493477!important;border-radius:10px}
+input:focus,select:focus,textarea:focus{border-color:#9b69ff!important;box-shadow:0 0 0 3px #8b45ff25!important;outline:0}
+button,.button{border-radius:10px}
+button.primary,.primary,.login-button{background:linear-gradient(105deg,#793df0,#287cff)!important;color:#fff!important;border:0!important;box-shadow:0 7px 18px #5c31d833}
+a,.link{color:#c3a5ff}
+.panel,.card,.plan,.box{background:linear-gradient(145deg,#171039,#100b2b);border:1px solid #30245a;border-radius:15px;color:#f8f7ff}
+h1,h2,h3{color:#e0ceff}
+label,.muted,small{color:#aaa0ca}
+table th{background:#1b123b;color:#b9abd9}table td{color:#eee9ff;border-color:#30245a}
+.secondary{background:#211540!important;color:#e2d8ff!important;border:1px solid #493477!important}
+.notice,.message{background:#211344;color:#e1d0ff;border-color:#7048bd}
+
+</style></head><body><main>
 <h1>إدارة اشتراكات ENHAR BUSINESS</h1><p class="muted">لوحة SUPER ADMIN لإدارة الباقات والمدة والإضافات وحالة الاشتراك. كل تعديل يسجل في سجل التدقيق.</p>
 <div class="panel"><h2>اختيار المنشأة</h2><div class="field"><label>الشركة المشتركة</label><select id="company"><option>جارٍ التحميل...</option></select></div><div id="summary" class="muted"></div></div>
 <div class="panel"><h2>إدارة الباقة</h2><div class="grid">
