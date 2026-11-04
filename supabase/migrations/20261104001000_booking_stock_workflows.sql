@@ -44,48 +44,43 @@ begin
  return v_id;
 end $$;
 
-create or replace function public.enhar_post_stock_document(p_company_id uuid,p_document_id uuid)
+create or replace function public.enhar_post_stock_voucher(p_company_id uuid,p_voucher_id uuid)
 returns jsonb
 language plpgsql security definer set search_path=''
 as $$
-declare d public.enhar_stock_documents%rowtype; l record; v_count integer:=0; v_in numeric:=0; v_out numeric:=0;
+declare v public.enhar_stock_vouchers%rowtype; l record; v_stock numeric(14,3); v_count integer:=0; v_type text;
 begin
  if auth.uid() is null or not (public.enhar_is_company_admin(p_company_id) or public.is_platform_admin()) then
   raise exception 'Company administrator permission required';
  end if;
- select * into d from public.enhar_stock_documents
- where company_id=p_company_id and id=p_document_id for update;
- if not found or d.status<>'DRAFT' then raise exception 'Draft stock document not found'; end if;
- if not exists(select 1 from public.enhar_stock_document_lines where company_id=p_company_id and document_id=p_document_id) then
-  raise exception 'Stock document must contain at least one item';
+ select * into v from public.enhar_stock_vouchers
+ where company_id=p_company_id and id=p_voucher_id for update;
+ if not found or v.status<>'DRAFT' then raise exception 'Draft stock voucher not found'; end if;
+ if not exists(select 1 from public.enhar_stock_voucher_lines where company_id=p_company_id and voucher_id=p_voucher_id) then
+  raise exception 'Stock voucher must contain at least one item';
  end if;
- for l in select * from public.enhar_stock_document_lines where company_id=p_company_id and document_id=p_document_id loop
-  if d.document_type in ('RECEIPT','SALES_RETURN') then
-   v_in:=l.quantity;v_out:=0;
+ for l in select * from public.enhar_stock_voucher_lines where company_id=p_company_id and voucher_id=p_voucher_id loop
+  if v.voucher_type in ('RECEIPT','TRANSFER_IN','RETURN') then
+   v_type:=case when v.voucher_type='RETURN' then 'SALES_RETURN' else 'PURCHASE' end;
    insert into public.enhar_stock_movements(company_id,branch_id,warehouse_id,product_id,movement_type,quantity_in,quantity_out,unit_cost,source_type,source_id,created_by)
-   values(p_company_id,d.branch_id,d.warehouse_id,l.product_id,case when d.document_type='SALES_RETURN' then 'SALES_RETURN' else 'PURCHASE' end,v_in,0,l.unit_cost,'STOCK_DOCUMENT',d.id,auth.uid());
-  elsif d.document_type in ('ISSUE','PURCHASE_RETURN') then
-   select coalesce(sum(quantity_in-quantity_out),0) into v_in
-   from public.enhar_stock_movements where company_id=p_company_id and warehouse_id=d.warehouse_id and product_id=l.product_id;
-   if v_in<l.quantity then raise exception 'المخزون غير كافٍ للصنف %',l.product_id; end if;
+   values(p_company_id,v.branch_id,v.warehouse_id,l.product_id,v_type,l.quantity,0,l.unit_cost,'STOCK_VOUCHER',v.id,auth.uid());
+  elsif v.voucher_type in ('ISSUE','TRANSFER_OUT') then
+   select coalesce(sum(quantity_in-quantity_out),0) into v_stock
+   from public.enhar_stock_movements where company_id=p_company_id and warehouse_id=v.warehouse_id and product_id=l.product_id;
+   if v_stock<l.quantity then raise exception 'المخزون غير كافٍ للصنف %',l.product_id; end if;
+   v_type:=case when v.voucher_type='TRANSFER_OUT' then 'TRANSFER_OUT' else 'ADJUSTMENT' end;
    insert into public.enhar_stock_movements(company_id,branch_id,warehouse_id,product_id,movement_type,quantity_in,quantity_out,unit_cost,source_type,source_id,created_by)
-   values(p_company_id,d.branch_id,d.warehouse_id,l.product_id,case when d.document_type='PURCHASE_RETURN' then 'PURCHASE_RETURN' else 'ADJUSTMENT' end,0,l.quantity,l.unit_cost,'STOCK_DOCUMENT',d.id,auth.uid());
-  elsif d.document_type='TRANSFER' then
-   select coalesce(sum(quantity_in-quantity_out),0) into v_in
-   from public.enhar_stock_movements where company_id=p_company_id and warehouse_id=d.warehouse_id and product_id=l.product_id;
-   if v_in<l.quantity then raise exception 'المخزون غير كافٍ للتحويل للصنف %',l.product_id; end if;
-   insert into public.enhar_stock_movements(company_id,branch_id,warehouse_id,product_id,movement_type,quantity_in,quantity_out,unit_cost,source_type,source_id,created_by)
-   values(p_company_id,d.branch_id,d.warehouse_id,l.product_id,'TRANSFER_OUT',0,l.quantity,l.unit_cost,'STOCK_DOCUMENT',d.id,auth.uid());
-   insert into public.enhar_stock_movements(company_id,branch_id,warehouse_id,product_id,movement_type,quantity_in,quantity_out,unit_cost,source_type,source_id,created_by)
-   values(p_company_id,d.branch_id,d.destination_warehouse_id,l.product_id,'TRANSFER_IN',l.quantity,0,l.unit_cost,'STOCK_DOCUMENT',d.id,auth.uid());
+   values(p_company_id,v.branch_id,v.warehouse_id,l.product_id,v_type,0,l.quantity,l.unit_cost,'STOCK_VOUCHER',v.id,auth.uid());
+  elsif v.voucher_type='ADJUSTMENT' then
+   raise exception 'للتسوية استخدم الجرد المعتمد لتسجيل الفرق بصورة صحيحة';
   else
-   raise exception 'Unsupported document type';
+   raise exception 'Unsupported stock voucher type';
   end if;
   v_count:=v_count+1;
  end loop;
- update public.enhar_stock_documents set status='POSTED',posted_by=auth.uid(),posted_at=now()
- where company_id=p_company_id and id=p_document_id;
- return jsonb_build_object('document_id',p_document_id,'posted_lines',v_count,'status','POSTED');
+ update public.enhar_stock_vouchers set status='POSTED',posted_by=auth.uid(),posted_at=now()
+ where company_id=p_company_id and id=p_voucher_id;
+ return jsonb_build_object('voucher_id',p_voucher_id,'posted_lines',v_count,'status','POSTED');
 end $$;
 
 create or replace function public.enhar_approve_stock_count(p_company_id uuid,p_count_id uuid)
@@ -98,11 +93,11 @@ begin
   raise exception 'Company administrator permission required';
  end if;
  select * into c from public.enhar_stock_counts where company_id=p_company_id and id=p_count_id for update;
- if not found or c.status not in ('DRAFT','IN_PROGRESS','SUBMITTED') then raise exception 'Stock count cannot be approved'; end if;
- if exists(select 1 from public.enhar_stock_count_lines where company_id=p_company_id and stock_count_id=p_count_id and counted_quantity is null) then
+ if not found or c.status not in ('DRAFT','IN_PROGRESS','COMPLETED') then raise exception 'Stock count cannot be approved'; end if;
+ if exists(select 1 from public.enhar_stock_count_lines where company_id=p_company_id and count_id=p_count_id and counted_quantity is null) then
   raise exception 'Enter counted quantity for every stock item first';
  end if;
- for l in select * from public.enhar_stock_count_lines where company_id=p_company_id and stock_count_id=p_count_id loop
+ for l in select * from public.enhar_stock_count_lines where company_id=p_company_id and count_id=p_count_id loop
   v_diff:=l.counted_quantity-l.system_quantity;
   if v_diff<>0 then
    select purchase_price into v_cost from public.enhar_products where company_id=p_company_id and id=l.product_id;
@@ -117,10 +112,10 @@ begin
 end $$;
 
 revoke all on function public.enhar_create_appointment(uuid,uuid,uuid,uuid,uuid,timestamptz,timestamptz,text) from public,anon;
-revoke all on function public.enhar_post_stock_document(uuid,uuid) from public,anon;
+revoke all on function public.enhar_post_stock_voucher(uuid,uuid) from public,anon;
 revoke all on function public.enhar_approve_stock_count(uuid,uuid) from public,anon;
 grant execute on function public.enhar_create_appointment(uuid,uuid,uuid,uuid,uuid,timestamptz,timestamptz,text) to authenticated;
-grant execute on function public.enhar_post_stock_document(uuid,uuid) to authenticated;
+grant execute on function public.enhar_post_stock_voucher(uuid,uuid) to authenticated;
 grant execute on function public.enhar_approve_stock_count(uuid,uuid) to authenticated;
 
 commit;
