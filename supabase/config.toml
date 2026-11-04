@@ -1,0 +1,7 @@
+project_id = "bibkxfdtmweotjtdrfsg"
+
+[functions.create-subscription-payment]
+verify_jwt = true
+
+[functions.moyasar-invoice-callback]
+verify_jwt = false
