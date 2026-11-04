@@ -171,7 +171,7 @@ td{color:#e8e1d2}
   </nav>
 
   <div class="sidebar-bottom">
-    <button class="secondary" style="width:100%" onclick="alert('سيتم تفعيل تسجيل الخروج بعد ربط نظام الحسابات')">↩ تسجيل الخروج</button>
+    <button class="secondary" style="width:100%" id="logoutButton" onclick="alert('سيتم تفعيل تسجيل الخروج بعد ربط نظام الحسابات')">↩ تسجيل الخروج</button>
   </div>
 </aside>
 
@@ -185,7 +185,7 @@ td{color:#e8e1d2}
     <button class="icon-btn" onclick="alert('التنبيهات ستظهر بعد ربط النظام')">♧</button>
     <div class="user">
       <div class="avatar">E</div>
-      <div><strong>مدير النظام</strong><small>ENHAR BUSINESS</small></div>
+      <div><strong id="signedInEmail">جارٍ التحقق...</strong><small>SUPER ADMIN · ENHAR BUSINESS</small></div>
     </div>
   </div>
 </header>
@@ -345,6 +345,29 @@ td{color:#e8e1d2}
 </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://bibkxfdtmweotjtdrfsg.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+(async function protectDashboard() {
+  const sessionResult = await supabaseClient.auth.getSession();
+  const session = sessionResult.data.session;
+  if (!session) { window.location.replace("./index.html"); return; }
+  const role = await supabaseClient.rpc("is_platform_admin");
+  if (role.error || role.data !== true) {
+    await supabaseClient.auth.signOut();
+    window.location.replace("./index.html");
+    return;
+  }
+  const email = document.getElementById("signedInEmail");
+  if (email) email.textContent = session.user.email || "Super Admin";
+})();
+document.getElementById("logoutButton")?.addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  window.location.replace("./index.html");
+});
+</script>
 <script>
 const titles={
  dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",
