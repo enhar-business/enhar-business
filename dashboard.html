@@ -230,6 +230,9 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
     <div class="menu-title">الرئيسية</div>
     <button class="active" data-page="dashboard"><span class="ico">⌂</span>لوحة التحكم</button>
 
+    <div class="menu-title">إدارة المنصة</div>
+    <button data-page="platform-companies"><span class="ico">🏢</span>الشركات والتجارب</button>
+
     <div class="menu-title">إدارة الأعمال</div>
     <div class="menu-group open">
       <button class="group-toggle" type="button" aria-expanded="true">🧾 المبيعات والفواتير <span>⌄</span></button>
@@ -307,6 +310,22 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 <div class="panel dash-card-link" onclick="showPage('inventory')"><div class="panel-heading"><h2>مخزون قرب انتهاء الصلاحية</h2><span>عرض المخزون ←</span></div><div class="empty">يلزم تفعيل بيانات التشغيلات وتواريخ الانتهاء لعرض تنبيهات صحيحة.</div></div>
 <div class="panel"><div class="panel-heading"><h2>آخر التحديثات</h2><span>سجل النظام</span></div><div class="empty">سجل التدقيق يحتاج جدولاً مخصصاً قبل عرض أحداث فعلية.</div></div>
 </div></div></section>
+<section class="page" id="platform-companies">
+<div class="page-heading"><div><h1>إدارة الشركات والتجارب</h1><p>إنشاء منشأة تجريبية وربطها بمالك لديه حساب مسجل.</p></div><span class="status done">مدير المنصة</span></div>
+<div class="panel">
+ <div class="panel-heading"><h2>إضافة شركة جديدة</h2><span>تجربة مجانية لمدة 15 يوماً</span></div>
+ <div class="form-grid">
+  <div class="field"><label>اسم الشركة بالعربية *</label><input id="platformCompanyName" placeholder="اسم المنشأة"></div>
+  <div class="field"><label>اسم الشركة بالإنجليزية</label><input id="platformCompanyNameEn" placeholder="Company name"></div>
+  <div class="field"><label>بريد مالك الشركة *</label><input id="platformOwnerEmail" type="email" placeholder="owner@example.com"></div>
+ </div>
+ <div class="form-actions"><button class="primary" id="platformCreateCompany">إنشاء الشركة وإرسالها للتجربة</button><button class="secondary" id="platformRefreshCompanies">تحديث القائمة</button></div>
+ <p class="notice" id="platformCompanyMessage">يجب أن يكون مالك الشركة قد أنشأ حساب تسجيل دخول مسبقاً. لا تُنشأ كلمات مرور من هذه الشاشة.</p>
+</div>
+<div class="panel"><div class="panel-heading"><h2>الشركات المسجلة</h2><span id="platformCompanyCount">—</span></div>
+ <div class="table-wrap"><table><thead><tr><th>رمز الشركة</th><th>اسم المنشأة</th><th>الحالة</th><th>الاشتراك</th><th>بداية التجربة</th><th>نهاية التجربة</th></tr></thead><tbody id="platformCompanyRows"><tr><td colspan="6" class="empty">جارٍ التحميل...</td></tr></tbody></table></div>
+</div>
+</section>
 <section class="page" id="analytics"><div class="page-heading"><div><h1>تحليلات المبيعات</h1><p>الفترة، المنتج والخدمة، الفئات، الفروع، والبائعون.</p></div><button class="secondary" onclick="showPage('dashboard')">عودة</button></div><div class="panel"><div class="dashboard-filters"><div class="field"><label>نوع التحليل</label><select id="analyticsDimension"><option value="period">حسب الفترة</option><option value="products">المنتج والخدمة</option><option value="categories">الفئات</option><option value="branches">الفروع</option><option value="sellers">البائعون</option></select></div><div class="field"><label>من تاريخ</label><input type="date" id="analyticsFrom"></div><div class="field"><label>إلى تاريخ</label><input type="date" id="analyticsTo"></div><button class="primary" onclick="loadAnalytics()">تحديث التحليل</button></div><div class="empty" id="analyticsResult">اختر نوع التحليل والفترة.</div></div></section>
 <section class="page" id="bookings"><div class="page-heading"><div><h1>الحجوزات</h1><p>نظرة على المواعيد والحجوزات.</p></div></div><div class="panel"><div class="empty">وحدة الحجوزات لم تُنشأ في قاعدة البيانات بعد.</div></div></section>
 <section class="page" id="cashboxes">
@@ -484,14 +503,43 @@ const money=v=>Number(v||0).toLocaleString("ar-SA",{minimumFractionDigits:2,maxi
 const today=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Riyadh"});
 function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function setDashStatus(s){document.getElementById("dashStatus").textContent=s;}
+async function loadPlatformCompanies(){
+ const body=document.getElementById("platformCompanyRows");if(!body)return;
+ body.innerHTML='<tr><td colspan="6" class="empty">جارٍ تحميل الشركات...</td></tr>';
+ const {data,error}=await supabaseClient.from("enhar_companies").select("company_code,name_ar,status,subscription_status,trial_started_at,trial_ends_at").order("created_at",{ascending:false}).limit(200);
+ if(error){body.innerHTML='<tr><td colspan="6" class="empty">تعذر تحميل الشركات: '+escapeHTML(error.message)+'</td></tr>';return;}
+ document.getElementById("platformCompanyCount").textContent=(data||[]).length+" شركة";
+ body.innerHTML=(data||[]).map(x=>'<tr><td>'+escapeHTML(x.company_code)+'</td><td>'+escapeHTML(x.name_ar)+'</td><td>'+escapeHTML(x.status)+'</td><td>'+escapeHTML(x.subscription_status)+'</td><td>'+new Date(x.trial_started_at).toLocaleDateString("ar-SA")+'</td><td>'+new Date(x.trial_ends_at).toLocaleDateString("ar-SA")+'</td></tr>').join("")||'<tr><td colspan="6" class="empty">لا توجد شركات حتى الآن.</td></tr>';
+}
+async function createPlatformCompany(){
+ const name=document.getElementById("platformCompanyName").value.trim();
+ const nameEn=document.getElementById("platformCompanyNameEn").value.trim();
+ const email=document.getElementById("platformOwnerEmail").value.trim();
+ const msg=document.getElementById("platformCompanyMessage");
+ if(name.length<2||!email){msg.textContent="أدخل اسم الشركة وبريد مالكها.";return;}
+ const button=document.getElementById("platformCreateCompany");button.disabled=true;msg.textContent="جارٍ إنشاء الشركة...";
+ try{
+  const {data,error}=await supabaseClient.rpc("enhar_admin_create_company",{p_name_ar:name,p_owner_email:email,p_name_en:nameEn||null});
+  if(error)throw error;
+  msg.textContent="تم إنشاء الشركة. الرمز: "+data.company_code+" · نهاية التجربة: "+new Date(data.trial_ends_at).toLocaleDateString("ar-SA");
+  document.getElementById("platformCompanyName").value="";document.getElementById("platformCompanyNameEn").value="";document.getElementById("platformOwnerEmail").value="";
+  await loadPlatformCompanies();
+ }catch(e){msg.textContent="لم يتم إنشاء الشركة: "+(e.message||"خطأ غير معروف");}
+ finally{button.disabled=false;}
+}
 async function protectDashboard(){
  try{
  const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session){location.replace("./index.html");return;}currentUser=session.user;
  const {data:role,error:re}=await supabaseClient.rpc("is_platform_admin");if(re||role!==true){await supabaseClient.auth.signOut();location.replace("./index.html");return;}
  document.getElementById("signedInEmail").textContent=session.user.email||"Super Admin";
  const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
- if(!members?.length){const name=prompt("اكتب اسم المنشأة لإنشاء الشركة والفرع والمستودع الرئيسي:");if(!name||name.trim().length<2){setDashStatus("يلزم إنشاء شركة أولاً.");return;}const {data,error:ce}=await supabaseClient.rpc("enhar_create_company_for_current_user",{p_name_ar:name.trim(),p_name_en:null});if(ce)throw ce;activeCompanyId=data.company_id;}
- else activeCompanyId=members[0].company_id;
+ if(!members?.length){
+   activeCompanyId=null;
+   setDashStatus("لا توجد منشأة مرتبطة بهذا الحساب. استخدم إدارة المنصة لإنشاء شركة وربط مالكها.");
+   await loadPlatformCompanies();
+   showPage("platform-companies");
+   return;
+ } else activeCompanyId=members[0].company_id;
  await loadBranches();document.getElementById("cashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("invoiceBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("newCashBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");document.getElementById("posBranch").innerHTML=dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");await loadDashboard();await loadCatalogOptions();await loadCashboxOptions();await loadCashSessions();await loadRealInvoices();await loadPosFilters();renderPosItems();await loadCatalogSubpages();
  }catch(e){setDashStatus("تعذر تحميل بيانات الشركة: "+(e.message||"خطأ"));}
 }
@@ -705,6 +753,8 @@ document.getElementById("catalogSearch")?.addEventListener("input",e=>{const q=e
 document.getElementById("clearCatalogForm")?.addEventListener("click",()=>{["catalogName","catalogSku","catalogBarcode","catalogImage","catalogDescription"].forEach(id=>document.getElementById(id).value="");});
 
 function toggleMenu(){document.getElementById("sidebar").classList.toggle("open");}
+document.getElementById("platformCreateCompany")?.addEventListener("click",createPlatformCompany);
+document.getElementById("platformRefreshCompanies")?.addEventListener("click",loadPlatformCompanies);
 document.getElementById("applyDashFilters").addEventListener("click",loadDashboard);document.getElementById("dashBranch").addEventListener("change",loadDashboard);
 document.getElementById("resetDashFilters").addEventListener("click",()=>{document.getElementById("dashFrom").value=today;document.getElementById("dashTo").value=today;document.getElementById("dashBranch").value="";loadDashboard();});
 document.getElementById("logoutButton")?.addEventListener("click",async()=>{await supabaseClient.auth.signOut();location.replace("./index.html");});
