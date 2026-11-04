@@ -136,7 +136,7 @@ td{color:#e8e1d2}
  .page-heading{align-items:flex-start;flex-direction:column}
  .form-grid{grid-template-columns:1fr}
 }
-</style>
+.dashboard-filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:18px;padding:16px;background:#191919;border:1px solid var(--line);border-radius:12px}.dashboard-filters .field{min-width:150px;flex:1}.dashboard-filters .field label{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}.dashboard-filters input,.dashboard-filters select{width:100%;padding:11px;background:#101010;color:#fff;border:1px solid var(--line);border-radius:8px}.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}.dash-card-link{cursor:pointer}.dash-card-link:hover{border-color:var(--gold)}.cash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cash-card{background:#211e17;border:1px solid var(--line);border-radius:10px;padding:15px;cursor:pointer}.cash-card strong{display:block;margin-bottom:9px;color:var(--light)}.cash-card small{color:var(--muted);line-height:1.8}.dash-actions{display:flex;flex-wrap:wrap;gap:8px}.dash-actions button{background:#28251f;color:var(--light);border:1px solid var(--line);border-radius:8px;padding:9px 12px}.filter-note{font-size:11px;color:var(--muted);margin-top:8px}@media(max-width:900px){.dash-grid{grid-template-columns:1fr}}@media(max-width:600px){.cash-grid{grid-template-columns:1fr}}</style>
 </head>
 <body>
 <div class="layout">
@@ -193,66 +193,27 @@ td{color:#e8e1d2}
 <div class="content">
 
 <section class="page active" id="dashboard">
-  <div class="page-heading">
-    <div><h1>مرحباً بك في إنهار 👋</h1>
-    <p>نظرة عامة على أداء منشأتك وأعمالك اليومية.</p></div>
-    <button class="primary" onclick="showPage('sales')">＋ فاتورة جديدة</button>
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-top"><span class="stat-label">إجمالي المبيعات</span><span class="stat-icon">↗</span></div>
-      <div class="stat-value">0.00 ر.س</div><div class="stat-note neutral">بانتظار ربط البيانات</div>
-    </div>
-    <div class="stat">
-      <div class="stat-top"><span class="stat-label">إجمالي المشتريات</span><span class="stat-icon">🛒</span></div>
-      <div class="stat-value">0.00 ر.س</div><div class="stat-note neutral">بانتظار ربط البيانات</div>
-    </div>
-    <div class="stat">
-      <div class="stat-top"><span class="stat-label">المنتجات</span><span class="stat-icon">📦</span></div>
-      <div class="stat-value">0</div><div class="stat-note neutral">لا توجد منتجات مسجلة بعد</div>
-    </div>
-    <div class="stat">
-      <div class="stat-top"><span class="stat-label">العملاء</span><span class="stat-icon">👥</span></div>
-      <div class="stat-value">0</div><div class="stat-note neutral">لا يوجد عملاء مسجلون بعد</div>
-    </div>
-  </div>
-
-  <div class="grid-two">
-    <div>
-      <div class="panel">
-        <div class="panel-heading"><h2>الوصول السريع</h2><span>اختصارات العمليات</span></div>
-        <div class="quick-grid">
-          <button class="quick" onclick="showPage('sales')"><b>🧾</b><span>فاتورة مبيعات</span></button>
-          <button class="quick" onclick="showPage('purchases')"><b>🛒</b><span>فاتورة مشتريات</span></button>
-          <button class="quick" onclick="showPage('products')"><b>📦</b><span>إضافة منتج</span></button>
-          <button class="quick" onclick="showPage('customers')"><b>👥</b><span>إضافة عميل</span></button>
-          <button class="quick" onclick="showPage('suppliers')"><b>🚚</b><span>إضافة مورد</span></button>
-          <button class="quick" onclick="showPage('reports')"><b>📊</b><span>عرض التقارير</span></button>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-heading"><h2>آخر الفواتير</h2><span>أحدث العمليات</span></div>
-        <div class="table-wrap">
-          <table><thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>التاريخ</th><th>الحالة</th></tr></thead>
-          <tbody id="invoiceRows"><tr><td colspan="4" class="empty">لا توجد فواتير حتى الآن</td></tr></tbody></table>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="panel">
-        <div class="panel-heading"><h2>ملخص النظام</h2><span>حالة الواجهة</span></div>
-        <div class="activity"><div class="activity-icon">✓</div><div><strong>واجهة لوحة التحكم جاهزة للعرض</strong><small>تم تجهيز التصميم الأولي</small></div></div>
-        <div class="activity"><div class="activity-icon">⚙</div><div><strong>قاعدة البيانات</strong><small>لم يتم ربطها بعد</small></div></div>
-        <div class="activity"><div class="activity-icon">🔐</div><div><strong>تسجيل الدخول</strong><small>يحتاج إلى نظام حسابات آمن</small></div></div>
-      </div>
-      <div class="panel">
-        <div class="panel-heading"><h2>تنبيهات المخزون</h2></div>
-        <div class="empty">ستظهر تنبيهات نقص المخزون بعد تسجيل المنتجات وربط قاعدة البيانات.</div>
-      </div>
-    </div>
-  </div>
-</section>
+<div class="page-heading"><div><h1>مرحباً بك في إنهار 👋</h1><p>نظرة عامة مباشرة حسب الفترة والفرع المحددين.</p></div><div class="dash-actions"><button onclick="showPage('sales')">＋ فاتورة مبيعات</button><button onclick="showPage('analytics')">📊 التحليلات</button></div></div>
+<div class="dashboard-filters">
+<div class="field"><label>من تاريخ</label><input type="date" id="dashFrom"></div><div class="field"><label>إلى تاريخ</label><input type="date" id="dashTo"></div><div class="field"><label>الفرع</label><select id="dashBranch"><option value="">كل الفروع</option></select></div><button class="primary" id="applyDashFilters">تطبيق</button><button class="secondary" id="resetDashFilters">اليوم</button><div class="filter-note" id="dashStatus">جارٍ تحميل بيانات المنشأة...</div></div>
+<div class="stats">
+<div class="stat dash-card-link" onclick="showPage('sales')"><div class="stat-top"><span class="stat-label">مبيعات الفترة</span><span class="stat-icon">↗</span></div><div class="stat-value" id="dashSalesTotal">—</div><div class="stat-note neutral" id="dashSalesCount">من قاعدة البيانات</div></div>
+<div class="stat dash-card-link" onclick="showPage('purchases')"><div class="stat-top"><span class="stat-label">مشتريات الفترة</span><span class="stat-icon">🛒</span></div><div class="stat-value" id="dashPurchasesTotal">—</div><div class="stat-note neutral" id="dashPurchasesCount">من قاعدة البيانات</div></div>
+<div class="stat dash-card-link" onclick="showPage('products')"><div class="stat-top"><span class="stat-label">المنتجات والخدمات</span><span class="stat-icon">📦</span></div><div class="stat-value" id="dashProductsCount">—</div><div class="stat-note neutral">الأصناف المسجلة</div></div>
+<div class="stat dash-card-link" onclick="showPage('customers')"><div class="stat-top"><span class="stat-label">العملاء</span><span class="stat-icon">👥</span></div><div class="stat-value" id="dashCustomersCount">—</div><div class="stat-note neutral">العملاء المسجلون</div></div></div>
+<div class="dash-grid"><div>
+<div class="panel"><div class="panel-heading"><h2>تحليلات المبيعات</h2><span>اختر نوع التحليل</span></div><div class="quick-grid">
+<button class="quick" onclick="openAnalytics('period')"><b>📅</b><span>حسب الفترة</span></button><button class="quick" onclick="openAnalytics('products')"><b>📦</b><span>المنتج والخدمة</span></button><button class="quick" onclick="openAnalytics('categories')"><b>🗂️</b><span>الفئات</span></button><button class="quick" onclick="openAnalytics('branches')"><b>🏢</b><span>الفروع</span></button><button class="quick" onclick="openAnalytics('sellers')"><b>🧑‍💼</b><span>البائعون</span></button><button class="quick" onclick="showPage('reports')"><b>📊</b><span>كل التقارير</span></button></div></div>
+<div class="panel dash-card-link" onclick="showPage('bookings')"><div class="panel-heading"><h2>الحجوزات — نظرة سريعة</h2><span>فتح الحجوزات ←</span></div><div class="empty">وحدة الحجوزات تحتاج جدولها الخاص قبل عرض مواعيد حقيقية.</div></div>
+<div class="panel"><div class="panel-heading"><h2>آخر الفواتير</h2><span>حسب الفلتر الحالي</span></div><div class="table-wrap"><table><thead><tr><th>رقم الفاتورة</th><th>العميل</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th></tr></thead><tbody id="invoiceRows"><tr><td colspan="5" class="empty">جارٍ التحميل...</td></tr></tbody></table></div><div class="dash-actions" style="margin-top:12px"><button onclick="showPage('sales')">عرض كل الفواتير</button></div></div>
+</div><div>
+<div class="panel dash-card-link" onclick="showPage('cashboxes')"><div class="panel-heading"><h2>صناديق البيع</h2><span>إدارة الصناديق ←</span></div><div class="cash-grid"><div class="cash-card"><strong>صناديق البيع المفتوحة</strong><small>سيتم عرض اسم الصندوق والمستخدم ووقت الفتح والمبالغ عند ربط جلسات الصناديق.</small></div><div class="cash-card"><strong>صناديق البيع المغلقة</strong><small>ملخص الإغلاق والتحصيل بعد تفعيل وحدة الصناديق.</small></div></div></div>
+<div class="panel dash-card-link" onclick="showPage('inventory')"><div class="panel-heading"><h2>مخزون قرب انتهاء الصلاحية</h2><span>عرض المخزون ←</span></div><div class="empty">يلزم تفعيل بيانات التشغيلات وتواريخ الانتهاء لعرض تنبيهات صحيحة.</div></div>
+<div class="panel"><div class="panel-heading"><h2>آخر التحديثات</h2><span>سجل النظام</span></div><div class="empty">سجل التدقيق يحتاج جدولاً مخصصاً قبل عرض أحداث فعلية.</div></div>
+</div></div></section>
+<section class="page" id="analytics"><div class="page-heading"><div><h1>تحليلات المبيعات</h1><p>الفترة، المنتج والخدمة، الفئات، الفروع، والبائعون.</p></div><button class="secondary" onclick="showPage('dashboard')">عودة</button></div><div class="panel"><div class="dashboard-filters"><div class="field"><label>نوع التحليل</label><select id="analyticsDimension"><option value="period">حسب الفترة</option><option value="products">المنتج والخدمة</option><option value="categories">الفئات</option><option value="branches">الفروع</option><option value="sellers">البائعون</option></select></div><div class="field"><label>من تاريخ</label><input type="date" id="analyticsFrom"></div><div class="field"><label>إلى تاريخ</label><input type="date" id="analyticsTo"></div><button class="primary" onclick="loadAnalytics()">تحديث التحليل</button></div><div class="empty" id="analyticsResult">اختر نوع التحليل والفترة.</div></div></section>
+<section class="page" id="bookings"><div class="page-heading"><div><h1>الحجوزات</h1><p>نظرة على المواعيد والحجوزات.</p></div></div><div class="panel"><div class="empty">وحدة الحجوزات لم تُنشأ في قاعدة البيانات بعد.</div></div></section>
+<section class="page" id="cashboxes"><div class="page-heading"><div><h1>صناديق البيع</h1><p>الصناديق المفتوحة والمغلقة حسب الفرع والمستخدم.</p></div></div><div class="panel"><div class="empty">نحتاج إنشاء جدول جلسات الصناديق وحركات القبض والصرف لعرض بيانات حقيقية.</div></div></section>
 
 <section class="page" id="sales">
   <div class="page-heading"><div><h1>المبيعات والفواتير</h1><p>إعداد فواتير البيع وإدارة عمليات العملاء.</p></div></div>
@@ -347,26 +308,54 @@ td{color:#e8e1d2}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://bibkxfdtmweotjtdrfsg.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-(async function protectDashboard() {
-  const sessionResult = await supabaseClient.auth.getSession();
-  const session = sessionResult.data.session;
-  if (!session) { window.location.replace("./index.html"); return; }
-  const role = await supabaseClient.rpc("is_platform_admin");
-  if (role.error || role.data !== true) {
-    await supabaseClient.auth.signOut();
-    window.location.replace("./index.html");
-    return;
-  }
-  const email = document.getElementById("signedInEmail");
-  if (email) email.textContent = session.user.email || "Super Admin";
-})();
-document.getElementById("logoutButton")?.addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
-  window.location.replace("./index.html");
-});
+const SUPABASE_URL="https://bibkxfdtmweotjtdrfsg.supabase.co",SUPABASE_PUBLISHABLE_KEY="sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let currentUser=null,activeCompanyId=null,dashboardBranches=[];
+const money=v=>Number(v||0).toLocaleString("ar-SA",{minimumFractionDigits:2,maximumFractionDigits:2})+" ر.س";
+const today=new Date().toLocaleDateString("en-CA",{timeZone:"Asia/Riyadh"});
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function setDashStatus(s){document.getElementById("dashStatus").textContent=s;}
+async function protectDashboard(){
+ try{
+ const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session){location.replace("./index.html");return;}currentUser=session.user;
+ const {data:role,error:re}=await supabaseClient.rpc("is_platform_admin");if(re||role!==true){await supabaseClient.auth.signOut();location.replace("./index.html");return;}
+ document.getElementById("signedInEmail").textContent=session.user.email||"Super Admin";
+ const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
+ if(!members?.length){const name=prompt("اكتب اسم المنشأة لإنشاء الشركة والفرع والمستودع الرئيسي:");if(!name||name.trim().length<2){setDashStatus("يلزم إنشاء شركة أولاً.");return;}const {data,error:ce}=await supabaseClient.rpc("enhar_create_company_for_current_user",{p_name_ar:name.trim(),p_name_en:null});if(ce)throw ce;activeCompanyId=data.company_id;}
+ else activeCompanyId=members[0].company_id;
+ await loadBranches();await loadDashboard();
+ }catch(e){setDashStatus("تعذر تحميل بيانات الشركة: "+(e.message||"خطأ"));}
+}
+async function loadBranches(){const {data,error}=await supabaseClient.from("enhar_branches").select("id,name_ar").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar");if(error)throw error;dashboardBranches=data||[];document.getElementById("dashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");}
+async function loadDashboard(){
+ if(!activeCompanyId)return;setDashStatus("جارٍ تحديث المؤشرات من قاعدة البيانات...");
+ const from=document.getElementById("dashFrom").value||"1900-01-01",to=document.getElementById("dashTo").value||"2999-12-31",branch=document.getElementById("dashBranch").value;
+ try{
+ let sq=supabaseClient.from("enhar_sales_invoices").select("id,invoice_number,invoice_date,grand_total,status,customer_id,branch_id").eq("company_id",activeCompanyId).gte("invoice_date",from).lte("invoice_date",to).order("invoice_date",{ascending:false}).limit(8);
+ let pq=supabaseClient.from("enhar_purchase_invoices").select("id,grand_total,invoice_date,branch_id").eq("company_id",activeCompanyId).gte("invoice_date",from).lte("invoice_date",to);
+ if(branch){sq=sq.eq("branch_id",branch);pq=pq.eq("branch_id",branch);}
+ const [s,p,pr,cu]=await Promise.all([sq,pq,supabaseClient.from("enhar_products").select("id",{count:"exact",head:true}).eq("company_id",activeCompanyId).eq("is_active",true),supabaseClient.from("enhar_customers").select("id",{count:"exact",head:true}).eq("company_id",activeCompanyId).eq("is_active",true)]);
+ for(const x of [s,p,pr,cu])if(x.error)throw x.error;
+ document.getElementById("dashSalesTotal").textContent=money((s.data||[]).reduce((a,x)=>a+Number(x.grand_total||0),0));document.getElementById("dashSalesCount").textContent=(s.data||[]).length+" فاتورة في النتائج";
+ document.getElementById("dashPurchasesTotal").textContent=money((p.data||[]).reduce((a,x)=>a+Number(x.grand_total||0),0));document.getElementById("dashPurchasesCount").textContent=(p.data||[]).length+" فاتورة شراء";
+ document.getElementById("dashProductsCount").textContent=pr.count??0;document.getElementById("dashCustomersCount").textContent=cu.count??0;await renderInvoices(s.data||[]);
+ setDashStatus("بيانات مباشرة · "+(branch?(dashboardBranches.find(b=>b.id===branch)?.name_ar||"الفرع"):"كل الفروع")+" · "+from+" إلى "+to);
+ }catch(e){setDashStatus("تعذر جلب البيانات: "+e.message);}
+}
+async function renderInvoices(rows){const body=document.getElementById("invoiceRows");if(!rows.length){body.innerHTML='<tr><td colspan="5" class="empty">لا توجد فواتير في الفترة المحددة.</td></tr>';return;}
+ const ids=[...new Set(rows.map(x=>x.customer_id).filter(Boolean))];let map={};if(ids.length){const {data}=await supabaseClient.from("enhar_customers").select("id,name").eq("company_id",activeCompanyId).in("id",ids);(data||[]).forEach(x=>map[x.id]=x.name);}
+ body.innerHTML=rows.map(x=>'<tr><td>'+escapeHTML(x.invoice_number)+'</td><td>'+escapeHTML(map[x.customer_id]||"عميل نقدي")+'</td><td>'+escapeHTML(x.invoice_date)+'</td><td>'+money(x.grand_total)+'</td><td>'+escapeHTML(x.status)+'</td></tr>').join("");
+}
+function openAnalytics(d){showPage("analytics");document.getElementById("analyticsDimension").value=d;document.getElementById("analyticsFrom").value=document.getElementById("dashFrom").value;document.getElementById("analyticsTo").value=document.getElementById("dashTo").value;loadAnalytics();}
+async function loadAnalytics(){const d=document.getElementById("analyticsDimension").value,res=document.getElementById("analyticsResult");if(!activeCompanyId){res.textContent="أنشئ الشركة أولاً.";return;}if(d!=="period"){res.textContent="هذا التحليل يحتاج بيانات بنود الفواتير والفئات والبائعين. الواجهة جاهزة، لكن هذه البيانات لم تُضف إلى مخطط قاعدة البيانات بعد.";return;}
+ const from=document.getElementById("analyticsFrom").value||"1900-01-01",to=document.getElementById("analyticsTo").value||"2999-12-31";const {data,error}=await supabaseClient.from("enhar_sales_invoices").select("invoice_date,grand_total").eq("company_id",activeCompanyId).gte("invoice_date",from).lte("invoice_date",to).order("invoice_date");if(error){res.textContent=error.message;return;}const totals={};(data||[]).forEach(x=>totals[x.invoice_date]=(totals[x.invoice_date]||0)+Number(x.grand_total||0));const entries=Object.entries(totals);res.innerHTML=entries.length?'<table><thead><tr><th>التاريخ</th><th>المبيعات</th></tr></thead><tbody>'+entries.map(([d,v])=>'<tr><td>'+escapeHTML(d)+'</td><td>'+money(v)+'</td></tr>').join("")+'</tbody></table>':'لا توجد مبيعات في هذه الفترة.';}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));const p=document.getElementById(id);if(!p)return;p.classList.add("active");const btn=document.querySelector('[data-page="'+id+'"]');if(btn)btn.classList.add("active");document.getElementById("topTitle").textContent=({dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",products:"المنتجات والخدمات",inventory:"المخزون والمستودعات",customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",reports:"التقارير",employees:"الموظفون والصلاحيات",branches:"الفروع",settings:"الإعدادات",analytics:"تحليلات المبيعات",bookings:"الحجوزات",cashboxes:"صناديق البيع"})[id]||"ENHAR BUSINESS";document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0);}
+document.querySelectorAll(".menu button[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function toggleMenu(){document.getElementById("sidebar").classList.toggle("open");}
+document.getElementById("applyDashFilters").addEventListener("click",loadDashboard);document.getElementById("dashBranch").addEventListener("change",loadDashboard);
+document.getElementById("resetDashFilters").addEventListener("click",()=>{document.getElementById("dashFrom").value=today;document.getElementById("dashTo").value=today;document.getElementById("dashBranch").value="";loadDashboard();});
+document.getElementById("logoutButton")?.addEventListener("click",async()=>{await supabaseClient.auth.signOut();location.replace("./index.html");});
+document.getElementById("dashFrom").value=today;document.getElementById("dashTo").value=today;protectDashboard();
 </script>
 <script>
 const titles={
