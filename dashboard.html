@@ -18,8 +18,8 @@ button,input{font:inherit}
 button{cursor:pointer}
 .layout{display:flex;min-height:100vh}
 .sidebar{
- width:255px;background:#141414;border-right:1px solid var(--line);
- padding:18px 12px;position:fixed;left:0;right:auto;top:0;bottom:0;
+ width:255px;background:#141414;border-left:1px solid var(--line);
+ padding:18px 12px;position:fixed;right:0;left:auto;top:0;bottom:0;
  overflow-y:auto;z-index:5;transition:.25s
 }
 .logo{display:flex;align-items:center;gap:12px;padding:8px 10px 25px;
@@ -38,7 +38,7 @@ button{cursor:pointer}
 }
 .menu .ico{width:22px;min-width:22px;text-align:center;display:inline-flex;align-items:center;justify-content:center;color:#bca2ff}.menu .ico svg,.group-toggle>svg{width:18px;height:18px;stroke-width:1.8}.menu-chevron{margin-right:auto;color:#8e7ab7}
 .sidebar-bottom{border-top:1px solid var(--line);margin-top:25px;padding-top:15px}
-.main{margin-left:255px;margin-right:0;width:calc(100% - 255px);min-height:100vh}
+.main{margin-right:255px;margin-left:0;width:calc(100% - 255px);min-height:100vh}
 .topbar{
  height:75px;border-bottom:1px solid var(--line);display:flex;
  align-items:center;justify-content:space-between;padding:0 28px;
@@ -123,9 +123,9 @@ td{color:#e8e1d2}
  .grid-two{grid-template-columns:1fr}
 }
 @media(max-width:700px){
- .sidebar{transform:translateX(-100%);width:260px}
+ .sidebar{transform:translateX(100%);width:260px}
  .sidebar.open{transform:translateX(0)}
- .main{margin-left:0;margin-right:0;width:100%}
+ .main{margin-right:0;margin-left:0;width:100%}
  .topbar{padding:0 14px}
  .content{padding:18px 13px}
  .mobile-menu{display:inline-block}
