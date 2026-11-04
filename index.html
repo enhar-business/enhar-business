@@ -531,7 +531,7 @@
     function setBusy(busy, label) {
       const button = document.getElementById("loginButton");
       button.disabled = busy;
-      button.textContent = busy ? label : text[currentLanguage].login;
+      button.textContent = busy ? label : (authMode === "signup" ? text[currentLanguage].createAccount : text[currentLanguage].login);
     }
     function isNetworkError(error) {
       return error instanceof TypeError || /failed to fetch|networkerror|load failed/i.test(error?.message || "");
