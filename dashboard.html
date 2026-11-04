@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ENHAR BUSINESS | لوحة التحكم</title>
+<title>ANHAR | أنهار | لوحة التحكم</title>
 <style>
 :root{
   --gold:#d8b45e;--light:#f2d88e;--bg:#101010;
@@ -214,6 +214,22 @@ html[data-theme="light"] .pos-pay{background:#087f7b;color:#fff}
 html[data-theme="light"] .pos-pay:disabled{background:#e1e6e9;color:#87939e}
 html[data-theme="light"] .footer{background:#fff;color:#77838e}
 
+
+/* ANHAR brand palette */
+:root{--gold:#8b45ff;--light:#d8c2ff;--bg:#08051e;--panel:#100b2b;--line:#30205a;--text:#f7f4ff;--muted:#aaa0ca;--green:#55c9ff;--red:#ff718f}
+body{background:var(--bg);color:var(--text)}.sidebar,.topbar{background:#0d0825;border-color:var(--line)}
+.logo strong,.page-heading h1,.panel-heading h2,.module-card b,.cash-card strong{color:#d8c2ff}
+.menu-title{color:#9d7be0}.menu button,.menu-group>.group-toggle{color:#d9d1ef}.menu button:hover,.menu button.active,.menu-group>.group-toggle:hover,.menu-group>.group-toggle[aria-expanded=true],.menu-submenu button.active{background:#28134c;color:#e5d5ff}
+.primary{background:linear-gradient(110deg,#7135df,#267eff);color:white}.stat-icon,.activity-icon{background:#28134c;color:#d8c2ff}
+.quick,.cash-card,.module-card{background:#140d32;border-color:var(--line)}.quick:hover,.dash-card-link:hover{border-color:#9255ff}
+th,td{border-color:#30205a}td{color:#e9e3fb}.field input,.field select,.dashboard-filters input,.dashboard-filters select{background:#0c0822;color:#fff;border-color:#493477}.field input:focus,.field select:focus{border-color:#9a5cff}.secondary,.dash-actions button{background:#241342;color:#d8c2ff;border-color:#493477}.notice{color:#c6a5ff}.footer{color:#8276a8}
+.menu-submenu{border-right-color:#493477}.status.pending{background:#38245c;color:#d8c2ff}
+/* POS colors aligned with ANHAR */
+.pos-tabs button.active,.pos-pay{background:linear-gradient(110deg,#7135df,#267eff);color:#fff}.pos-cat.active{background:#eee5ff;border-color:#8b45ff;color:#6428c9}.pos-search span,.pos-item-info small{color:#7436d9}.pos-item:hover{border-color:#8b45ff}
+html[data-theme="light"]{--bg:#f4f0ff;--panel:#fff;--line:#ded2f5;--text:#211638;--muted:#77698f;--gold:#8b45ff;--light:#6e37c8;--green:#168fc0}
+html[data-theme="light"] .sidebar,html[data-theme="light"] .topbar{background:#fff;border-color:#ded2f5}
+html[data-theme="light"] .menu button:hover,html[data-theme="light"] .menu button.active{background:#eee5ff;color:#6428c9}
+html[data-theme="light"] .pos-tabs button.active{background:#7135df;color:#fff}
 </style>
 </head>
 <body>
@@ -221,9 +237,9 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 
 <aside class="sidebar" id="sidebar">
   <div class="logo">
-    <img src="./enhar-logo-800x800.png"
-      onerror="this.src='./enhar-logo.png'" alt="ENHAR">
-    <div><strong>ENHAR BUSINESS</strong><small>منصة الأعمال والمحاسبة</small></div>
+    <img src="./assets/anhar-brand.svg"
+       alt="ENHAR">
+    <div><strong>ANHAR | أنهار</strong><small>منصة الأعمال والمحاسبة</small></div>
   </div>
 
   <nav class="menu">
@@ -288,7 +304,7 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
     <button class="icon-btn" onclick="alert('التنبيهات ستظهر بعد ربط النظام')">♧</button>
     <div class="user">
       <div class="avatar">E</div>
-      <div><strong id="signedInEmail">جارٍ التحقق...</strong><small>SUPER ADMIN · ENHAR BUSINESS</small></div>
+      <div><strong id="signedInEmail">جارٍ التحقق...</strong><small>SUPER ADMIN · ANHAR | أنهار</small></div>
     </div>
   </div>
 </header>
@@ -469,7 +485,7 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
   <div class="page-heading"><div><h1>الإعدادات</h1><p>إعدادات المنشأة واللغة والعملة.</p></div></div>
   <div class="panel">
     <div class="form-grid">
-      <div class="field"><label>اسم المنشأة</label><input value="ENHAR BUSINESS"></div>
+      <div class="field"><label>اسم المنشأة</label><input value="ANHAR | أنهار"></div>
       <div class="field"><label>العملة الافتراضية</label><select><option>ريال سعودي (SAR)</option></select></div>
       <div class="field"><label>اللغة</label><select><option>العربية</option><option>English</option></select></div>
       <div class="field"><label>المنطقة الزمنية</label><select><option>الرياض (Asia/Riyadh)</option></select></div>
@@ -478,7 +494,7 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
   </div>
 </section>
 
-<div class="footer">ENHAR BUSINESS © 2026 — منصة الأعمال والمحاسبة</div>
+<div class="footer">ANHAR | أنهار © 2026 — منصة الأعمال والمحاسبة</div>
 </div>
 <section class="page" id="pos">
  <div class="pos-heading"><div><h1>شاشة البيع</h1><p>نقطة بيع ENHAR · المنتجات والخدمات والفواتير</p></div><div class="pos-live"><span></span> متصل بقاعدة البيانات</div></div>
@@ -933,7 +949,7 @@ async function saveCashSettings(){
  const {error}=await supabaseClient.from("enhar_cash_settings").upsert(row,{onConflict:"company_id"});
  document.getElementById("cashMessage").textContent=error?"تعذر الحفظ: "+error.message:"تم حفظ إعدادات الصناديق.";
 }
-function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));const p=document.getElementById(id);if(!p)return;p.classList.add("active");const btn=document.querySelector('[data-page="'+id+'"]');if(btn)btn.classList.add("active");document.getElementById("topTitle").textContent=({dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",products:"المنتجات والخدمات",categories:"فئات المنتجات والخدمات",services:"قائمة الخدمات",bundles:"المنتجات المركبة",pos:"شاشة البيع", "invoice-settings":"إعدادات الفواتير والطباعة",promotions:"التسويق والعروض",inventory:"المخزون والمستودعات",customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",reports:"التقارير",employees:"الموظفون والصلاحيات",branches:"الفروع",settings:"الإعدادات",analytics:"تحليلات المبيعات",bookings:"الحجوزات",cashboxes:"صناديق البيع"})[id]||"ENHAR BUSINESS";document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0);}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));const p=document.getElementById(id);if(!p)return;p.classList.add("active");const btn=document.querySelector('[data-page="'+id+'"]');if(btn)btn.classList.add("active");document.getElementById("topTitle").textContent=({dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",products:"المنتجات والخدمات",categories:"فئات المنتجات والخدمات",services:"قائمة الخدمات",bundles:"المنتجات المركبة",pos:"شاشة البيع", "invoice-settings":"إعدادات الفواتير والطباعة",promotions:"التسويق والعروض",inventory:"المخزون والمستودعات",customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",reports:"التقارير",employees:"الموظفون والصلاحيات",branches:"الفروع",settings:"الإعدادات",analytics:"تحليلات المبيعات",bookings:"الحجوزات",cashboxes:"صناديق البيع"})[id]||"ANHAR | أنهار";document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0);}
 document.querySelectorAll(".menu button[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
 
 document.querySelectorAll(".group-toggle").forEach(b=>b.addEventListener("click",()=>{const g=b.closest(".menu-group");g.classList.toggle("open");b.setAttribute("aria-expanded",g.classList.contains("open")?"true":"false");}));
