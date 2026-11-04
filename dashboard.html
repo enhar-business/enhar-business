@@ -348,8 +348,11 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 <div class="table-wrap"><table><thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>الفرع</th><th>الحالة</th><th>الإجمالي</th></tr></thead><tbody id="realInvoicesRows"><tr><td colspan="5" class="empty">جارٍ التحميل</td></tr></tbody></table></div></div></section>
 
 <section class="page" id="purchases">
-  <div class="page-heading"><div><h1>المشتريات</h1><p>إدارة فواتير الموردين والمشتريات.</p></div></div>
-  <div class="panel"><h2>إدارة المشتريات</h2><div class="empty">سيتم بناء شاشة فواتير الشراء وربطها بالموردين والمخزون في المرحلة القادمة.</div></div>
+ <div class="page-heading"><div><h1>المشتريات والموردون</h1><p>فاتورة شراء مرتبطة بالمورد والفرع والمستودع، مع ترحيل الكميات للمخزون.</p></div><button class="secondary" onclick="showPage('suppliers')">إدارة الموردين</button></div>
+ <div class="panel"><h2>فاتورة مشتريات جديدة</h2><div class="form-grid"><div class="field"><label>رقم الفاتورة الداخلي *</label><input id="purchaseNumber" placeholder="PUR-0001"></div><div class="field"><label>رقم فاتورة المورد</label><input id="purchaseSupplierNumber"></div><div class="field"><label>المورد</label><select id="purchaseSupplier"></select></div><div class="field"><label>الفرع</label><select id="purchaseBranch"></select></div><div class="field"><label>المستودع</label><select id="purchaseWarehouse"></select></div><div class="field"><label>تاريخ الفاتورة</label><input id="purchaseDate" type="date"></div></div>
+ <h3 style="margin:18px 0 10px">الصنف الأول</h3><div class="form-grid"><div class="field"><label>المنتج</label><select id="purchaseProduct"></select></div><div class="field"><label>الكمية</label><input id="purchaseQty" type="number" min=".001" step=".001"></div><div class="field"><label>تكلفة الوحدة</label><input id="purchaseCost" type="number" min="0" step=".0001"></div><div class="field"><label>الضريبة %</label><input id="purchaseTax" type="number" min="0" max="100" step=".01" value="15"></div></div>
+ <div class="field" style="margin-top:12px"><label>ملاحظات</label><input id="purchaseNotes"></div><div class="form-actions"><button class="primary" id="savePurchaseInvoice">حفظ وترحيل فاتورة الشراء</button></div><p class="notice" id="purchaseMessage">هذه النسخة تنشئ فاتورة بسطر صنف واحد في كل عملية؛ تعدد الأصناف سيضاف في تحسين لاحق.</p></div>
+ <div class="panel"><h2>فواتير المشتريات</h2><div class="table-wrap"><table><thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>المورد</th><th>الإجمالي</th><th>الحالة</th></tr></thead><tbody id="purchaseRows"><tr><td colspan="5" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
 </section>
 
 <section class="page" id="products">
@@ -413,8 +416,9 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 </section>
 
 <section class="page" id="suppliers">
-  <div class="page-heading"><div><h1>الموردون</h1><p>إدارة الموردين والمشتريات والمستحقات.</p></div></div>
-  <div class="panel"><h2>ملف الموردين</h2><div class="empty">سيتم إضافة سجل الموردين وربطه بفواتير الشراء.</div></div>
+ <div class="page-heading"><div><h1>ملفات الموردين</h1><p>بيانات الموردين، الأرصدة الافتتاحية، وسجل التعامل.</p></div></div>
+ <div class="panel"><h2>إضافة مورد</h2><div class="form-grid"><div class="field"><label>رمز المورد *</label><input id="supplierCode" placeholder="SUP-001"></div><div class="field"><label>اسم المورد *</label><input id="supplierName"></div><div class="field"><label>الجوال</label><input id="supplierPhone"></div><div class="field"><label>البريد الإلكتروني</label><input id="supplierEmail"></div><div class="field"><label>الرقم الضريبي</label><input id="supplierVat"></div><div class="field"><label>الرصيد الافتتاحي</label><input id="supplierOpening" type="number" step=".01" value="0"></div></div><div class="form-actions"><button class="primary" id="saveSupplier">حفظ المورد</button></div><p class="notice" id="supplierMessage"></p></div>
+ <div class="panel"><h2>الموردون المسجلون</h2><div class="table-wrap"><table><thead><tr><th>الرمز</th><th>المورد</th><th>الجوال</th><th>الرصيد الافتتاحي</th><th>الحالة</th></tr></thead><tbody id="supplierRows"><tr><td colspan="5" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
 </section>
 
 <section class="page" id="accounting">
