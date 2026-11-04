@@ -18,9 +18,11 @@ alter table public.enhar_sales_payments
  add constraint enhar_sales_payments_method_check
  check(payment_method in ('CASH','CARD','BANK_TRANSFER','WALLET'));
 
+alter table public.enhar_sales_invoices add column if not exists seller_staff_id uuid;
+
 create or replace function public.enhar_post_pos_invoice_with_wallet(
  p_company_id uuid,p_branch_id uuid,p_cash_session_id uuid,p_customer_id uuid,
- p_payment_method text,p_lines jsonb,p_wallet_amount numeric default 0
+ p_payment_method text,p_lines jsonb,p_wallet_amount numeric default 0,p_seller_staff_id uuid default null
 ) returns jsonb
 language plpgsql security definer set search_path=''
 as $$
@@ -32,6 +34,7 @@ begin
   raise exception 'Company membership required';
  end if;
  if v_wallet_amount<0 then raise exception 'Wallet amount cannot be negative'; end if;
+ if p_seller_staff_id is not null and not exists(select 1 from public.enhar_staff s where s.company_id=p_company_id and s.id=p_seller_staff_id and s.is_active and s.show_in_pos) then raise exception 'Selected seller is not available in POS'; end if;
  if v_wallet_amount>0 and p_customer_id is null then raise exception 'Select a customer before using wallet balance'; end if;
 
  -- Use CARD as a temporary non-cash method so the legacy routine does not overstate cash receipts.
@@ -39,6 +42,7 @@ begin
   p_company_id,p_branch_id,p_cash_session_id,p_customer_id,
   case when v_wallet_amount>0 then 'CARD' else p_payment_method end,p_lines
  );
+ if p_seller_staff_id is not null then update public.enhar_sales_invoices set seller_staff_id=p_seller_staff_id where company_id=p_company_id and id=(v_result->>'invoice_id')::uuid; end if;
  if v_wallet_amount=0 then return v_result; end if;
 
  v_invoice_id:=(v_result->>'invoice_id')::uuid;
@@ -83,7 +87,7 @@ begin
  return v_result||jsonb_build_object('wallet_used',v_wallet_amount,'wallet_balance_after',v_balance-v_wallet_amount,'cash_due',v_cash_part,'wallet_transaction_id',v_tx);
 end $$;
 
-revoke all on function public.enhar_post_pos_invoice_with_wallet(uuid,uuid,uuid,uuid,text,jsonb,numeric) from public,anon;
+revoke all on function public.enhar_post_pos_invoice_with_wallet(uuid,uuid,uuid,uuid,text,jsonb,numeric,uuid) from public,anon;
 grant execute on function public.enhar_post_pos_invoice_with_wallet(uuid,uuid,uuid,uuid,text,jsonb,numeric) to authenticated;
 commit;
 notify pgrst, 'reload schema';
