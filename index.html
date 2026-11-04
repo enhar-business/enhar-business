@@ -387,6 +387,8 @@
         </header>
 
         <form id="loginForm">
+          <div class="form-group" id="registerFullNameGroup" style="display:none"><label for="registerFullName" id="registerFullNameLabel">الاسم الكامل</label><input id="registerFullName" type="text" autocomplete="name" placeholder="اكتب اسمك الكامل"></div>
+          <div class="form-group" id="registerCompanyGroup" style="display:none"><label for="registerCompany" id="registerCompanyLabel">اسم المنشأة</label><input id="registerCompany" type="text" autocomplete="organization" placeholder="اكتب اسم المنشأة"></div>
 
           <div class="form-group">
             <label for="loginId" id="identityLabel">
@@ -473,6 +475,7 @@
 
     let supabaseClient = null;
     let currentLanguage = "ar";
+    let authMode = "login";
     const text = {
       ar: { dir:"rtl", brandTitle:"إنهار للأعمال والمحاسبة", tagline:"أعمالك تستحق إدارة أكثر ذكاءً",
         description:"كل أعمالك في مكان واحد...<br>من المبيعات والمشتريات إلى المخزون والحسابات والتقارير.<br>تحكّم أكبر، قرارات أوضح، ونمو بثقة.",
@@ -481,7 +484,7 @@
         identityLabel:"البريد الإلكتروني", identityPlaceholder:"أدخل بريدك الإلكتروني",
         passwordLabel:"كلمة المرور", passwordPlaceholder:"أدخل كلمة المرور", show:"إظهار", hide:"إخفاء",
         remember:"تذكرني", forgot:"نسيت كلمة المرور؟", login:"تسجيل الدخول",
-        register:"ليس لديك حساب؟", registerLink:"اطلب إنشاء حساب شركتك",
+        register:"ليس لديك حساب؟", registerLink:"إنشاء حساب جديد", fullName:"الاسم الكامل", companyName:"اسم المنشأة", createAccount:"إنشاء الحساب", backLogin:"لديك حساب؟ تسجيل الدخول", signupSuccess:"تم إنشاء الحساب. تحقق من بريدك الإلكتروني لتأكيده، ثم سجّل الدخول.", companyCreated:"تم إنشاء حسابك ومنشأتك بنجاح. جارٍ فتح النظام...",
         footer:"منصة الأعمال والمحاسبة", copyright:"جميع الحقوق محفوظة © 2026",
         needEmail:"أدخل بريدك الإلكتروني أولاً.", needPassword:"أدخل كلمة المرور.",
         phone:"الدخول برقم الجوال غير مفعّل حالياً. استخدم البريد الإلكتروني.",
@@ -503,7 +506,7 @@
         identityLabel:"Email address", identityPlaceholder:"Enter your email address",
         passwordLabel:"Password", passwordPlaceholder:"Enter your password", show:"Show", hide:"Hide",
         remember:"Remember me", forgot:"Forgot password?", login:"Sign in",
-        register:"Don't have an account?", registerLink:"Request a company account",
+        register:"Don't have an account?", registerLink:"Create an account", fullName:"Full name", companyName:"Business name", createAccount:"Create account", backLogin:"Already registered? Sign in", signupSuccess:"Account created. Check your email to confirm it, then sign in.", companyCreated:"Your account and business are ready. Opening your workspace...",
         footer:"Business & Accounting Platform", copyright:"All rights reserved © 2026",
         needEmail:"Enter your email address first.", needPassword:"Enter your password.",
         phone:"Phone sign-in is not enabled yet. Use your email address.",
@@ -571,7 +574,9 @@
       document.getElementById("forgotLink").textContent=t.forgot;
       document.getElementById("loginButton").textContent=t.login;
       document.getElementById("registerText").textContent=t.register;
-      document.getElementById("registerLink").textContent=t.registerLink;
+      document.getElementById("registerLink").textContent=authMode==="login"?t.registerLink:t.backLogin;
+      document.getElementById("registerFullNameLabel").textContent=t.fullName;
+      document.getElementById("registerCompanyLabel").textContent=t.companyName;
       document.getElementById("footerDescription").textContent=t.footer;
       document.getElementById("copyright").textContent=t.copyright;
       document.getElementById("arabicButton").classList.toggle("active",language==="ar");
@@ -583,7 +588,22 @@
       const p=document.getElementById("password"); p.type=p.type==="password"?"text":"password";
       document.getElementById("showPasswordButton").textContent=p.type==="password"?text[currentLanguage].show:text[currentLanguage].hide;
     });
-    document.getElementById("registerLink").addEventListener("click",()=>showNotice(text[currentLanguage].registerNotice));
+    function setAuthMode(mode){
+      authMode=mode;
+      const t=text[currentLanguage];
+      document.getElementById("registerFullNameGroup").style.display=mode==="signup"?"block":"none";
+      document.getElementById("registerCompanyGroup").style.display=mode==="signup"?"block":"none";
+      document.getElementById("registerFullName").required=mode==="signup";
+      document.getElementById("registerCompany").required=mode==="signup";
+      document.getElementById("welcomeTitle").textContent=mode==="signup"?(currentLanguage==="ar"?"أنشئ حساب منشأتك":"Create your business account"):t.welcome;
+      document.getElementById("welcomeText").textContent=mode==="signup"?(currentLanguage==="ar"?"سجّل بياناتك لبدء تجربة ENHAR BUSINESS.":"Register to start your ENHAR BUSINESS trial."):t.welcomeText;
+      document.getElementById("loginButton").textContent=mode==="signup"?t.createAccount:t.login;
+      document.getElementById("password").autocomplete=mode==="signup"?"new-password":"current-password";
+      document.getElementById("registerText").textContent=mode==="signup"?"":t.register;
+      document.getElementById("registerLink").textContent=mode==="signup"?t.backLogin:t.registerLink;
+      document.getElementById("notice").style.display="none";
+    }
+    document.getElementById("registerLink").addEventListener("click",(event)=>{event.preventDefault();setAuthMode(authMode==="login"?"signup":"login");});
 
     document.getElementById("forgotLink").addEventListener("click",async(event)=>{
       event.preventDefault();
@@ -602,25 +622,46 @@
       if(!initializeSupabase()) return;
       const email=document.getElementById("loginId").value.trim();
       const password=document.getElementById("password").value;
-      if(!email) { showNotice(text[currentLanguage].needEmail); return; }
-      if(!email.includes("@")) { showNotice(text[currentLanguage].phone); return; }
-      if(!password) { showNotice(text[currentLanguage].needPassword); return; }
-      setBusy(true,text[currentLanguage].loading);
+      const t=text[currentLanguage];
+      if(!email||!email.includes("@")) { showNotice(t.needEmail); return; }
+      if(!password||password.length<8) { showNotice(currentLanguage==="ar"?"كلمة المرور يجب أن تكون 8 أحرف على الأقل.":"Password must be at least 8 characters."); return; }
+      setBusy(true,authMode==="signup"?(currentLanguage==="ar"?"جارٍ إنشاء الحساب...":"Creating account..."):t.signing);
       try {
+        if(authMode==="signup"){
+          const fullName=document.getElementById("registerFullName").value.trim();
+          const companyName=document.getElementById("registerCompany").value.trim();
+          if(fullName.length<2||companyName.length<2) throw new Error(currentLanguage==="ar"?"أدخل الاسم الكامل واسم المنشأة (حرفان على الأقل).":"Enter your full name and business name (at least 2 characters).");
+          const {data,error}=await supabaseClient.auth.signUp({
+            email,password,
+            options:{data:{full_name:fullName,company_name:companyName},emailRedirectTo:window.location.origin+window.location.pathname}
+          });
+          if(error) throw error;
+          if(data.session){
+            const {error:companyError}=await supabaseClient.rpc("enhar_create_company_for_current_user",{p_name_ar:companyName,p_name_en:null});
+            if(companyError) throw companyError;
+            showNotice(t.companyCreated);
+            window.location.replace("./dashboard.html");
+          } else {
+            showNotice(t.signupSuccess);
+            setAuthMode("login");
+          }
+          return;
+        }
         const health=await fetch(SUPABASE_URL+"/auth/v1/health",{headers:{"apikey":SUPABASE_PUBLISHABLE_KEY}});
         if(health.status===401||health.status===403) throw new Error("Invalid API key");
         if(!health.ok) throw new Error("Supabase health check returned HTTP "+health.status);
-        setBusy(true,text[currentLanguage].signing);
         const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
         if(error) throw error;
         const {data:roleData,error:roleError}=await supabaseClient.rpc("is_platform_admin");
-        if(roleError) {
-          await supabaseClient.auth.signOut();
-          throw new Error(text[currentLanguage].roleError);
-        }
-        if(roleData!==true) {
-          await supabaseClient.auth.signOut();
-          throw new Error(text[currentLanguage].notAdmin);
+        if(roleError) throw new Error(t.roleError);
+        if(roleData===true){window.location.replace("./dashboard.html");return;}
+        const {data:members,error:memberError}=await supabaseClient.from("enhar_company_memberships").select("company_id").eq("user_id",data.user.id).eq("status","ACTIVE").limit(1);
+        if(memberError) throw memberError;
+        if(!members?.length){
+          const companyName=data.user.user_metadata?.company_name;
+          if(!companyName) throw new Error(currentLanguage==="ar"?"لا توجد منشأة مرتبطة بهذا الحساب. تواصل مع إدارة المنصة.":"No business is linked to this account. Contact platform support.");
+          const {error:createError}=await supabaseClient.rpc("enhar_create_company_for_current_user",{p_name_ar:companyName,p_name_en:null});
+          if(createError) throw createError;
         }
         window.location.replace("./dashboard.html");
       } catch(error) {
