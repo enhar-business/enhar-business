@@ -4,6 +4,10 @@
 
 begin;
 
+-- Composite uniqueness is required for company-scoped foreign keys to warehouses.
+create unique index if not exists enhar_warehouses_company_id_uidx
+  on public.enhar_warehouses(company_id, id);
+
 create table if not exists public.enhar_customers (
   id uuid primary key default gen_random_uuid(),
   company_id uuid not null references public.enhar_companies(id) on delete cascade,
