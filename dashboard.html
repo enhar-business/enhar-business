@@ -156,6 +156,7 @@ td{color:#e8e1d2}
     <button data-page="sales"><span class="ico">🧾</span>المبيعات والفواتير</button>
     <button data-page="purchases"><span class="ico">🛒</span>المشتريات</button>
     <button data-page="products"><span class="ico">📦</span>المنتجات والخدمات</button>
+    <button data-page="categories"><span class="ico">🗂️</span>فئات المنتجات والخدمات</button>
     <button data-page="inventory"><span class="ico">🏬</span>المخزون والمستودعات</button>
     <button data-page="customers"><span class="ico">👥</span>العملاء</button>
     <button data-page="suppliers"><span class="ico">🚚</span>الموردون</button>
@@ -238,19 +239,48 @@ td{color:#e8e1d2}
 </section>
 
 <section class="page" id="products">
-  <div class="page-heading"><div><h1>المنتجات والخدمات</h1><p>إدارة الأصناف والخدمات والأسعار.</p></div></div>
-  <div class="panel">
-    <div class="panel-heading"><h2>إضافة منتج تجريبي</h2></div>
-    <div class="form-grid">
-      <div class="field"><label>اسم المنتج</label><input id="productName" placeholder="اسم المنتج"></div>
-      <div class="field"><label>رمز المنتج</label><input id="productCode" placeholder="SKU-001"></div>
-      <div class="field"><label>سعر البيع</label><input id="productPrice" type="number" min="0" placeholder="0.00"></div>
-      <div class="field"><label>نوع الصنف</label><select id="productType"><option>منتج عادي</option><option>خدمة</option><option>منتج بتشغيلة وصلاحية</option><option>منتج برقم تسلسلي</option></select></div>
-    </div>
-    <div class="form-actions"><button class="primary" onclick="saveProduct()">إضافة تجريبية</button></div>
-    <p class="notice" id="productMessage">البيانات مؤقتة داخل الصفحة.</p>
-  </div>
-  <div class="panel"><div class="panel-heading"><h2>قائمة المنتجات</h2></div><div class="table-wrap"><table><thead><tr><th>الرمز</th><th>المنتج</th><th>النوع</th><th>السعر</th></tr></thead><tbody id="productRows"><tr><td colspan="4" class="empty">لا توجد منتجات</td></tr></tbody></table></div></div>
+<div class="page-heading"><div><h1>المنتجات والخدمات</h1><p>كتالوج الأصناف والخدمات — بيانات مرتبطة بالشركة الحالية.</p></div><button class="secondary" onclick="showPage('categories')">إدارة الفئات</button></div>
+<div class="panel">
+<div class="panel-heading"><h2>إضافة منتج أو خدمة</h2><span>يحفظ في قاعدة البيانات</span></div>
+<div class="form-grid">
+<div class="field"><label>نوع العنصر</label><select id="catalogType"><option value="PRODUCT">منتج</option><option value="SERVICE">خدمة</option></select></div>
+<div class="field"><label>الفئة</label><select id="catalogCategory"><option value="">اختر الفئة</option></select></div>
+<div class="field"><label>اسم المنتج / الخدمة *</label><input id="catalogName" placeholder="الاسم بالعربية"></div>
+<div class="field"><label>رمز الصنف SKU *</label><input id="catalogSku" placeholder="SKU-001"></div>
+<div class="field"><label>الباركود</label><input id="catalogBarcode" placeholder="امسح أو أدخل الباركود"></div>
+<div class="field"><label>سعر البيع بالتجزئة</label><input id="catalogSalePrice" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label>سعر الجملة</label><input id="catalogWholesalePrice" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label>سعر الشراء / التكلفة</label><input id="catalogPurchasePrice" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label>المورد الافتراضي</label><select id="catalogSupplier"><option value="">بدون مورد محدد</option></select></div>
+<div class="field"><label>وحدة القياس</label><input id="catalogUnit" value="حبة"></div>
+<div class="field"><label>حد تنبيه المخزون</label><input id="catalogMinStock" type="number" min="0" step=".001" value="0"></div>
+<div class="field"><label>نوع التتبع</label><select id="catalogTracking"><option value="NONE">بدون</option><option value="LOT">تشغيلة / صلاحية</option><option value="SERIAL">رقم تسلسلي</option></select></div>
+<div class="field"><label>رابط صورة الصنف</label><input id="catalogImage" type="url" placeholder="https://..."></div>
+<div class="field"><label>الفروع المتاح بها</label><select id="catalogBranch"><option value="">كل الفروع</option></select></div>
+<div class="field"><label>الوصف</label><input id="catalogDescription" placeholder="وصف المنتج أو الخدمة"></div>
+</div>
+<div class="form-grid" style="margin-top:16px">
+<div class="field"><label><input type="checkbox" id="catalogRetail" checked> يظهر للبيع بالتجزئة</label></div>
+<div class="field"><label><input type="checkbox" id="catalogWholesale"> يظهر للبيع بالجملة</label></div>
+<div class="field"><label><input type="checkbox" id="catalogPos" checked> يظهر في شاشة البيع</label></div>
+<div class="field"><label><input type="checkbox" id="catalogBooking"> يظهر في الحجوزات</label></div>
+<div class="field"><label><input type="checkbox" id="catalogBundle"> منتج مركب من عدة منتجات</label></div>
+</div>
+<div class="form-actions"><button class="primary" id="saveCatalogItem">حفظ المنتج / الخدمة</button><button class="secondary" id="clearCatalogForm">تفريغ الحقول</button></div>
+<p class="notice" id="catalogMessage">لن تظهر البيانات في قائمة البيع إلا بعد حفظها بنجاح.</p>
+</div>
+<div class="panel"><div class="panel-heading"><h2>قائمة المنتجات والخدمات</h2><input id="catalogSearch" placeholder="بحث بالاسم أو الرمز أو الباركود" style="max-width:280px;padding:10px;background:#101010;color:white;border:1px solid var(--line);border-radius:8px"></div>
+<div class="table-wrap"><table><thead><tr><th>الرمز</th><th>الاسم</th><th>النوع</th><th>الفئة</th><th>الباركود</th><th>سعر البيع</th><th>حد المخزون</th></tr></thead><tbody id="catalogRows"><tr><td colspan="7" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
+</section>
+<section class="page" id="categories">
+<div class="page-heading"><div><h1>فئات المنتجات والخدمات</h1><p>أنشئ فئات مستقلة للمنتجات وفئات مستقلة للخدمات.</p></div><button class="secondary" onclick="showPage('products')">العودة للكتالوج</button></div>
+<div class="panel"><div class="panel-heading"><h2>إضافة فئة جديدة</h2></div><div class="form-grid">
+<div class="field"><label>نوع الفئة</label><select id="newCategoryType"><option value="PRODUCT">فئة منتجات</option><option value="SERVICE">فئة خدمات</option></select></div>
+<div class="field"><label>اسم الفئة بالعربية</label><input id="newCategoryName" placeholder="مثال: العناية بالشعر"></div>
+<div class="field"><label>اسم الفئة بالإنجليزية</label><input id="newCategoryNameEn" placeholder="Hair Care"></div>
+<div class="field"><label>الوصف</label><input id="newCategoryDescription" placeholder="وصف اختياري"></div>
+</div><div class="form-actions"><button class="primary" id="saveCategory">إضافة الفئة</button></div><p class="notice" id="categoryMessage"></p></div>
+<div class="panel"><div class="panel-heading"><h2>الفئات المسجلة</h2></div><div class="table-wrap"><table><thead><tr><th>الفئة</th><th>النوع</th><th>الوصف</th><th>الحالة</th></tr></thead><tbody id="categoryRows"><tr><td colspan="4" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
 </section>
 
 <section class="page" id="inventory">
@@ -323,7 +353,7 @@ async function protectDashboard(){
  const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
  if(!members?.length){const name=prompt("اكتب اسم المنشأة لإنشاء الشركة والفرع والمستودع الرئيسي:");if(!name||name.trim().length<2){setDashStatus("يلزم إنشاء شركة أولاً.");return;}const {data,error:ce}=await supabaseClient.rpc("enhar_create_company_for_current_user",{p_name_ar:name.trim(),p_name_en:null});if(ce)throw ce;activeCompanyId=data.company_id;}
  else activeCompanyId=members[0].company_id;
- await loadBranches();await loadDashboard();
+ await loadBranches();await loadDashboard();await loadCatalogOptions();
  }catch(e){setDashStatus("تعذر تحميل بيانات الشركة: "+(e.message||"خطأ"));}
 }
 async function loadBranches(){const {data,error}=await supabaseClient.from("enhar_branches").select("id,name_ar").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar");if(error)throw error;dashboardBranches=data||[];document.getElementById("dashBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(b=>'<option value="'+b.id+'">'+escapeHTML(b.name_ar)+'</option>').join("");}
@@ -349,8 +379,61 @@ async function renderInvoices(rows){const body=document.getElementById("invoiceR
 function openAnalytics(d){showPage("analytics");document.getElementById("analyticsDimension").value=d;document.getElementById("analyticsFrom").value=document.getElementById("dashFrom").value;document.getElementById("analyticsTo").value=document.getElementById("dashTo").value;loadAnalytics();}
 async function loadAnalytics(){const d=document.getElementById("analyticsDimension").value,res=document.getElementById("analyticsResult");if(!activeCompanyId){res.textContent="أنشئ الشركة أولاً.";return;}if(d!=="period"){res.textContent="هذا التحليل يحتاج بيانات بنود الفواتير والفئات والبائعين. الواجهة جاهزة، لكن هذه البيانات لم تُضف إلى مخطط قاعدة البيانات بعد.";return;}
  const from=document.getElementById("analyticsFrom").value||"1900-01-01",to=document.getElementById("analyticsTo").value||"2999-12-31";const {data,error}=await supabaseClient.from("enhar_sales_invoices").select("invoice_date,grand_total").eq("company_id",activeCompanyId).gte("invoice_date",from).lte("invoice_date",to).order("invoice_date");if(error){res.textContent=error.message;return;}const totals={};(data||[]).forEach(x=>totals[x.invoice_date]=(totals[x.invoice_date]||0)+Number(x.grand_total||0));const entries=Object.entries(totals);res.innerHTML=entries.length?'<table><thead><tr><th>التاريخ</th><th>المبيعات</th></tr></thead><tbody>'+entries.map(([d,v])=>'<tr><td>'+escapeHTML(d)+'</td><td>'+money(v)+'</td></tr>').join("")+'</tbody></table>':'لا توجد مبيعات في هذه الفترة.';}
-function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));const p=document.getElementById(id);if(!p)return;p.classList.add("active");const btn=document.querySelector('[data-page="'+id+'"]');if(btn)btn.classList.add("active");document.getElementById("topTitle").textContent=({dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",products:"المنتجات والخدمات",inventory:"المخزون والمستودعات",customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",reports:"التقارير",employees:"الموظفون والصلاحيات",branches:"الفروع",settings:"الإعدادات",analytics:"تحليلات المبيعات",bookings:"الحجوزات",cashboxes:"صناديق البيع"})[id]||"ENHAR BUSINESS";document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0);}
+async function loadCatalogOptions(){
+ if(!activeCompanyId)return;
+ const [{data:cats,error:catErr},{data:sups,error:supErr}]=await Promise.all([
+  supabaseClient.from("enhar_item_categories").select("id,name_ar,category_type").eq("company_id",activeCompanyId).eq("is_active",true).order("name_ar"),
+  supabaseClient.from("enhar_suppliers").select("id,name").eq("company_id",activeCompanyId).eq("is_active",true).order("name")
+ ]);
+ if(catErr)throw catErr;if(supErr)throw supErr;
+ const type=document.getElementById("catalogType").value;
+ document.getElementById("catalogCategory").innerHTML='<option value="">بدون فئة</option>'+(cats||[]).filter(x=>x.category_type===type).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ document.getElementById("catalogSupplier").innerHTML='<option value="">بدون مورد محدد</option>'+(sups||[]).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name)+'</option>').join("");
+ document.getElementById("catalogBranch").innerHTML='<option value="">كل الفروع</option>'+dashboardBranches.map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+ await loadCatalogCategories();await loadCatalogItems();
+}
+async function loadCatalogCategories(){
+ const {data,error}=await supabaseClient.from("enhar_item_categories").select("id,name_ar,name_en,category_type,description,is_active").eq("company_id",activeCompanyId).order("name_ar");
+ if(error)throw error;const rows=data||[];
+ document.getElementById("categoryRows").innerHTML=rows.length?rows.map(x=>'<tr><td>'+escapeHTML(x.name_ar)+'</td><td>'+(x.category_type==="PRODUCT"?"منتجات":"خدمات")+'</td><td>'+escapeHTML(x.description||"—")+'</td><td>'+(x.is_active?"نشط":"موقوف")+'</td></tr>').join(""):'<tr><td colspan="4" class="empty">لا توجد فئات. أضف أول فئة.</td></tr>';
+ const type=document.getElementById("catalogType").value;
+ document.getElementById("catalogCategory").innerHTML='<option value="">بدون فئة</option>'+rows.filter(x=>x.is_active&&x.category_type===type).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.name_ar)+'</option>').join("");
+}
+async function loadCatalogItems(){
+ const {data,error}=await supabaseClient.from("enhar_products").select("id,sku,name_ar,item_type,category_id,barcode,sale_price,wholesale_price,min_stock,is_active").eq("company_id",activeCompanyId).order("name_ar");
+ if(error)throw error;window.catalogItems=data||[];renderCatalogItems(window.catalogItems);
+}
+function renderCatalogItems(items){
+ const categories=[...document.querySelectorAll("#catalogCategory option")].reduce((a,o)=>(a[o.value]=o.textContent,a),{});
+ document.getElementById("catalogRows").innerHTML=items.length?items.map(x=>'<tr><td>'+escapeHTML(x.sku)+'</td><td>'+escapeHTML(x.name_ar)+'</td><td>'+(x.item_type==="SERVICE"?"خدمة":"منتج")+'</td><td>'+escapeHTML(categories[x.category_id]||"—")+'</td><td>'+escapeHTML(x.barcode||"—")+'</td><td>'+money(x.sale_price)+'</td><td>'+escapeHTML(x.min_stock)+'</td></tr>').join(""):'<tr><td colspan="7" class="empty">لا توجد منتجات أو خدمات بعد.</td></tr>';
+}
+async function saveCatalogCategory(){
+ const name=document.getElementById("newCategoryName").value.trim(),type=document.getElementById("newCategoryType").value;
+ if(!name){document.getElementById("categoryMessage").textContent="اكتب اسم الفئة.";return;}
+ const {error}=await supabaseClient.from("enhar_item_categories").insert({company_id:activeCompanyId,category_type:type,name_ar:name,name_en:document.getElementById("newCategoryNameEn").value.trim()||null,description:document.getElementById("newCategoryDescription").value.trim()||null});
+ document.getElementById("categoryMessage").textContent=error?"تعذر الحفظ: "+error.message:"تم حفظ الفئة في قاعدة البيانات.";
+ if(!error){["newCategoryName","newCategoryNameEn","newCategoryDescription"].forEach(id=>document.getElementById(id).value="");await loadCatalogOptions();}
+}
+async function saveCatalogProduct(){
+ const type=document.getElementById("catalogType").value,name=document.getElementById("catalogName").value.trim(),sku=document.getElementById("catalogSku").value.trim();
+ if(!name||!sku){document.getElementById("catalogMessage").textContent="الاسم ورمز الصنف مطلوبان.";return;}
+ const row={company_id:activeCompanyId,sku,name_ar:name,item_type:type,tracking_type:type==="SERVICE"?"NONE":document.getElementById("catalogTracking").value,category_id:document.getElementById("catalogCategory").value||null,barcode:document.getElementById("catalogBarcode").value.trim()||null,description:document.getElementById("catalogDescription").value.trim()||null,image_url:document.getElementById("catalogImage").value.trim()||null,sale_price:Number(document.getElementById("catalogSalePrice").value||0),wholesale_price:Number(document.getElementById("catalogWholesalePrice").value||0),purchase_price:Number(document.getElementById("catalogPurchasePrice").value||0),unit_name:document.getElementById("catalogUnit").value.trim()||"حبة",min_stock:Number(document.getElementById("catalogMinStock").value||0),default_supplier_id:document.getElementById("catalogSupplier").value||null,allow_retail:document.getElementById("catalogRetail").checked,allow_wholesale:document.getElementById("catalogWholesale").checked,show_in_pos:document.getElementById("catalogPos").checked,show_in_booking:document.getElementById("catalogBooking").checked,is_bundle:document.getElementById("catalogBundle").checked};
+ const {data,error}=await supabaseClient.from("enhar_products").insert(row).select("id").single();
+ if(error){document.getElementById("catalogMessage").textContent="لم يتم الحفظ: "+error.message;return;}
+ const branch=document.getElementById("catalogBranch").value;
+ if(branch){const {error:be}=await supabaseClient.from("enhar_product_branches").insert({company_id:activeCompanyId,product_id:data.id,branch_id:branch});if(be){document.getElementById("catalogMessage").textContent="تم حفظ الصنف لكن تعذر ربط الفرع: "+be.message;return;}}
+ document.getElementById("catalogMessage").textContent="تم حفظ الصنف في قاعدة البيانات.";
+ ["catalogName","catalogSku","catalogBarcode","catalogImage","catalogDescription"].forEach(id=>document.getElementById(id).value="");
+ await loadCatalogItems();
+}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".menu button[data-page]").forEach(b=>b.classList.remove("active"));const p=document.getElementById(id);if(!p)return;p.classList.add("active");const btn=document.querySelector('[data-page="'+id+'"]');if(btn)btn.classList.add("active");document.getElementById("topTitle").textContent=({dashboard:"لوحة التحكم",sales:"المبيعات والفواتير",purchases:"المشتريات",products:"المنتجات والخدمات",categories:"فئات المنتجات والخدمات",inventory:"المخزون والمستودعات",customers:"العملاء",suppliers:"الموردون",accounting:"المحاسبة",reports:"التقارير",employees:"الموظفون والصلاحيات",branches:"الفروع",settings:"الإعدادات",analytics:"تحليلات المبيعات",bookings:"الحجوزات",cashboxes:"صناديق البيع"})[id]||"ENHAR BUSINESS";document.getElementById("sidebar").classList.remove("open");window.scrollTo(0,0);}
 document.querySelectorAll(".menu button[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+document.getElementById("catalogType")?.addEventListener("change",loadCatalogOptions);
+document.getElementById("saveCatalogItem")?.addEventListener("click",saveCatalogProduct);
+document.getElementById("saveCategory")?.addEventListener("click",saveCatalogCategory);
+document.getElementById("catalogSearch")?.addEventListener("input",e=>{const q=e.target.value.toLowerCase();renderCatalogItems((window.catalogItems||[]).filter(x=>[x.sku,x.name_ar,x.barcode].some(v=>(v||"").toLowerCase().includes(q))));});
+document.getElementById("clearCatalogForm")?.addEventListener("click",()=>{["catalogName","catalogSku","catalogBarcode","catalogImage","catalogDescription"].forEach(id=>document.getElementById(id).value="");});
+
 function toggleMenu(){document.getElementById("sidebar").classList.toggle("open");}
 document.getElementById("applyDashFilters").addEventListener("click",loadDashboard);document.getElementById("dashBranch").addEventListener("change",loadDashboard);
 document.getElementById("resetDashFilters").addEventListener("click",()=>{document.getElementById("dashFrom").value=today;document.getElementById("dashTo").value=today;document.getElementById("dashBranch").value="";loadDashboard();});
