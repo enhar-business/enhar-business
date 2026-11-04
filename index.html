@@ -466,7 +466,12 @@
 
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL = "https://bibkxfdtmweotjtdrfsg.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
     const text = {
       ar: {
         dir: "rtl",
@@ -601,20 +606,40 @@
       }
     });
 
-    document.getElementById("loginForm").addEventListener("submit", (event) => {
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-
       const loginId = document.getElementById("loginId").value.trim();
       const password = document.getElementById("password").value;
-
+      const button = document.getElementById("loginButton");
       if (!loginId || !password) {
-        showNotice(currentLanguage === "ar"
-          ? "يرجى إدخال رقم الجوال أو البريد الإلكتروني وكلمة المرور."
-          : "Please enter your mobile number or email address and password.");
+        showNotice(currentLanguage === "ar" ? "يرجى إدخال البريد الإلكتروني وكلمة المرور." : "Please enter your email and password.");
         return;
       }
-
-      showNotice(text[currentLanguage].loginNotice);
+      if (!loginId.includes("@")) {
+        showNotice(currentLanguage === "ar" ? "الدخول برقم الجوال غير مفعّل حالياً. استخدم البريد الإلكتروني." : "Phone sign-in is not enabled yet. Please use your email address.");
+        return;
+      }
+      button.disabled = true;
+      button.textContent = currentLanguage === "ar" ? "جارٍ التحقق..." : "Signing in...";
+      try {
+        const result = await supabaseClient.auth.signInWithPassword({ email: loginId, password });
+        if (result.error) throw result.error;
+        const role = await supabaseClient.rpc("is_platform_admin");
+        if (role.error) {
+          await supabaseClient.auth.signOut();
+          throw new Error(currentLanguage === "ar" ? "تعذر التحقق من صلاحية مدير المنصة. تأكد من إعداد الدالة في Supabase." : "Could not verify platform administrator role.");
+        }
+        if (role.data !== true) {
+          await supabaseClient.auth.signOut();
+          throw new Error(currentLanguage === "ar" ? "هذا الحساب لا يملك صلاحية مدير المنصة." : "This account is not a platform administrator.");
+        }
+        window.location.href = "./dashboard.html";
+      } catch (error) {
+        showNotice(error.message || (currentLanguage === "ar" ? "تعذر تسجيل الدخول." : "Unable to sign in."));
+      } finally {
+        button.disabled = false;
+        button.textContent = text[currentLanguage].login;
+      }
     });
   </script>
 </body>
