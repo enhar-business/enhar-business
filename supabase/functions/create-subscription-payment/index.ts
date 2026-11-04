@@ -38,14 +38,14 @@ Deno.serve(async (req) => {
     }
 
     const { data: plan, error: planError } = await admin.from("enhar_subscription_plans")
-      .select("id,plan_code,name_ar,billing_period,amount_halalas,currency,is_test,is_active")
+      .select("id,plan_code,name_ar,billing_period,amount_halalas,currency,is_test,is_active,cashbox_limit,user_limit")
       .eq("id", planId).eq("is_active", true).single();
-    if (planError || !plan || plan.is_test || !["MONTHLY", "YEARLY"].includes(plan.billing_period)) {
+    if (planError || !plan || plan.is_test || !["SIX_MONTHS", "YEARLY"].includes(plan.billing_period)) {
       return Response.json({ error: "Selected subscription plan is unavailable" }, { status: 400, headers: cors });
     }
 
     const { data: order, error: orderError } = await admin.from("enhar_subscription_orders")
-      .insert({ company_id: companyId, plan_id: plan.id, amount_halalas: plan.amount_halalas, currency: plan.currency, created_by: user.id })
+      .insert({ company_id: companyId, plan_id: plan.id, amount_halalas: plan.amount_halalas, currency: plan.currency, created_by: user.id, order_type: "PLAN", duration_months: plan.billing_period === "YEARLY" ? 12 : 6 })
       .select("id").single();
     if (orderError || !order) throw orderError || new Error("Could not create subscription order");
 
