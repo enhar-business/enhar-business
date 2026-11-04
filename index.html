@@ -592,9 +592,48 @@
         password.type === "password" ? t.show : t.hide;
     });
 
-    document.getElementById("forgotLink").addEventListener("click", (event) => {
+    document.getElementById("forgotLink").addEventListener("click", async (event) => {
       event.preventDefault();
-      showNotice(text[currentLanguage].forgotNotice);
+      const email = document.getElementById("loginId").value.trim();
+      if (!email || !email.includes("@")) {
+        showNotice(currentLanguage === "ar"
+          ? "اكتب بريدك الإلكتروني أولاً في خانة البريد، ثم اضغط نسيت كلمة المرور."
+          : "Enter your email address first, then click Forgot password.");
+        document.getElementById("loginId").focus();
+        return;
+      }
+      try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + window.location.pathname
+        });
+        if (error) throw error;
+        showNotice(currentLanguage === "ar"
+          ? "أرسلنا رابط تغيير كلمة المرور إلى بريدك. افتح الرسالة من نفس الجهاز."
+          : "A password reset link has been sent to your email. Open it on this device.");
+      } catch (error) {
+        showNotice(error.message || (currentLanguage === "ar" ? "تعذر إرسال رابط الاستعادة." : "Could not send the reset link."));
+      }
+    });
+
+    supabaseClient.auth.onAuthStateChange(async (event) => {
+      if (event !== "PASSWORD_RECOVERY") return;
+      const newPassword = window.prompt(currentLanguage === "ar"
+        ? "أدخل كلمة مرور جديدة (8 أحرف على الأقل):"
+        : "Enter a new password (at least 8 characters):");
+      if (!newPassword) {
+        showNotice(currentLanguage === "ar" ? "لم يتم تغيير كلمة المرور." : "Password was not changed.");
+        return;
+      }
+      if (newPassword.length < 8) {
+        showNotice(currentLanguage === "ar" ? "كلمة المرور يجب أن تكون 8 أحرف على الأقل. اضغط رابط الاستعادة مجدداً." : "Password must be at least 8 characters. Request a new reset link.");
+        return;
+      }
+      const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+      if (error) {
+        showNotice(error.message);
+        return;
+      }
+      showNotice(currentLanguage === "ar" ? "تم تغيير كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول." : "Password updated. You can now sign in.");
     });
 
     document.getElementById("registerLink").addEventListener("click", (event) => {
