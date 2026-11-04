@@ -189,6 +189,10 @@ create table if not exists public.enhar_purchase_invoice_lines (
  foreign key(product_id,company_id) references public.enhar_products(id,company_id)
 );
 
+-- Upgrade an older pre-existing products table without deleting its data.
+alter table public.enhar_products
+ add column if not exists barcode text;
+
 create index if not exists enhar_products_company_type_idx on public.enhar_products(company_id,item_type,is_active);
 create index if not exists enhar_products_company_barcode_idx on public.enhar_products(company_id,barcode);
 create index if not exists enhar_sales_company_date_idx on public.enhar_sales_invoices(company_id,invoice_date desc);
