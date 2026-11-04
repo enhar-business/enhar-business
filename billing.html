@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اشتراك ENHAR BUSINESS</title>
+<style>
+:root{--gold:#d8b45e;--bg:#101010;--panel:#1b1b1b;--line:#3a3324;--text:#fff;--muted:#b8ad96}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;padding:28px}
+main{max-width:980px;margin:auto}.head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}h1{color:#f2d88e;font-size:27px}p{color:var(--muted);line-height:1.8}
+.panel,.plan{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin:14px 0}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+button{background:linear-gradient(110deg,#a9873c,#f0d68e);border:0;border-radius:9px;padding:13px 18px;font-weight:bold;cursor:pointer;color:#17130a}
+button:disabled{opacity:.5;cursor:not-allowed}.plan h2{color:#f2d88e}.price{font-size:25px;font-weight:bold;margin:18px 0}
+select{width:100%;padding:13px;border-radius:8px;background:#111;color:white;border:1px solid #65552e;margin:8px 0 18px}
+.notice{padding:14px;border-radius:9px;background:#252116;color:#f2d88e;white-space:pre-wrap}
+.small{font-size:12px;color:#9c927e}a{color:#f2d88e}
+</style></head>
+<body><main>
+<div class="head"><div><h1>ENHAR BUSINESS</h1><p>إدارة اشتراك منشأتك وتجديده بأمان.</p></div><button id="back">العودة للنظام</button></div>
+<div class="panel"><h2>اختر المنشأة</h2><select id="company"><option value="">جارٍ تحميل المنشآت...</option></select><div class="small" id="current"></div></div>
+<h2>الباقات المتاحة</h2><div class="plans" id="plans"><div class="notice">جارٍ تحميل الباقات...</div></div>
+<div class="panel"><div class="notice" id="message">لن يتفعّل الاشتراك إلا بعد التحقق من الدفع من Moyasar على الخادم.</div></div>
+<p class="small">الدفع يتم في صفحة Moyasar الآمنة. لا تدخل بيانات البطاقة في هذه الصفحة. العملة: الريال السعودي.</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const URL="https://bibkxfdtmweotjtdrfsg.supabase.co";
+const KEY="sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB";
+const client=window.supabase.createClient(URL,KEY);
+const company=document.getElementById("company"),plans=document.getElementById("plans"),message=document.getElementById("message");
+document.getElementById("back").onclick=()=>location.href="./dashboard.html";
+function money(halalas,currency){return new Intl.NumberFormat("ar-SA",{style:"currency",currency:currency||"SAR"}).format(Number(halalas)/100)}
+async function init(){
+ const {data:{session},error}=await client.auth.getSession();
+ if(error||!session){location.href="./index.html";return}
+ const {data:members,error:me}=await client.from("enhar_company_memberships").select("company_id,role,enhar_companies(name_ar,status,subscription_status,trial_ends_at)").eq("user_id",session.user.id).eq("status","ACTIVE");
+ if(me)throw me;
+ const eligible=(members||[]).filter(x=>["OWNER","ADMIN"].includes(x.role));
+ company.innerHTML=eligible.map(x=>'<option value="'+x.company_id+'">'+(x.enhar_companies?.name_ar||"منشأة")+'</option>').join("")||'<option value="">لا توجد منشأة</option>';
+ const {data,error:pe}=await client.from("enhar_subscription_plans").select("id,name_ar,billing_period,amount_halalas,currency").eq("is_active",true).eq("is_test",false).order("amount_halalas");
+ if(pe)throw pe;
+ if(!data?.length){plans.innerHTML='<div class="notice">لا توجد باقات منشورة حالياً. يلزم اعتماد أسعار الاشتراك قبل إتاحتها للعملاء.</div>';return}
+ plans.innerHTML=data.map(p=>'<article class="plan"><h2>'+p.name_ar+'</h2><div class="price">'+money(p.amount_halalas,p.currency)+'</div><p>'+(p.billing_period==="YEARLY"?"اشتراك سنوي":"اشتراك شهري")+'</p><button data-plan="'+p.id+'">اشترك الآن</button></article>').join("");
+ plans.querySelectorAll("button[data-plan]").forEach(b=>b.onclick=()=>checkout(b.dataset.plan,b));
+ company.onchange=()=>showStatus(eligible.find(x=>x.company_id===company.value)?.enhar_companies);
+ showStatus(eligible[0]?.enhar_companies);
+}
+function showStatus(c){document.getElementById("current").textContent=c?"الحالة: "+c.subscription_status+" · نهاية التجربة: "+(c.trial_ends_at?new Date(c.trial_ends_at).toLocaleDateString("ar-SA"):"—"):""}
+async function checkout(planId,button){
+ if(!company.value){message.textContent="لا توجد منشأة مؤهلة للاشتراك.";return}
+ button.disabled=true;message.textContent="جارٍ إنشاء فاتورة الدفع...";
+ try{
+  const {data,error}=await client.functions.invoke("create-subscription-payment",{body:{company_id:company.value,plan_id:planId}});
+  if(error)throw error;
+  if(!data?.checkout_url)throw new Error(data?.error||"لم يصل رابط الدفع");
+  message.textContent="تم إنشاء فاتورة الدفع. سيتم تحويلك إلى Moyasar...";
+  location.href=data.checkout_url;
+ }catch(e){message.textContent="تعذر إنشاء الدفع: "+(e.message||"خطأ");button.disabled=false}
+}
+init().catch(e=>{plans.innerHTML='<div class="notice">تعذر تحميل الاشتراك: '+e.message+'</div>'});
+</script></body></html>
