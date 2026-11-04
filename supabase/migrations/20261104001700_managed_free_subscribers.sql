@@ -61,7 +61,7 @@ create or replace function public.enhar_admin_manage_free_subscription(
  p_period_end timestamptz default null
 ) returns jsonb
 language plpgsql security definer set search_path=''
-as $
+as $free_subscription$
 declare v_company public.enhar_companies%rowtype; v_plan public.enhar_subscription_plans%rowtype;
 begin
  if auth.uid() is null or not public.is_platform_admin() then raise exception 'Platform administrator required'; end if;
@@ -85,7 +85,7 @@ begin
  insert into public.enhar_subscription_audit(company_id,actor_user_id,action,details)
  values(p_company_id,auth.uid(),'FREE_'||p_action,jsonb_build_object('period_end',p_period_end));
  return jsonb_build_object('ok',true,'action',p_action,'company_id',p_company_id);
-end $;
+end $free_subscription$;
 revoke all on function public.enhar_admin_manage_free_subscription(uuid,text,timestamptz) from public,anon;
 grant execute on function public.enhar_admin_manage_free_subscription(uuid,text,timestamptz) to authenticated;
 
