@@ -81,7 +81,9 @@ security definer
 set search_path = ''
 as $$
 declare
+  v_wallet_id uuid;
   v_balance numeric(14,2);
+  v_after numeric(14,2);
   v_tx uuid;
   v_type text := upper(trim(coalesce(p_transaction_type,'')));
 begin
@@ -90,7 +92,7 @@ begin
   ) then
     raise exception 'Company administrator permission required';
   end if;
-  if v_type not in ('DEPOSIT','REFUND','ADJUSTMENT') then
+  if v_type not in ('DEPOSIT','REDEEM','REFUND','ADJUSTMENT') then
     raise exception 'Unsupported wallet transaction type';
   end if;
   if p_amount is null or p_amount <= 0 then
@@ -103,28 +105,39 @@ begin
     raise exception 'Customer not found or inactive';
   end if;
 
+  insert into public.enhar_customer_wallets(company_id,customer_id,balance)
+  values(p_company_id,p_customer_id,0)
+  on conflict(company_id,customer_id) do nothing;
+
+  select id,balance into v_wallet_id,v_balance
+  from public.enhar_customer_wallets
+  where company_id=p_company_id and customer_id=p_customer_id
+  for update;
+
+  if v_type='REDEEM' then
+    if v_balance < p_amount then
+      raise exception 'رصيد العميل غير كافٍ. المتاح: %',v_balance;
+    end if;
+    v_after:=v_balance-p_amount;
+  else
+    v_after:=v_balance+p_amount;
+  end if;
+
+  update public.enhar_customer_wallets
+  set balance=v_after,updated_at=now()
+  where company_id=p_company_id and id=v_wallet_id;
+
   insert into public.enhar_customer_wallet_transactions
-    (company_id,customer_id,transaction_type,amount,reference_type,payment_method,notes,created_by)
+    (company_id,wallet_id,customer_id,transaction_type,amount,balance_after,
+     payment_method,reference_type,notes,created_by)
   values
-    (p_company_id,p_customer_id,v_type,p_amount,'MANUAL',p_payment_method,p_notes,auth.uid())
+    (p_company_id,v_wallet_id,p_customer_id,v_type,p_amount,v_after,
+     p_payment_method,'MANUAL',p_notes,auth.uid())
   returning id into v_tx;
 
-  select coalesce(sum(
-    case
-      when transaction_type in ('DEPOSIT','REFUND') then amount
-      when transaction_type='SALE_REDEMPTION' then -amount
-      when transaction_type='ADJUSTMENT' then amount
-      else 0
-    end
-  ),0)::numeric(14,2)
-  into v_balance
-  from public.enhar_customer_wallet_transactions
-  where company_id=p_company_id and customer_id=p_customer_id;
-
-  return jsonb_build_object('transaction_id',v_tx,'balance',v_balance);
+  return jsonb_build_object('transaction_id',v_tx,'balance',v_after);
 end;
 $$;
-
 revoke all on function public.enhar_customer_wallet_post(uuid,uuid,text,numeric,text,text) from public,anon;
 grant execute on function public.enhar_customer_wallet_post(uuid,uuid,text,numeric,text,text) to authenticated;
 
