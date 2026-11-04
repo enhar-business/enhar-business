@@ -204,7 +204,7 @@ with check (public.enhar_is_company_admin(company_id) or public.is_platform_admi
 -- Explicit table privileges: RLS remains the row-level enforcement boundary.
 revoke all on public.enhar_companies, public.enhar_company_memberships,
   public.enhar_profiles, public.enhar_branches, public.enhar_warehouses from anon, authenticated;
-grant select, update on public.enhar_companies to authenticated;
+grant select on public.enhar_companies to authenticated; -- subscription/status changes are server-admin only
 grant select on public.enhar_company_memberships to authenticated;
 grant select, insert, update on public.enhar_profiles to authenticated;
 grant select, insert, update, delete on public.enhar_branches, public.enhar_warehouses to authenticated;
