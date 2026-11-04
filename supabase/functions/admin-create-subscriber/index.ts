@@ -23,6 +23,33 @@ Deno.serve(async (req) => {
     if (roleError || isAdmin !== true) return Response.json({ error: "Platform administrator permission required" }, { status: 403, headers: cors });
 
     const body = await req.json();
+    if (body.action === "reset_password") {
+      const userId = String(body.user_id || "");
+      const password = String(body.temporary_password || "");
+      if (!userId || password.length < 12) return Response.json({ error: "معرّف المستخدم وكلمة مرور من 12 خانة على الأقل مطلوبان" }, { status: 400, headers: cors });
+      const admin = createClient(url, serviceKey);
+      const { data: updated, error: updateError } = await admin.auth.admin.updateUserById(userId, { password });
+      if (updateError || !updated.user) throw updateError || new Error("تعذر تحديث كلمة المرور");
+      return Response.json({ ok: true, user_id: userId }, { headers: cors });
+    }
+    if (body.action === "list_subscribers") {
+      const admin = createClient(url, serviceKey);
+      const { data: companies, error: companiesError } = await admin.from("enhar_companies")
+        .select("id,company_code,name_ar,status,subscription_status,trial_ends_at,created_at,enhar_company_memberships(user_id,role,status)")
+        .order("created_at", { ascending: false }).limit(500);
+      if (companiesError) throw companiesError;
+      const rows = [];
+      for (const company of companies || []) {
+        const owner = (company.enhar_company_memberships || []).find((m: any) => m.role === "OWNER" && m.status === "ACTIVE");
+        let email = "";
+        if (owner?.user_id) {
+          const { data: authUser } = await admin.auth.admin.getUserById(owner.user_id);
+          email = authUser.user?.email || "";
+        }
+        rows.push({ ...company, owner_email: email, owner_user_id: owner?.user_id || null, enhar_company_memberships: undefined });
+      }
+      return Response.json({ ok: true, subscribers: rows }, { headers: cors });
+    }
     const email = String(body.email || "").trim().toLowerCase();
     const fullName = String(body.full_name || "").trim();
     const companyName = String(body.company_name || "").trim();
