@@ -327,7 +327,11 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 </div>
 </section>
 <section class="page" id="analytics"><div class="page-heading"><div><h1>تحليلات المبيعات</h1><p>الفترة، المنتج والخدمة، الفئات، الفروع، والبائعون.</p></div><button class="secondary" onclick="showPage('dashboard')">عودة</button></div><div class="panel"><div class="dashboard-filters"><div class="field"><label>نوع التحليل</label><select id="analyticsDimension"><option value="period">حسب الفترة</option><option value="products">المنتج والخدمة</option><option value="categories">الفئات</option><option value="branches">الفروع</option><option value="sellers">البائعون</option></select></div><div class="field"><label>من تاريخ</label><input type="date" id="analyticsFrom"></div><div class="field"><label>إلى تاريخ</label><input type="date" id="analyticsTo"></div><button class="primary" onclick="loadAnalytics()">تحديث التحليل</button></div><div class="empty" id="analyticsResult">اختر نوع التحليل والفترة.</div></div></section>
-<section class="page" id="bookings"><div class="page-heading"><div><h1>الحجوزات</h1><p>نظرة على المواعيد والحجوزات.</p></div></div><div class="panel"><div class="empty">وحدة الحجوزات لم تُنشأ في قاعدة البيانات بعد.</div></div></section>
+<section class="page" id="bookings">
+ <div class="page-heading"><div><h1>الحجوزات والمواعيد</h1><p>حجز خدمة لموظف مع منع تداخل المواعيد.</p></div></div>
+ <div class="panel"><h2>إنشاء حجز</h2><div class="form-grid"><div class="field"><label>الفرع</label><select id="bookingBranch"></select></div><div class="field"><label>العميل</label><select id="bookingCustomer"></select></div><div class="field"><label>الخدمة</label><select id="bookingService"></select></div><div class="field"><label>موظف الخدمة</label><select id="bookingStaff"></select></div><div class="field"><label>من</label><input id="bookingStart" type="datetime-local"></div><div class="field"><label>إلى</label><input id="bookingEnd" type="datetime-local"></div><div class="field"><label>ملاحظات</label><input id="bookingNotes"></div></div><div class="form-actions"><button class="primary" id="createBooking">حفظ الحجز</button></div><p class="notice" id="bookingMessage"></p></div>
+ <div class="panel"><h2>قائمة المواعيد</h2><div class="table-wrap"><table><thead><tr><th>رقم الحجز</th><th>التاريخ والوقت</th><th>العميل</th><th>الخدمة</th><th>الموظف</th><th>الحالة</th></tr></thead><tbody id="bookingRows"><tr><td colspan="6" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
+</section>
 <section class="page" id="cashboxes">
 <div class="page-heading"><div><h1>إدارة شاشات وصناديق البيع</h1><p>متابعة الصناديق والجلسات والأرصدة والفروقات.</p></div></div>
 <div class="panel"><div class="toolbar"><div class="field"><label>الفرع</label><select id="cashBranch"><option value="">كل الفروع</option></select></div><div class="field"><label>حالة الصندوق</label><select id="cashStatus"><option value="">الكل</option><option value="OPEN">مفتوح</option><option value="CLOSED">مغلق</option></select></div><div class="field"><label>من تاريخ</label><input id="cashFrom" type="date"></div><div class="field"><label>إلى تاريخ</label><input id="cashTo" type="date"></div><button class="primary" id="filterCash">تصفية</button></div>
@@ -394,13 +398,18 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 </section>
 
 <section class="page" id="inventory">
-  <div class="page-heading"><div><h1>المخزون والمستودعات</h1><p>متابعة الكميات وحركة الأصناف والجرد.</p></div></div>
-  <div class="panel"><h2>إدارة المخزون</h2><div class="empty">سيتم تجهيز أرصدة المخزون والمستودعات وحركات الإدخال والإخراج والجرد.</div></div>
+ <div class="page-heading"><div><h1>المخزون والجرد والسندات</h1><p>أرصدة فعلية من حركات المخزون، سندات إدخال وصرف، وجرد مع اعتماد.</p></div></div>
+ <div class="panel"><h2>أرصدة المخزون</h2><div class="toolbar"><div class="field"><label>المستودع</label><select id="stockWarehouse"></select></div><button class="primary" id="refreshStock">تحديث الأرصدة</button></div><div class="table-wrap"><table><thead><tr><th>رمز الصنف</th><th>الصنف</th><th>الوارد</th><th>الصادر</th><th>الرصيد</th></tr></thead><tbody id="stockRows"><tr><td colspan="5" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
+ <div class="panel"><h2>إنشاء سند مخزني</h2><div class="form-grid"><div class="field"><label>نوع السند</label><select id="voucherType"><option value="RECEIPT">إدخال</option><option value="ISSUE">صرف</option><option value="RETURN">مرتجع مبيعات</option><option value="TRANSFER_IN">تحويل وارد</option><option value="TRANSFER_OUT">تحويل صادر</option></select></div><div class="field"><label>الفرع</label><select id="voucherBranch"></select></div><div class="field"><label>المستودع</label><select id="voucherWarehouse"></select></div><div class="field"><label>رقم السند</label><input id="voucherNumber" placeholder="STK-001"></div><div class="field"><label>السبب</label><input id="voucherReason"></div><div class="field"><label>ملاحظات</label><input id="voucherNotes"></div></div><div class="form-grid"><div class="field"><label>الصنف</label><select id="voucherProduct"></select></div><div class="field"><label>الكمية</label><input id="voucherQty" type="number" min=".001" step=".001"></div><div class="field"><label>تكلفة الوحدة</label><input id="voucherCost" type="number" min="0" step=".0001" value="0"></div></div><div class="form-actions"><button class="primary" id="createVoucher">إنشاء وترحيل السند</button></div><p class="notice" id="voucherMessage"></p></div>
+ <div class="panel"><h2>الجرد الفعلي</h2><div class="form-grid"><div class="field"><label>الفرع</label><select id="countBranch"></select></div><div class="field"><label>المستودع</label><select id="countWarehouse"></select></div><div class="field"><label>رقم الجرد</label><input id="countNumber" placeholder="COUNT-001"></div><div class="field"><label>الصنف</label><select id="countProduct"></select></div><div class="field"><label>الكمية الفعلية</label><input id="countQty" type="number" min="0" step=".001"></div></div><div class="form-actions"><button class="primary" id="createCountLine">إنشاء جرد وإضافة الصنف</button></div><p class="notice" id="countMessage"></p></div>
+ <div class="panel"><h2>سندات المخزون</h2><div class="table-wrap"><table><thead><tr><th>رقم السند</th><th>النوع</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody id="voucherRows"><tr><td colspan="4" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
 </section>
 
 <section class="page" id="customers">
-  <div class="page-heading"><div><h1>العملاء</h1><p>إدارة بيانات العملاء ووسائل التواصل.</p></div></div>
-  <div class="panel"><h2>ملف العملاء</h2><div class="empty">سيتم إضافة سجل العملاء وربطه بفواتير المبيعات.</div></div>
+ <div class="page-heading"><div><h1>العملاء ومحافظ الأرصدة</h1><p>ملفات العملاء وحركات الإيداع والاستخدام وكشف الرصيد.</p></div></div>
+ <div class="panel"><h2>إضافة عميل</h2><div class="form-grid"><div class="field"><label>رقم العميل *</label><input id="customerCode" placeholder="CUS-001"></div><div class="field"><label>اسم العميل *</label><input id="customerName"></div><div class="field"><label>الجوال</label><input id="customerPhone"></div><div class="field"><label>البريد الإلكتروني</label><input id="customerEmail"></div><div class="field"><label>الرقم الضريبي</label><input id="customerVat"></div><div class="field"><label>العنوان</label><input id="customerAddress"></div></div><div class="form-actions"><button class="primary" id="saveCustomer">حفظ العميل</button></div><p class="notice" id="customerMessage"></p></div>
+ <div class="panel"><h2>قائمة العملاء</h2><div class="toolbar"><div class="field"><label>بحث</label><input id="customerSearch" placeholder="اسم أو جوال أو رقم عميل"></div></div><div class="table-wrap"><table><thead><tr><th>رقم العميل</th><th>الاسم</th><th>الجوال</th><th>الرصيد المتاح</th><th>الحالة</th></tr></thead><tbody id="customerRows"><tr><td colspan="5" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
+ <div class="panel"><h2>إيداع أو استخدام رصيد عميل</h2><div class="form-grid"><div class="field"><label>العميل</label><select id="walletCustomer"></select></div><div class="field"><label>نوع الحركة</label><select id="walletType"><option value="DEPOSIT">إيداع رصيد</option><option value="REDEEM">استخدام رصيد / خصم</option><option value="REFUND">إرجاع رصيد</option></select></div><div class="field"><label>المبلغ (ر.س)</label><input id="walletAmount" type="number" min=".01" step=".01"></div><div class="field"><label>طريقة الدفع</label><select id="walletPayment"><option value="CASH">نقداً</option><option value="CARD">بطاقة</option><option value="BANK_TRANSFER">تحويل</option></select></div><div class="field"><label>ملاحظات</label><input id="walletNotes"></div></div><div class="form-actions"><button class="primary" id="postWallet">تسجيل الحركة</button></div><p class="notice" id="walletMessage"></p></div>
 </section>
 
 <section class="page" id="suppliers">
@@ -419,8 +428,28 @@ html[data-theme="light"] .footer{background:#fff;color:#77838e}
 </section>
 
 <section class="page" id="employees">
-  <div class="page-heading"><div><h1>الموظفون والصلاحيات</h1><p>إدارة المستخدمين وأدوارهم داخل النظام.</p></div></div>
-  <div class="panel"><h2>إدارة المستخدمين</h2><div class="empty">سيتم إعداد الموظفين والأدوار والصلاحيات وسجل التدقيق.</div></div>
+ <div class="page-heading"><div><h1>الموظفون والأدوار</h1><p>ملف مستقل لكل موظف مع تحديد وظيفته وظهوره في البيع والحجوزات.</p></div></div>
+ <div class="panel"><h2>إضافة موظف</h2><div class="form-grid">
+  <div class="field"><label>رقم الموظف *</label><input id="staffCode" placeholder="EMP-001"></div>
+  <div class="field"><label>اسم الموظف *</label><input id="staffName" placeholder="الاسم الكامل"></div>
+  <div class="field"><label>رقم الجوال</label><input id="staffPhone"></div>
+  <div class="field"><label>البريد الإلكتروني</label><input id="staffEmail" type="email"></div>
+  <div class="field"><label>المسمى الوظيفي</label><input id="staffJobTitle"></div>
+  <div class="field"><label>الدور</label><select id="staffType"><option value="SERVICE_PROVIDER">موظف خدمة / أخصائي</option><option value="CASHIER">كاشير</option><option value="ACCOUNTANT">محاسب</option><option value="ACCOUNTS_MANAGER">مدير حسابات</option><option value="STOREKEEPER">مسؤول مخزون</option><option value="BRANCH_MANAGER">مدير فرع</option><option value="ADMIN">مدير النظام</option></select></div>
+  <div class="field"><label>الفرع</label><select id="staffBranch"></select></div>
+  <div class="field"><label>نسبة العمولة %</label><input id="staffCommission" type="number" min="0" max="100" step=".001" value="0"></div>
+ </div>
+ <div class="form-grid" style="margin-top:12px">
+  <div class="field"><label><input type="checkbox" id="staffCanService"> يمكنه تنفيذ الخدمات</label></div>
+  <div class="field"><label><input type="checkbox" id="staffCanCashier"> يمكنه العمل ككاشير</label></div>
+  <div class="field"><label><input type="checkbox" id="staffShowPos" checked> إظهاره في شاشة البيع</label></div>
+  <div class="field"><label><input type="checkbox" id="staffShowBooking" checked> إظهاره في الحجوزات</label></div>
+ </div>
+ <div class="form-actions"><button class="primary" id="saveStaff">حفظ الموظف</button></div><p class="notice" id="staffMessage"></p></div>
+ <div class="panel"><h2>الموظفون المسجلون</h2><div class="table-wrap"><table><thead><tr><th>الرقم</th><th>الاسم</th><th>الدور</th><th>الفرع</th><th>خدمات</th><th>كاشير</th><th>نشط</th></tr></thead><tbody id="staffRows"><tr><td colspan="7" class="empty">جارٍ التحميل...</td></tr></tbody></table></div></div>
+ <div class="panel"><h2>مصفوفة صلاحيات الموظف</h2><div class="form-grid"><div class="field"><label>الموظف</label><select id="permissionStaff"></select></div><div class="field"><label>الوحدة</label><select id="permissionModule"><option value="pos">شاشة البيع</option><option value="customers">العملاء</option><option value="appointments">الحجوزات</option><option value="inventory">المخزون</option><option value="purchases">المشتريات</option><option value="accounting">المحاسبة</option><option value="reports">التقارير</option><option value="settings">الإعدادات</option></select></div></div>
+ <div class="form-grid"><div class="field"><label><input type="checkbox" id="permView"> عرض</label></div><div class="field"><label><input type="checkbox" id="permCreate"> إضافة</label></div><div class="field"><label><input type="checkbox" id="permUpdate"> تعديل</label></div><div class="field"><label><input type="checkbox" id="permDelete"> حذف</label></div><div class="field"><label><input type="checkbox" id="permApprove"> اعتماد</label></div><div class="field"><label><input type="checkbox" id="permSettings"> إعدادات</label></div></div>
+ <div class="form-actions"><button class="primary" id="saveStaffPermission">حفظ الصلاحيات</button></div><p class="notice" id="permissionMessage">تُحفظ هذه المصفوفة في قاعدة البيانات؛ ربطها بمنع الوصول الفعلي لكل شاشة يتطلب استكمال سياسات RLS وتسجيل دخول الموظف.</p></div>
 </section>
 
 <section class="page" id="branches">
