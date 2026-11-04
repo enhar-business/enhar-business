@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101010">
-  <title>ENHAR BUSINESS | تسجيل الدخول</title>
+  <meta name="theme-color" content="#08051e">
+  <title>ANHAR | أنهار | تسجيل الدخول</title>
 
   <style>
     :root {
@@ -333,7 +333,22 @@
       .form-heading h2 { font-size: 25px; }
       .remember-row { font-size: 12px; }
     }
-  </style>
+  
+/* ANHAR purple-blue identity */
+:root{--gold:#8b45ff;--gold-light:#d5b8ff;--black:#08051e;--paper:#100b2b}
+body{background:#08051e;color:#fff}
+.brand-side{background:radial-gradient(circle at 20% 20%,#351078,transparent 52%),radial-gradient(circle at 80% 85%,#101e68,transparent 48%),linear-gradient(145deg,#10072e,#050416)}
+.brand-side::before{background-image:linear-gradient(30deg,transparent 48%,#7040df 49%,transparent 50%),linear-gradient(150deg,transparent 48%,#347bff 49%,transparent 50%)}
+.brand-logo{width:min(100%,520px);height:auto;max-width:100%;border-radius:12px;filter:drop-shadow(0 10px 28px #08051e)}
+.brand-side h1{color:#d8c2ff}.gold-line{background:linear-gradient(90deg,#7d3cff,#28bfff)}
+.brand-side p{color:#c4bddf}.feature{border-color:#6640b9;color:#d8c2ff}
+.form-side{background:#100b2b;color:#f7f4ff}.form-heading h2{color:#fff}.form-heading p,.register-text{color:#b9b0d4}
+.form-group input{background:#171039;color:#fff;border-color:#493477}.form-group input:focus{border-color:#9a5cff;box-shadow:0 0 0 3px #8b45ff33}
+.show-password,a,.language button{color:#b994ff}.remember-row{color:#c7bfdb}.remember-row input{accent-color:#8b45ff}
+.login-button{background:linear-gradient(110deg,#7436e8,#277dff);color:#fff}.login-button:hover{box-shadow:0 8px 22px #7139e855}
+.notice{background:#211344;border-color:#7048bd;color:#e1d0ff}.form-footer{color:#8276a8}
+@media(max-width:850px){.brand-logo{width:min(100%,520px);height:auto}}
+</style>
 </head>
 
 <body>
@@ -344,14 +359,14 @@
 
         <!-- يجب أن يكون ملف الشعار بجانب index.html -->
         <img
-          src="./enhar-logo-800x800.png"
-          alt="شعار ENHAR BUSINESS"
+          src="./assets/anhar-brand.svg"
+          alt="شعار ANHAR أنهار"
           class="brand-logo"
           onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';"
         >
 
         <div id="logoFallback" style="display:none;color:#f2d88e;font-size:25px;font-weight:bold;margin:25px 0;">
-          ENHAR BUSINESS
+          ANHAR | أنهار
         </div>
 
         <h1 id="brandTitle">إنهار للأعمال والمحاسبة</h1>
@@ -458,7 +473,7 @@
         </nav>
 
         <footer class="form-footer">
-          ENHAR BUSINESS<br>
+          ANHAR | أنهار<br>
           <span id="footerDescription">منصة الأعمال والمحاسبة</span><br>
           <span id="copyright">جميع الحقوق محفوظة © 2026</span>
         </footer>
@@ -497,9 +512,9 @@
         roleError:"تم تسجيل الدخول لكن تعذر التحقق من صلاحية مدير المنصة. تحقق من دالة is_platform_admin في قاعدة البيانات.",
         forgotSent:"إذا كان البريد مسجلاً، فسيصلك رابط استعادة كلمة المرور.",
         generic:"تعذر إكمال العملية. راجع البيانات وحاول مجدداً.",
-        registerNotice:"لطلب حساب شركة، تواصل مع إدارة ENHAR BUSINESS."
+        registerNotice:"لطلب حساب شركة، تواصل مع إدارة ANHAR | أنهار."
       },
-      en: { dir:"ltr", brandTitle:"ENHAR BUSINESS", tagline:"Your business deserves smarter management",
+      en: { dir:"ltr", brandTitle:"ANHAR | أنهار", tagline:"Your business deserves smarter management",
         description:"Everything in one place...<br>From sales and purchasing to inventory, accounting and reports.<br>More control, clearer decisions and confident growth.",
         features:["Sales Management","Accounting","Inventory","Branches"], welcome:"Welcome back 👋",
         welcomeText:"Sign in to your company account and manage your business with ease.",
@@ -519,7 +534,7 @@
         roleError:"Signed in, but the platform-admin permission could not be verified. Check the is_platform_admin database function.",
         forgotSent:"If the email is registered, a password reset link will be sent.",
         generic:"The operation could not be completed. Check the details and try again.",
-        registerNotice:"Contact ENHAR BUSINESS to request a company account."
+        registerNotice:"Contact ANHAR | أنهار to request a company account."
       }
     };
 
@@ -596,7 +611,7 @@
       document.getElementById("registerFullName").required=mode==="signup";
       document.getElementById("registerCompany").required=mode==="signup";
       document.getElementById("welcomeTitle").textContent=mode==="signup"?(currentLanguage==="ar"?"أنشئ حساب منشأتك":"Create your business account"):t.welcome;
-      document.getElementById("welcomeText").textContent=mode==="signup"?(currentLanguage==="ar"?"سجّل بياناتك لبدء تجربة ENHAR BUSINESS.":"Register to start your ENHAR BUSINESS trial."):t.welcomeText;
+      document.getElementById("welcomeText").textContent=mode==="signup"?(currentLanguage==="ar"?"سجّل بياناتك لبدء تجربة ANHAR | أنهار.":"Register to start your ANHAR | أنهار trial."):t.welcomeText;
       document.getElementById("loginButton").textContent=mode==="signup"?t.createAccount:t.login;
       document.getElementById("password").autocomplete=mode==="signup"?"new-password":"current-password";
       document.getElementById("registerText").textContent=mode==="signup"?"":t.register;
