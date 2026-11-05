@@ -27,7 +27,7 @@ table th{background:#1b123b;color:#b9abd9}table td{color:#eee9ff;border-color:#3
 <div class="panel"><h2>قائمة الشركات</h2><div class="wrap"><table><thead><tr><th>الرمز</th><th>اسم المنشأة</th><th>الحالة</th><th>الاشتراك</th><th>نهاية التجربة</th></tr></thead><tbody id="rows"></tbody></table></div></div>
 <div class="row"><button class="secondary" onclick="location.href='./dashboard.html'">العودة للوحة الرئيسية</button></div>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const client=window.supabase.createClient("https://bibkxfdtmweotjtdrfsg.supabase.co","sb_publishable_bKLWuf9ATcx0zFzYoyvezA_Z_D_vzAB");
+const client=window.supabase.createClient("https://ymqyksvenahulbnsziri.supabase.co","sb_publishable_WDU0LG-FFI-HtdI0O454Nw_9UtU6vWr");
 const $=id=>document.getElementById(id);let companies=[],plans=[];
 async function init(){
  const {data:{session}}=await client.auth.getSession();if(!session){location.href="./index.html";return}
