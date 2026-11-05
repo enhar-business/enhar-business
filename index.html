@@ -683,11 +683,12 @@ table th{background:#1b123b;color:#b9abd9}table td{color:#eee9ff;border-color:#3
         if(!health.ok) throw new Error("Supabase health check returned HTTP "+health.status);
         const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
         if(error) throw error;
-        const {data:roleData,error:roleError}=await supabaseClient.rpc("is_platform_admin");
-        if(roleError) throw new Error(t.roleError);
-        if(roleData===true){window.location.replace("./dashboard.html");return;}
         const {data:members,error:memberError}=await supabaseClient.from("enhar_company_memberships").select("company_id").eq("user_id",data.user.id).eq("status","ACTIVE").limit(1);
         if(memberError) throw memberError;
+        if(members?.length){window.location.replace("./dashboard.html");return;}
+        const {data:roleData,error:roleError}=await supabaseClient.rpc("is_platform_admin");
+        if(roleError) throw new Error(t.roleError+" ("+roleError.message+")");
+        if(roleData===true){window.location.replace("./dashboard.html");return;}
         if(!members?.length){
           const companyName=data.user.user_metadata?.company_name;
           if(!companyName) throw new Error(currentLanguage==="ar"?"لا توجد منشأة مرتبطة بهذا الحساب. تواصل مع إدارة المنصة.":"No business is linked to this account. Contact platform support.");
