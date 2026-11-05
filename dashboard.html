@@ -310,7 +310,7 @@ td{color:#eee9ff}
 .menu .ico svg,.group-toggle svg,.stat-icon svg,.quick svg,.activity-icon svg{width:19px;height:19px;stroke-width:1.8}
 
 </style>
-<link rel="stylesheet" href="./assets/anhar-design-system.css?v=2">\n</head>
+<link rel="stylesheet" href="./assets/anhar-design-system.css?v=3">\n</head>
 <body>
 <div class="layout">
 
@@ -1095,6 +1095,6 @@ document.getElementById("resetDashFilters").addEventListener("click",()=>{docume
 document.getElementById("logoutButton")?.addEventListener("click",async()=>{await supabaseClient.auth.signOut();location.replace("./index.html");});
 document.getElementById("dashFrom").value=today;document.getElementById("dashTo").value=today;protectDashboard();
 </script>
-<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script>if(window.lucide){window.lucide.createIcons({attrs:{\"stroke-width\":1.8}});}</script>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script>document.addEventListener("DOMContentLoaded",()=>{if(window.lucide){window.lucide.createIcons({attrs:{"stroke-width":1.8}});}});</script>
 </body>
 </html>
