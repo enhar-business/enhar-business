@@ -830,11 +830,12 @@ async function createAndApproveStockCount(){
 async function protectDashboard(){
  try{
  const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session){location.replace("./index.html");return;}currentUser=session.user;
- const {data:role,error:re}=await supabaseClient.rpc("is_platform_admin");if(re)throw re;
- const isPlatformAdmin=role===true;
- document.getElementById("signedInEmail").textContent=session.user.email||(isPlatformAdmin?"Super Admin":"مستخدم");
  const {data:members,error:me}=await supabaseClient.from("enhar_company_memberships").select("company_id,role").eq("user_id",currentUser.id).eq("status","ACTIVE");if(me)throw me;
- if(!isPlatformAdmin&&!members?.length){await supabaseClient.auth.signOut();location.replace("./index.html");return;}
+ let isPlatformAdmin=false;
+ const {data:role,error:re}=await supabaseClient.rpc("is_platform_admin");
+ if(!re)isPlatformAdmin=role===true;
+ document.getElementById("signedInEmail").textContent=session.user.email||(isPlatformAdmin?"Super Admin":"مستخدم");
+ if(!isPlatformAdmin&&!members?.length){if(re)throw new Error("تعذر التحقق من صلاحية مدير المنصة: "+re.message);await supabaseClient.auth.signOut();location.replace("./index.html");return;}
  document.querySelectorAll("[data-platform-admin-only]").forEach(el=>{el.style.display=isPlatformAdmin?(el.classList.contains("menu-title")?"block":"flex"):"none";});
  const companyRole=String(members?.[0]?.role||"").toUpperCase();
  const canManageBilling=members?.length>0&&["OWNER","ADMIN"].includes(companyRole);
