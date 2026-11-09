@@ -1,0 +1,2 @@
+# Database foundation
+Migration 001 creates tenant membership, branches, cost centers, fiscal periods, four-level accounts, journals, parties, products, warehouses, stock movements, cash drawers, POS shifts, sales invoices, payments and audit log. Apply only to staging after backup and review. Not executed in Supabase. Policies are a baseline; financial posting must be implemented in trusted server-side transactions. Purchase workflows, tax/ZATCA, subscription services and end-to-end tests remain future work.
