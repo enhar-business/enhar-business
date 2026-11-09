@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1220"><meta name="description" content="ANHAR — منصة الأعمال والمحاسبة">
+<title>ANHAR | منصة إدارة الأعمال</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/app.css">
+<script src="https://unpkg.com/lucide@latest"></script><script defer src="./assets/js/app.js"></script>
+</head>
+<body>
+<div class="app" id="app">
+<aside class="sidebar" id="sidebar">
+ <a class="brand" href="#" data-page="dashboard"><span class="brand-symbol">A</span><span class="brand-copy"><b>ANHAR</b><small>BUSINESS SUITE</small></span></a>
+ <div class="company-switch"><span class="company-icon"><i data-lucide="building-2"></i></span><span><small>المنشأة الحالية</small><b>شركة أنهار التجارية</b></span><i data-lucide="chevrons-up-down" class="switch-icon"></i></div>
+ <nav class="navigation" aria-label="القائمة الرئيسية">
+  <div class="nav-group"><small class="nav-label">الرئيسية</small><button class="nav-item active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span>لوحة التحكم</span></button></div>
+  <div class="nav-group"><small class="nav-label">العمليات</small>
+   <button class="nav-item" data-page="pos"><i data-lucide="shopping-basket"></i><span>نقطة البيع</span><kbd>F2</kbd></button>
+   <button class="nav-item" data-page="sales"><i data-lucide="receipt-text"></i><span>المبيعات والفواتير</span></button>
+   <button class="nav-item" data-page="purchases"><i data-lucide="shopping-cart"></i><span>المشتريات</span></button>
+   <button class="nav-item" data-page="inventory"><i data-lucide="boxes"></i><span>المخزون والأصناف</span></button>
+   <button class="nav-item" data-page="contacts"><i data-lucide="contact-round"></i><span>العملاء والموردون</span></button>
+  </div>
+  <div class="nav-group"><small class="nav-label">الإدارة المالية</small>
+   <button class="nav-item" data-page="accounting"><i data-lucide="landmark"></i><span>المحاسبة والقيود</span></button>
+   <button class="nav-item" data-page="cash"><i data-lucide="wallet"></i><span>الصناديق والورديات</span></button>
+   <button class="nav-item" data-page="reports"><i data-lucide="chart-no-axes-combined"></i><span>التقارير والتحليلات</span></button>
+  </div>
+  <div class="nav-group"><small class="nav-label">الإدارة والإعدادات</small>
+   <button class="nav-item" data-page="branches"><i data-lucide="network"></i><span>الفروع ومراكز التكلفة</span></button>
+   <button class="nav-item" data-page="team"><i data-lucide="users"></i><span>المستخدمون والصلاحيات</span></button>
+   <button class="nav-item" data-page="approvals"><i data-lucide="workflow"></i><span>الموافقات وسير العمل</span></button>
+   <button class="nav-item" data-page="settings"><i data-lucide="settings-2"></i><span>إعدادات المنشأة</span></button>
+  </div>
+ </nav>
+ <div class="sidebar-bottom"><div class="help-card"><span class="help-icon"><i data-lucide="headset"></i></span><b>تحتاج إلى مساعدة؟</b><small>مركز المساعدة والدعم</small></div><div class="profile"><span class="avatar">م</span><span><b>مدير المنشأة</b><small>صلاحية مدير النظام</small></span><button class="more-btn" aria-label="المزيد"><i data-lucide="ellipsis"></i></button></div></div>
+</aside>
+<div class="sidebar-overlay" id="overlay"></div>
+<main class="main">
+ <header class="topbar"><div class="topbar-right"><button class="mobile-menu icon-btn" id="menuToggle" aria-label="القائمة"><i data-lucide="menu"></i></button><div class="crumb"><span>مساحة العمل</span><i data-lucide="chevron-left"></i><b id="crumbTitle">لوحة التحكم</b></div></div>
+ <div class="topbar-left"><div class="system-status"><span></span> النظام جاهز للتهيئة</div><button class="icon-btn notification-btn" aria-label="التنبيهات"><i data-lucide="bell"></i><em></em></button><span class="top-avatar">م</span></div></header>
+ <section class="page-wrap" id="pageWrap">
+  <div class="page-heading"><div><div class="overline">الأحد، 9 نوفمبر 2026 <span class="live-dot"></span></div><h1>مرحباً بك في <span>ANHAR</span></h1><p>إليك نظرة شاملة على أداء منشأتك وحركة أعمالك.</p></div><div class="heading-actions"><button class="btn btn-outline" id="periodBtn"><i data-lucide="calendar-days"></i> آخر 30 يوماً <i data-lucide="chevron-down"></i></button><button class="btn btn-gold" data-page="pos"><i data-lucide="plus"></i> عملية جديدة</button></div></div>
+  <div class="demo-notice"><i data-lucide="info"></i><span><b>واجهة تأسيسية:</b> الأرقام والرسوم غير مفعّلة حالياً. ستظهر البيانات الحقيقية بعد ربط قاعدة البيانات واعتماد الصلاحيات.</span><button id="noticeClose" aria-label="إغلاق"><i data-lucide="x"></i></button></div>
+  <div class="metric-grid">
+   <article class="metric-card"><div class="metric-top"><span>إجمالي المبيعات</span><span class="metric-icon gold"><i data-lucide="trending-up"></i></span></div><div class="metric-value">— <small>ر.س</small></div><div class="metric-foot"><span class="muted">لا توجد بيانات مرتبطة</span><span class="metric-period">خلال الفترة</span></div></article>
+   <article class="metric-card"><div class="metric-top"><span>صافي الربح</span><span class="metric-icon green"><i data-lucide="chart-no-axes-combined"></i></span></div><div class="metric-value">— <small>ر.س</small></div><div class="metric-foot"><span class="muted">بانتظار البيانات المحاسبية</span><span class="metric-period">خلال الفترة</span></div></article>
+   <article class="metric-card"><div class="metric-top"><span>فواتير المبيعات</span><span class="metric-icon blue"><i data-lucide="file-check-2"></i></span></div><div class="metric-value">— <small>فاتورة</small></div><div class="metric-foot"><span class="muted">لم يتم تسجيل عمليات</span><span class="metric-period">خلال الفترة</span></div></article>
+   <article class="metric-card"><div class="metric-top"><span>قيمة المخزون</span><span class="metric-icon purple"><i data-lucide="package"></i></span></div><div class="metric-value">— <small>ر.س</small></div><div class="metric-foot"><span class="muted">بانتظار ربط الأصناف</span><span class="metric-period">الرصيد الحالي</span></div></article>
+  </div>
+  <div class="dashboard-grid">
+   <article class="panel chart-panel"><div class="panel-heading"><div><h2>نظرة على الأداء</h2><p>تحليل المبيعات والمصروفات وصافي الربح</p></div><button class="dots-btn" aria-label="المزيد"><i data-lucide="ellipsis"></i></button></div><div class="chart-empty"><div class="chart-art"><i data-lucide="chart-no-axes-combined"></i></div><b>سيظهر تحليل الأداء هنا</b><span>اربط قاعدة البيانات لعرض المؤشرات والرسوم البيانية.</span></div><div class="chart-legend"><span><i class="legend-dot sales-dot"></i> المبيعات</span><span><i class="legend-dot expense-dot"></i> المصروفات</span><span><i class="legend-dot profit-dot"></i> صافي الربح</span></div></article>
+   <article class="panel"><div class="panel-heading"><div><h2>ملخص الفروع</h2><p>مقارنة أداء الفروع</p></div><button class="text-action" data-page="branches">عرض الفروع</button></div><div class="empty-list"><i data-lucide="store"></i><b>لا توجد فروع مرتبطة</b><span>أضف فروع منشأتك لتبدأ المتابعة المركزية.</span></div></article>
+  </div>
+  <div class="dashboard-grid lower-grid">
+   <article class="panel"><div class="panel-heading"><div><h2>آخر العمليات</h2><p>أحدث الحركات المسجلة في المنشأة</p></div><button class="text-action" data-page="sales">عرض الكل</button></div><div class="empty-table"><i data-lucide="clipboard-list"></i><b>لا توجد عمليات حتى الآن</b><span>ستظهر فواتير البيع والشراء والحركات المالية هنا.</span></div></article>
+   <article class="panel"><div class="panel-heading"><div><h2>التنبيهات والمهام</h2><p>ما يحتاج إلى انتباهك</p></div><span class="soft-count">0</span></div><div class="empty-list compact"><i data-lucide="bell-ring"></i><b>أنت على اطلاع</b><span>لا توجد تنبيهات مسجلة.</span></div></article>
+  </div>
+  <article class="panel setup-panel"><div class="panel-heading"><div><h2>خطوات تهيئة ANHAR</h2><p>تأسيس منظم قبل بدء التشغيل الفعلي</p></div><span class="setup-progress">0 من 5 مكتملة</span></div><div class="setup-steps">
+   <div class="setup-step"><span class="step-no">01</span><span><b>بيانات المنشأة والفروع</b><small>تعريف المنشأة والفروع والسنة المالية</small></span><em>قيد الإعداد</em></div>
+   <div class="setup-step"><span class="step-no">02</span><span><b>المستخدمون والصلاحيات</b><small>إعداد الأدوار ومستويات الوصول</small></span><em>قيد الإعداد</em></div>
+   <div class="setup-step"><span class="step-no">03</span><span><b>دليل الحسابات والضرائب</b><small>تهيئة الحسابات والإعدادات المحاسبية</small></span><em>قيد الإعداد</em></div>
+   <div class="setup-step"><span class="step-no">04</span><span><b>الأصناف والمخزون</b><small>تعريف المنتجات والوحدات والأرصدة الافتتاحية</small></span><em>قيد الإعداد</em></div>
+   <div class="setup-step"><span class="step-no">05</span><span><b>الصناديق وطرق الدفع</b><small>ربط وسائل الدفع بحساباتها المحاسبية</small></span><em>قيد الإعداد</em></div>
+  </div></article>
+  <footer class="footer"><span>ANHAR BUSINESS SUITE</span><span>إصدار تأسيسي · 2026</span></footer>
+ </section>
+</main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+</body></html>
