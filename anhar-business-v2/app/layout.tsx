@@ -1,0 +1,1 @@
+import React from 'react';import './style.css';export const metadata={title:'ANHAR BUSINESS V2'};export default function Layout({children}:{children:React.ReactNode}){return <html lang="ar" dir="rtl"><body>{children}</body></html>}
